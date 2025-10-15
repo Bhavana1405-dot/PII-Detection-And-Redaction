@@ -1,0 +1,28 @@
+{
+  "entity_types": {
+    "email": {
+      "priority": "high",
+      "default_method": "mask"
+    },
+    "phone": {
+      "priority": "high",
+      "default_method": "mask"
+    },
+    "ssn": {
+      "priority": "critical",
+      "default_method": "hash"
+    },
+    "name": {
+      "priority": "medium",
+      "default_method": "mask"
+    },
+    "address": {
+      "priority": "medium",
+      "default_method": "mask"
+    },
+    "credit_card": {
+      "priority": "critical",
+      "default_method": "hash"
+    }
+  }
+}

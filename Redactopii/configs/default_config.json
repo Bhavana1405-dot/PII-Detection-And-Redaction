@@ -1,0 +1,13 @@
+{
+  "default_text_method": "mask",
+  "default_image_method": "blur",
+  "mask_char": "█",
+  "blur_intensity": 25,
+  "blackbox_color": [0, 0, 0],
+  "padding_pixels": 5,
+  "enable_encryption": false,
+  "log_level": "INFO",
+  "audit_trail": true,
+  "confidence_threshold": 0.7,
+  "output_format": "json"
+}

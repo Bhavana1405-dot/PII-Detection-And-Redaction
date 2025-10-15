@@ -1,0 +1,29 @@
+{
+  "methods": {
+    "mask": {
+      "description": "Replace with mask characters",
+      "reversible": false,
+      "applies_to": ["text"]
+    },
+    "blur": {
+      "description": "Gaussian blur for images",
+      "reversible": false,
+      "applies_to": ["image"]
+    },
+    "blackbox": {
+      "description": "Black rectangle overlay",
+      "reversible": false,
+      "applies_to": ["image", "text"]
+    },
+    "hash": {
+      "description": "One-way hash",
+      "reversible": false,
+      "applies_to": ["text"]
+    },
+    "encrypt": {
+      "description": "Reversible encryption",
+      "reversible": true,
+      "applies_to": ["text"]
+    }
+  }
+}

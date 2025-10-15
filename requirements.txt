@@ -1,0 +1,10 @@
+# Root dependencies for entire system
+
+# Redaction dependencies
+-r Redactopii/requirements.txt
+
+# Detection dependencies (if not already installed)
+# -r Octopii/requirements.txt
+
+# Shared dependencies
+python-dotenv>=0.19.0
