@@ -75,8 +75,18 @@ class RedactionPipeline:
         }
         
         for report in reports:
+            source_file = report.get("file_path")  # Get the source file path
             try:
-                result = self.process_octopii_output(None, report.get("file_path"))
+                # Check for missing path
+                if not source_file:
+                    raise ValueError("A report in the batch is missing the 'file_path' key.")
+                
+                # Check if file exists
+                if not Path(source_file).exists():
+                    raise FileNotFoundError(f"Source file specified in report not found: {source_file}")
+
+                # Call the engine directly instead of the flawed recursive call
+                result = self.engine.process_octopii_report(report, source_file)
                 
                 if result.get("redaction", {}).get("status") == "success":
                     results["successful"] += 1
@@ -89,7 +99,7 @@ class RedactionPipeline:
                 results["failed"] += 1
                 results["results"].append({
                     "status": "error",
-                    "file": report.get("file_path", "unknown"),
+                    "file": source_file or "unknown",
                     "error": str(e)
                 })
         

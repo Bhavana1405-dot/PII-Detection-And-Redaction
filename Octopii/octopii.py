@@ -26,6 +26,8 @@ SOFTWARE.
 import nltk
 import nltk.tokenize.punkt as punkt
 import pathlib
+import pytesseract
+from pytesseract import Output
 
 # Ensure common NLTK resources are available. The upstream punkt tokenizer
 # may look for 'punkt_tab' in some environments; attempt to download both
@@ -102,12 +104,16 @@ def search_pii(file_path):
         text = original
 
     elif (file_utils.is_pdf(file_path)):
-        pdf_pages = convert_from_path(file_path, 400) # Higher DPI reads small text better
+        pdf_pages = convert_from_path(file_path, 400)
+        bounding_box_data = {"text": [], "left": [], "top": [], "width": [], "height": []}
+        text = ""
         for page in pdf_pages:
             contains_faces = image_utils.scan_image_for_people(page)
+            ocr_data = pytesseract.image_to_data(page, output_type=Output.DICT)
+            text += " ".join(ocr_data['text'])
+            for key in ["text", "left", "top", "width", "height"]:
+                bounding_box_data[key].extend(ocr_data[key])
 
-            original, intelligible = image_utils.scan_image_for_text(page)
-            text = original
 
     else:
         text = textract.process(file_path).decode()
@@ -135,17 +141,84 @@ def search_pii(file_path):
         file_path = file_path.replace(temp_dir, "")
         file_path = urllib.parse.unquote(file_path)
 
+    # --- Map detected PII to bounding boxes ---
+    pii_locations = {}
+
+    def normalize_text(s):
+        return s.lower().replace(' ', '').replace('-', '').replace('(', '').replace(')', '')
+
+    if 'bounding_box_data' in locals():
+        texts = bounding_box_data['text']
+        lefts = bounding_box_data['left']
+        tops = bounding_box_data['top']
+        widths = bounding_box_data['width']
+        heights = bounding_box_data['height']
+
+        def find_bbox_for_pii(pii):
+            norm_pii = normalize_text(pii)
+            match_indices = []
+
+            for i, word in enumerate(texts):
+                if not word.strip():
+                    continue
+                norm_word = normalize_text(word)
+                if norm_word and (norm_word in norm_pii or norm_pii in norm_word):
+                    match_indices.append(i)
+
+            if match_indices:
+                x_min = min(lefts[i] for i in match_indices)
+                y_min = min(tops[i] for i in match_indices)
+                x_max = max(lefts[i] + widths[i] for i in match_indices)
+                y_max = max(tops[i] + heights[i] for i in match_indices)
+                return {
+                    'x': int(x_min),
+                    'y': int(y_min),
+                    'width': int(x_max - x_min),
+                    'height': int(y_max - y_min)
+                }
+            return None
+
+        # Emails
+        for email in emails:
+            bbox = find_bbox_for_pii(email)
+            if bbox:
+                pii_locations[email] = bbox
+
+        # Phone numbers
+        for phone in phone_numbers:
+            bbox = find_bbox_for_pii(phone)
+            if bbox:
+                pii_locations[phone] = bbox
+
+        # Identifiers (e.g., Aadhaar)
+        for identifier in identifiers:
+            bbox = find_bbox_for_pii(identifier)
+            if bbox:
+                pii_locations[identifier] = bbox
+
+        # Addresses
+        for address in addresses:
+            bbox = find_bbox_for_pii(address)
+            if bbox:
+                pii_locations[address] = bbox
+    else:
+        pii_locations = {}
+
+
+    
     result = {
-        "file_path" : file_path,
-        "pii_class" : pii_class,
-        "score" : score,
+        "file_path": file_path,
+        "pii_class": pii_class,
+        "score": score,
         "country_of_origin": country_of_origin,
-        "faces" : contains_faces,
-        "identifiers" : identifiers,
-        "emails" : emails,
-        "phone_numbers" : phone_numbers,
-        "addresses" : addresses
+        "faces": contains_faces,
+        "identifiers": identifiers,
+        "emails": emails,
+        "phone_numbers": phone_numbers,
+        "addresses": addresses,
+        "pii_with_locations": pii_locations  # <--- NEW
     }
+
 
     return result
     

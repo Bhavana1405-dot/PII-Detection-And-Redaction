@@ -1,49 +1,88 @@
-{
-  "pii_detected": [
+[
     {
-      "file_path": "dummy-pii/dummy-aadhaar.png",
-      "pii_class": "Aadhaar Card",
-      "score": 33,
-      "country_of_origin": "India",
-      "faces": 1,
-      "identifiers": [
-        "3977 8800 0234",
-        "200729490679"
-      ],
-      "emails": [
-        "help@uidal.gov.in",
-        "help@udei.govin"
-      ],
-      "phone_numbers": [
-        "2007294906",
-        "800 100 1007",
-        "800 180 1947"
-      ],
-      "addresses": [
-        "Asians",
-        "Sina",
-        "Chikiten",
-        "Children",
-        "Keentity",
-        "Groutone"
-      ]
+        "file_path": "octopii/dummy-pii/dummy-aadhaar.png",
+        "pii_class": "Aadhaar Card",
+        "score": 33,
+        "country_of_origin": "India",
+        "faces": 1,
+        "identifiers": [
+            "3977 8800 0234",
+            "200729490679"
+        ],
+        "emails": [
+            "help@uidal.gov.in",
+            "help@udei.govin"
+        ],
+        "phone_numbers": [
+            "800 100 1007",
+            "2007294906",
+            "800 180 1947"
+        ],
+        "addresses": [
+            "Chikiten",
+            "Keentity",
+            "Asians",
+            "Sina",
+            "Children",
+            "Groutone"
+        ]
     },
     {
-      "file_path": "dummy-pii/dummy-pan-India.jpg",
-      "pii_class": "Permanent Account Number",
-      "score": 49,
-      "country_of_origin": "India",
-      "faces": 0,
-      "identifiers": [
-        "Permanent",
-        "Signature",
-        "DEPARTMEN"
-      ],
-      "emails": [],
-      "phone_numbers": [],
-      "addresses": [
-        "INDIA"
-      ]
+        "file_path": "dummy-pii/dummy-aadhaar.png",
+        "pii_class": "Aadhaar Card",
+        "score": 33,
+        "country_of_origin": "India",
+        "faces": 1,
+        "identifiers": [
+            "3977 8800 0234",
+            "200729490679"
+        ],
+        "emails": [
+            "help@udei.govin",
+            "help@uidal.gov.in"
+        ],
+        "phone_numbers": [
+            "800 180 1947",
+            "2007294906",
+            "800 100 1007"
+        ],
+        "addresses": [
+            "Keentity",
+            "Asians",
+            "Children",
+            "Groutone",
+            "Sina",
+            "Chikiten"
+        ],
+        "pii_with_locations": {}
+    },
+    {
+        "file_path": "dummy-pii/dummy-aadhaar.png",
+        "pii_class": "Aadhaar Card",
+        "score": 33,
+        "country_of_origin": "India",
+        "faces": 1,
+        "identifiers": [
+            "3977 8800 0234",
+            "200729490679"
+        ],
+        "emails": [
+            "help@udei.govin",
+            "help@uidal.gov.in"
+        ],
+        "phone_numbers": [
+            "800 100 1007",
+            "800 180 1947",
+            "2007294906"
+        ],
+        "addresses": [
+            "Chikiten",
+            "Sina",
+            "Children",
+            "Groutone",
+            "Keentity",
+            "Asians"
+        ],
+        "pii_with_locations": {}
     }
-  ]
-}
+]

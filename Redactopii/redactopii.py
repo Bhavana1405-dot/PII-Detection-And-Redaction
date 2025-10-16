@@ -74,6 +74,9 @@ Examples:
     # Process file
     try:
         result = pipeline.process_octopii_output(args.report, args.input)
+
+        import json
+        print(f"DEBUG: Full result from pipeline: {json.dumps(result, indent=2)}")
         
         print("=" * 70)
         print("RESULTS")

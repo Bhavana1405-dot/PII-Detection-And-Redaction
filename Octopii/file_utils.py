@@ -131,18 +131,43 @@ def is_image(file_path):
     except:
         return False
 
+import json
+import os
+import traceback
+
 def append_to_output_file(data, file_name):
+    """
+    Appends data to a JSON file.
+
+    If the file exists and contains a JSON list, it appends to it.
+    If the file exists and contains a single JSON object, it wraps it in a list and appends.
+    If the file does not exist or is empty, it creates a new file with a list containing the data.
+    """
+    loaded_data = []
     try:
-        loaded_json = []
-        try: 
-            with open(file_name, 'r+') as read_file:    
-                loaded_json = json.loads(read_file.read())
-        except: # No file
-            print ("\nCreating new file named \'" + file_name + "\' and writing to it.")
-        with open(file_name, 'w') as write_file:
-            loaded_json.append(data)
-            write_file.write(json.dumps(loaded_json, indent=4))
-            
-    except:
+        # Check if file exists and is not empty before reading
+        if os.path.exists(file_name) and os.path.getsize(file_name) > 0:
+            with open(file_name, 'r') as read_file:
+                loaded_data = json.load(read_file)
+        
+        # Ensure the data we are working with is a list
+        if not isinstance(loaded_data, list):
+            # If the file contained a single object, wrap it in a list
+            loaded_data = [loaded_data]
+
+    except (FileNotFoundError, json.JSONDecodeError):
+        # If file doesn't exist or is empty/corrupt, start with an empty list
+        loaded_data = []
+    except Exception:
         traceback.print_exc()
-        print ("Couldn't write to "+ file_name +". Please check if the path is correct and try again.")
+        print(f"An unexpected error occurred while reading {file_name}.")
+        return
+
+    # Append the new data and write the whole list back to the file
+    loaded_data.append(data)
+    try:
+        with open(file_name, 'w') as write_file:
+            json.dump(loaded_data, write_file, indent=4)
+    except Exception:
+        traceback.print_exc()
+        print(f"Couldn't write to {file_name}. Please check if the path and permissions are correct.")

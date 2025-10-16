@@ -5,7 +5,7 @@
 
 from typing import Dict, List, Optional
 import re
-from ..core.models import PIIEntity, PIIType, BoundingBox
+from core.models import PIIEntity, PIIType, BoundingBox
 
 
 class OctopiiAdapter:
