@@ -1,118 +1,121 @@
-#!/usr/bin/env python3
+# =============================================================================
+# FILE: Redactopii/redactopii.py
+# DESCRIPTION: Redactopii - PII Redaction Engine CLI
+# USAGE: python redactopii.py --input file.png --report output.json
+# =============================================================================
+
 """
 Redactopii - PII Redaction Engine CLI
+Automatically saves redacted files to outputs/ directory
 """
 import argparse
 import json
 import sys
 from pathlib import Path
 
-# We add necessary imports for image processing and data models
-import cv2
-from core.models import PIIEntity, PIIType, BoundingBox
-from utils.file_handler import FileHandler
+# Add current directory to path
+sys.path.insert(0, str(Path(__file__).parent))
 
-def parse_report(report: dict) -> list[PIIEntity]:
-    """
-    Parses the Octopii JSON report into a list of PIIEntity objects.
-    This logic is borrowed from the OctopiiAdapter.
-    """
-    entities = []
-    detected_items = report.get("pii_detected", [])
-    
-    for item in detected_items:
-        entity_type_str = item.get("type", "custom").lower()
-        try:
-            entity_type = PIIType(entity_type_str)
-        except ValueError:
-            entity_type = PIIType.CUSTOM
-            
-        bbox_data = item.get("bounding_box")
-        bbox = None
-        if bbox_data:
-            bbox = BoundingBox(
-                x=bbox_data.get("x", 0),
-                y=bbox_data.get("y", 0),
-                width=bbox_data.get("width", 0),
-                height=bbox_data.get("height", 0),
-                page=bbox_data.get("page", 0) # Page is ignored for single images
-            )
-        
-        if bbox: # Only process entities that have a bounding box for image redaction
-            entity = PIIEntity(
-                entity_type=entity_type,
-                value=item.get("value", ""),
-                confidence=item.get("confidence", 1.0),
-                bounding_box=bbox,
-            )
-            entities.append(entity)
-            
-    return entities
-
-
-def redact_image_file(image_path: str, entities: list[PIIEntity], output_dir: str):
-    """
-    Loads an image, draws black boxes over PII, and saves the redacted image.
-    """
-    print(f"Loading image from: {image_path}")
-    image = cv2.imread(image_path)
-    
-    if image is None:
-        print(f"Error: Could not load image at {image_path}", file=sys.stderr)
-        return None
-
-    redactions_performed = 0
-    for entity in entities:
-        if entity.bounding_box:
-            bb = entity.bounding_box
-            # Define the top-left (start) and bottom-right (end) points of the rectangle
-            start_point = (bb.x, bb.y)
-            end_point = (bb.x + bb.width, bb.y + bb.height)
-            # Draw a filled black rectangle over the PII
-            cv2.rectangle(image, start_point, end_point, color=(0, 0, 0), thickness=-1)
-            redactions_performed += 1
-            
-    print(f"Performed {redactions_performed} redactions on the image.")
-
-    # Generate a new filename and save the redacted image
-    output_filename = FileHandler.generate_output_path(Path(image_path).name)
-    output_path = Path(output_dir) / output_filename
-    
-    # Ensure the output directory exists
-    output_path.parent.mkdir(parents=True, exist_ok=True)
-    
-    cv2.imwrite(str(output_path), image)
-    print(f"✓ Redacted file saved successfully to: {output_path}")
-    return output_path
+from core.redaction_engine import RedactionEngine
+from core.config import RedactionConfig
+from integrations.pipeline_integration import RedactionPipeline
 
 
 def main():
-    parser = argparse.ArgumentParser(description='PII Redaction Engine')
-    parser.add_argument('--input', required=True, help='Input image file path')
-    parser.add_argument('--report', required=True, help='Octopii detection report (JSON)')
-    parser.add_argument('--output', required=True, help='Output directory to save redacted file')
+    parser = argparse.ArgumentParser(
+        description='PII Redaction Engine - Automatically saves masked files',
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog="""
+Examples:
+  # Basic redaction
+  python redactopii.py --input document.txt --report output.json
+  
+  # With custom method
+  python redactopii.py --input scan.png --report output.json --method blur
+  
+  # Custom output directory
+  python redactopii.py --input file.txt --report output.json --output-dir ./my_outputs
+        """
+    )
+    
+    parser.add_argument('--input', required=True, help='Input file path')
+    parser.add_argument('--report', required=True, help='Octopii detection report (output.json)')
+    parser.add_argument('--output-dir', default='./outputs', help='Output base directory')
+    parser.add_argument('--config', help='Configuration file path')
+    parser.add_argument('--method', choices=['blur', 'blackbox', 'pixelate'], 
+                       help='Redaction method for images')
+    parser.add_argument('--threshold', type=float, help='Confidence threshold (0.0-1.0)')
     
     args = parser.parse_args()
     
-    # Load the detection report
+    # Initialize engine
+    config = RedactionConfig(args.config) if args.config else RedactionConfig()
+    config.set("output_base_dir", args.output_dir)
+    
+    if args.method:
+        config.set("default_image_method", args.method)
+    
+    if args.threshold:
+        config.set("confidence_threshold", args.threshold)
+    
+    engine = RedactionEngine(config)
+    pipeline = RedactionPipeline(engine)
+    
+    print("=" * 70)
+    print("PII REDACTION ENGINE")
+    print("=" * 70)
+    print(f"Input file:       {args.input}")
+    print(f"Detection report: {args.report}")
+    print(f"Output directory: {args.output_dir}")
+    if args.method:
+        print(f"Method:           {args.method}")
+    print()
+    
+    # Process file
     try:
-        with open(args.report, 'r') as f:
-            report_data = json.load(f)
-    except FileNotFoundError:
-        print(f"Error: Report file not found at {args.report}", file=sys.stderr)
-        return 1
-    
-    # Parse the report to get PII entities
-    pii_entities = parse_report(report_data)
-    
-    if not pii_entities:
-        print("No PII with bounding boxes found in the report. Nothing to redact.")
+        result = pipeline.process_octopii_output(args.report, args.input)
+        
+        print("=" * 70)
+        print("RESULTS")
+        print("=" * 70)
+        
+        if result.get("redaction", {}).get("status") == "success":
+            output_path = result["redaction"]["output_path"]
+            print(f"✓ Redacted file saved: {output_path}")
+            
+            redaction_count = result["redaction"].get("entities_redacted", 0)
+            print(f"✓ Redacted {redaction_count} PII entities")
+            
+            # Show output locations
+            print(f"\nOutput locations:")
+            print(f"  - Redacted file: {output_path}")
+            if Path(output_path).suffix.lower() in ['.png', '.jpg', '.jpeg']:
+                comparison_dir = Path(args.output_dir) / "comparisons"
+                print(f"  - Comparison:    {comparison_dir}/")
+            
+            audit_dir = Path(args.output_dir) / "audit_logs"
+            report_dir = Path(args.output_dir) / "reports"
+            print(f"  - Audit log:     {audit_dir}/")
+            print(f"  - Full report:   {report_dir}/")
+            
+        elif result.get("redaction", {}).get("status") == "no_pii":
+            print("ℹ No PII entities detected - nothing to redact")
+            
+        else:
+            print(f"✗ Redaction failed: {result.get('redaction', {}).get('error', 'Unknown error')}")
+            return 1
+        
+        print("=" * 70)
         return 0
-
-    # Perform the redaction and save the file
-    redact_image_file(args.input, pii_entities, args.output)
-    
-    return 0
+        
+    except FileNotFoundError as e:
+        print(f"\n✗ Error: File not found - {e}")
+        return 1
+    except Exception as e:
+        print(f"\n✗ Error: {e}")
+        import traceback
+        traceback.print_exc()
+        return 1
 
 
 if __name__ == '__main__':
