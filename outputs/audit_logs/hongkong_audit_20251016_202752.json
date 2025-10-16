@@ -1,0 +1,36 @@
+{
+  "audit": {
+    "source_file": "C:\\Users\\Bhavana\\Desktop\\PII redaction\\Octopii\\dummy-pii\\hongkong.png",
+    "redacted_file": "outputs\\redacted\\hongkong_redacted_20251016_202752.png",
+    "file_type": "binary",
+    "timestamp": "2025-10-16T20:27:52.605650",
+    "detection_report": {
+      "file_path": "C:\\Users\\Bhavana\\Desktop\\PII redaction\\Octopii\\dummy-pii\\hongkong.png",
+      "pii_class": "Permanent Identity Card",
+      "score": 20,
+      "country_of_origin": "Hong Kong",
+      "faces": 2,
+      "identifiers": [
+        "2867 3057 2532"
+      ],
+      "emails": [],
+      "phone_numbers": [],
+      "addresses": [],
+      "pii_with_locations": {
+        "2867 3057 2532": {
+          "x": 157,
+          "y": 94,
+          "width": 33,
+          "height": 10
+        }
+      }
+    },
+    "redaction_results": [],
+    "summary": {
+      "total_entities_detected": 0,
+      "entities_redacted": 0,
+      "redaction_failures": 0,
+      "confidence_threshold": 0.7
+    }
+  }
+}

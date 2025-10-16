@@ -1,6 +1,6 @@
 [
     {
-        "file_path": "Octopii/dummy-pii/dummy-aadhaar.png",
+        "file_path": "C:\\Users\\Bhavana\\Desktop\\PII redaction\\Octopii\\dummy-pii\\hongkong.png\\dummy-aadhaar.png",
         "pii_class": "Aadhaar Card",
         "score": 33,
         "country_of_origin": "India",
@@ -28,7 +28,7 @@
         ]
     },
     {
-        "file_path": "Octopii/dummy-pii/dummy-aadhaar.png",
+        "file_path": "C:\\Users\\Bhavana\\Desktop\\PII redaction\\Octopii\\dummy-pii\\hongkong.png\\dummy-aadhaar.png",
         "pii_class": "Aadhaar Card",
         "score": 33,
         "country_of_origin": "India",
@@ -56,7 +56,7 @@
         ]
     },
     {
-        "file_path": "Octopii/dummy-pii/dummy-aadhaar.png",
+        "file_path": "C:\\Users\\Bhavana\\Desktop\\PII redaction\\Octopii\\dummy-pii\\hongkong.png\\dummy-aadhaar.png",
         "pii_class": "Aadhaar Card",
         "score": 33,
         "country_of_origin": "India",
@@ -84,7 +84,7 @@
         ]
     },
     {
-        "file_path": "Octopii/dummy-pii/dummy-aadhaar.png",
+        "file_path": "C:\\Users\\Bhavana\\Desktop\\PII redaction\\Octopii\\dummy-pii\\hongkong.png\\dummy-aadhaar.png",
         "pii_class": "Aadhaar Card",
         "score": 33,
         "country_of_origin": "India",
@@ -112,7 +112,7 @@
         ]
     },
     {
-        "file_path": "octopii/dummy-pii/debitcard.jpg",
+        "file_path": "C:\\Users\\Bhavana\\Desktop\\PII redaction\\Octopii\\dummy-pii\\hongkong.png\\debitcard.jpg",
         "pii_class": "Banking",
         "score": 9,
         "country_of_origin": null,
@@ -124,7 +124,7 @@
         "pii_with_locations": {}
     },
     {
-        "file_path": "octopii/dummy-pii/hongkong.png",
+        "file_path": "C:\\Users\\Bhavana\\Desktop\\PII redaction\\Octopii\\dummy-pii\\hongkong.png\\hongkong.png",
         "pii_class": "Permanent Identity Card",
         "score": 20,
         "country_of_origin": "Hong Kong",

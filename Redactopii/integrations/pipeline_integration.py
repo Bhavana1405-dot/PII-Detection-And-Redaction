@@ -18,6 +18,50 @@ from core.redaction_engine import RedactionEngine
 from integrations.octopii_adapter import OctopiiAdapter
 
 
+# -----------------------------
+# Utility: Normalize report paths
+# -----------------------------
+def normalize_report_paths(report_path: str, input_path: str) -> str:
+    """
+    Normalize the file_path entries in Octopii report so they point to actual local files.
+    - report_path: path to output.json
+    - input_path: the input file or folder used for redaction
+    Returns: path to fixed report JSON
+    """
+    report_path = Path(report_path).resolve()
+    input_path = Path(input_path).resolve()
+
+    # Determine base folder for source images
+    if input_path.is_file():
+        base_folder = input_path.parent
+    else:
+        base_folder = input_path
+
+    # Load the report
+    with open(report_path, 'r', encoding='utf-8') as f:
+        report_data = json.load(f)
+
+    # Normalize paths
+    if isinstance(report_data, list):
+        for entry in report_data:
+            file_path = entry.get("file_path", "")
+            # Remove leading 'Octopii/' or duplicate 'dummy-pii/' prefixes
+            file_path = file_path.replace("Octopii/", "").lstrip("\\/")  # remove leading slash/backslash
+            file_path_parts = Path(file_path).parts
+            # If first part is same as base folder name, skip it
+            if file_path_parts and file_path_parts[0] == base_folder.name:
+                file_path = Path(*file_path_parts[1:])
+            # Build absolute path
+            entry["file_path"] = str((base_folder / file_path).resolve())
+
+    # Save fixed report
+    fixed_report_path = report_path.parent / "output_fixed.json"
+    with open(fixed_report_path, 'w', encoding='utf-8') as f:
+        json.dump(report_data, f, indent=4)
+
+    return str(fixed_report_path)
+
+
 class RedactionPipeline:
     """Full detection-to-redaction pipeline"""
     

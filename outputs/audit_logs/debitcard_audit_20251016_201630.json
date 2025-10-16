@@ -1,0 +1,27 @@
+{
+  "audit": {
+    "source_file": "C:\\Users\\Bhavana\\Desktop\\PII redaction\\Octopii\\dummy-pii\\debitcard.jpg",
+    "redacted_file": "outputs\\redacted\\debitcard_redacted_20251016_201630.jpg",
+    "file_type": "binary",
+    "timestamp": "2025-10-16T20:16:30.640563",
+    "detection_report": {
+      "file_path": "C:\\Users\\Bhavana\\Desktop\\PII redaction\\Octopii\\dummy-pii\\debitcard.jpg",
+      "pii_class": "Banking",
+      "score": 9,
+      "country_of_origin": null,
+      "faces": 0,
+      "identifiers": [],
+      "emails": [],
+      "phone_numbers": [],
+      "addresses": [],
+      "pii_with_locations": {}
+    },
+    "redaction_results": [],
+    "summary": {
+      "total_entities_detected": 0,
+      "entities_redacted": 0,
+      "redaction_failures": 0,
+      "confidence_threshold": 0.7
+    }
+  }
+}
