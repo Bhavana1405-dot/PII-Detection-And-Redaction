@@ -1,0 +1,114 @@
+[
+    {
+        "file_path": "Octopii/dummy-pii/dummy-aadhaar.png",
+        "pii_class": "Aadhaar Card",
+        "score": 33,
+        "country_of_origin": "India",
+        "faces": 1,
+        "identifiers": [
+            "3977 8800 0234",
+            "200729490679"
+        ],
+        "emails": [
+            "help@udei.govin",
+            "help@uidal.gov.in"
+        ],
+        "phone_numbers": [
+            "800 180 1947",
+            "2007294906",
+            "800 100 1007"
+        ],
+        "addresses": [
+            "Groutone",
+            "Children",
+            "Keentity",
+            "Sina",
+            "Asians",
+            "Chikiten"
+        ]
+    },
+    {
+        "file_path": "Octopii/dummy-pii/dummy-aadhaar.png",
+        "pii_class": "Aadhaar Card",
+        "score": 33,
+        "country_of_origin": "India",
+        "faces": 1,
+        "identifiers": [
+            "200729490679",
+            "3977 8800 0234"
+        ],
+        "emails": [
+            "help@uidal.gov.in",
+            "help@udei.govin"
+        ],
+        "phone_numbers": [
+            "800 180 1947",
+            "2007294906",
+            "800 100 1007"
+        ],
+        "addresses": [
+            "Children",
+            "Keentity",
+            "Groutone",
+            "Chikiten",
+            "Sina",
+            "Asians"
+        ]
+    },
+    {
+        "file_path": "Octopii/dummy-pii/dummy-aadhaar.png",
+        "pii_class": "Aadhaar Card",
+        "score": 33,
+        "country_of_origin": "India",
+        "faces": 1,
+        "identifiers": [
+            "200729490679",
+            "3977 8800 0234"
+        ],
+        "emails": [
+            "help@udei.govin",
+            "help@uidal.gov.in"
+        ],
+        "phone_numbers": [
+            "800 100 1007",
+            "2007294906",
+            "800 180 1947"
+        ],
+        "addresses": [
+            "Sina",
+            "Asians",
+            "Keentity",
+            "Chikiten",
+            "Children",
+            "Groutone"
+        ]
+    },
+    {
+        "file_path": "Octopii/dummy-pii/dummy-aadhaar.png",
+        "pii_class": "Aadhaar Card",
+        "score": 33,
+        "country_of_origin": "India",
+        "faces": 1,
+        "identifiers": [
+            "200729490679",
+            "3977 8800 0234"
+        ],
+        "emails": [
+            "help@udei.govin",
+            "help@uidal.gov.in"
+        ],
+        "phone_numbers": [
+            "800 100 1007",
+            "2007294906",
+            "800 180 1947"
+        ],
+        "addresses": [
+            "Keentity",
+            "Chikiten",
+            "Sina",
+            "Children",
+            "Asians",
+            "Groutone"
+        ]
+    }
+]

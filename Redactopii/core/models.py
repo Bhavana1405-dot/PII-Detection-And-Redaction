@@ -1,3 +1,8 @@
+# =============================================================================
+# FILE: Redactopii/core/models.py
+# DESCRIPTION: Data models for PII redaction system
+# =============================================================================
+
 """
 Data models for PII redaction system
 """
@@ -5,7 +10,9 @@ from dataclasses import dataclass, asdict
 from typing import Optional, Dict
 from enum import Enum
 
+
 class PIIType(Enum):
+    """PII entity types"""
     EMAIL = "email"
     PHONE = "phone"
     SSN = "ssn"
@@ -17,25 +24,33 @@ class PIIType(Enum):
     PASSPORT = "passport"
     CUSTOM = "custom"
 
+
 class RedactionMethod(Enum):
+    """Redaction techniques"""
     MASK = "mask"
     BLUR = "blur"
     BLACKBOX = "blackbox"
+    PIXELATE = "pixelate"
     HASH = "hash"
     ENCRYPT = "encrypt"
 
+
 @dataclass
 class BoundingBox:
+    """Image coordinates for PII location"""
     x: int
     y: int
     width: int
     height: int
     page: int = 0
+    
     def to_dict(self) -> Dict:
         return asdict(self)
 
+
 @dataclass
 class PIIEntity:
+    """Unified PII entity from detection"""
     entity_type: PIIType
     value: str
     confidence: float
@@ -43,6 +58,7 @@ class PIIEntity:
     end_pos: Optional[int] = None
     bounding_box: Optional[BoundingBox] = None
     context: Optional[str] = None
+    
     def to_dict(self) -> Dict:
         result = {
             "entity_type": self.entity_type.value,
@@ -56,8 +72,10 @@ class PIIEntity:
             result["bounding_box"] = self.bounding_box.to_dict()
         return result
 
+
 @dataclass
 class RedactionResult:
+    """Result of redaction operation"""
     original_entity: PIIEntity
     redacted_value: str
     method: RedactionMethod
@@ -65,6 +83,7 @@ class RedactionResult:
     file_path: str
     success: bool
     error_message: Optional[str] = None
+    
     def to_dict(self) -> Dict:
         return {
             "original_entity": self.original_entity.to_dict(),

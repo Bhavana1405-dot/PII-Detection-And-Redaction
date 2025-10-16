@@ -25,6 +25,7 @@ SOFTWARE.
 """
 import nltk
 import nltk.tokenize.punkt as punkt
+import pathlib
 
 # Ensure common NLTK resources are available. The upstream punkt tokenizer
 # may look for 'punkt_tab' in some environments; attempt to download both

@@ -26,7 +26,7 @@ SOFTWARE.
 
 import cv2, text_utils, pytesseract, difflib
 from PIL import Image
-
+import pathlib
 from skimage.transform import rotate
 from deskew import determine_skew
 import numpy
@@ -34,8 +34,21 @@ import numpy
 def scan_image_for_people(image):
     
     image = numpy.array(image) # converts the image to a compatible format
-    cascade_values_file = 'face_cascade.xml'
-    cascade_values = cv2.CascadeClassifier(cascade_values_file)
+
+    # --- FIX STARTS HERE ---
+    # Build the full, correct path to the XML file
+    script_dir = pathlib.Path(__file__).parent.resolve()
+    cascade_values_file = script_dir / 'face_cascade.xml'
+
+    # Check if the file exists before trying to load it
+    if not cascade_values_file.exists():
+        print(f"Error: Cascade file not found at {cascade_values_file}")
+        return 0 # Return 0 faces found if the model is missing
+
+    # Load the classifier using the full path as a string
+    cascade_values = cv2.CascadeClassifier(str(cascade_values_file))
+    # --- FIX ENDS HERE ---
+
     faces = cascade_values.detectMultiScale (
         image,
         scaleFactor = 1.1,
@@ -44,8 +57,7 @@ def scan_image_for_people(image):
         flags = cv2.CASCADE_SCALE_IMAGE
     )
 
-    return len(faces) 
-
+    return len(faces)
 def scan_image_for_text(image):
     image = numpy.array(image) # converts the image to a compatible format
 

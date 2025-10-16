@@ -1,292 +1,30 @@
 [
     {
-        "file_path": ".\\dummy-pii\\dummy-aadhaar.png",
-        "pii_class": "Aadhaar Card",
-        "score": 33,
-        "country_of_origin": "India",
-        "faces": 1,
-        "identifiers": [
-            "200729490679",
-            "3977 8800 0234"
-        ],
-        "emails": [
-            "help@udei.govin",
-            "help@uidal.gov.in"
-        ],
-        "phone_numbers": [
-            "800 100 1007",
-            "2007294906",
-            "800 180 1947"
-        ],
-        "addresses": [
-            "Chikiten",
-            "Asians",
-            "Sina",
-            "Keentity",
-            "Children",
-            "Groutone"
-        ]
-    },
-    {
-        "file_path": ".\\dummy-pii\\dummy-debit-card.jpg",
-        "pii_class": "Banking",
-        "score": 9,
-        "country_of_origin": null,
-        "faces": 0,
-        "identifiers": [
-            "Internati"
-        ],
-        "emails": [],
-        "phone_numbers": [],
-        "addresses": []
-    },
-    {
-        "file_path": ".\\dummy-pii\\dummy-ssn.jpg",
-        "pii_class": null,
-        "score": 1,
-        "country_of_origin": "Sinagpore",
-        "faces": 0,
-        "identifiers": [
-            "esraatise",
-            "SIGNATURE",
-            "ESTABLISH"
-        ],
-        "emails": [],
-        "phone_numbers": [],
-        "addresses": []
-    },
-    {
-        "file_path": ".\\dummy-pii\\adhaar.jpg",
-        "pii_class": "Permanent Account Number",
-        "score": 9,
-        "country_of_origin": "India",
-        "faces": 1,
-        "identifiers": [
-            "7872 7576 8685",
-            "9132 9314 9054"
-        ],
-        "emails": [],
-        "phone_numbers": [],
-        "addresses": [
-            "India"
-        ]
-    },
-    {
-        "file_path": ".\\dummy-pii\\PAN.jpg",
-        "pii_class": "Permanent Account Number",
-        "score": 54,
-        "country_of_origin": "India",
-        "faces": 0,
-        "identifiers": [
-            "AVYPV5831F"
-        ],
-        "emails": [],
-        "phone_numbers": [],
-        "addresses": [
-            "Birth",
-            "Staeex"
-        ]
-    },
-    {
-        "file_path": "dummy-pii/adhaar.jpg",
-        "pii_class": "Permanent Account Number",
-        "score": 9,
-        "country_of_origin": "India",
-        "faces": 1,
-        "identifiers": [
-            "9132 9314 9054",
-            "7872 7576 8685"
-        ],
-        "emails": [],
-        "phone_numbers": [],
-        "addresses": [
-            "India"
-        ]
-    },
-    {
         "file_path": "dummy-pii/dummy-aadhaar.png",
         "pii_class": "Aadhaar Card",
         "score": 33,
         "country_of_origin": "India",
         "faces": 1,
         "identifiers": [
-            "200729490679",
-            "3977 8800 0234"
+            "3977 8800 0234",
+            "200729490679"
         ],
         "emails": [
             "help@uidal.gov.in",
             "help@udei.govin"
         ],
         "phone_numbers": [
-            "800 180 1947",
+            "2007294906",
             "800 100 1007",
-            "2007294906"
+            "800 180 1947"
         ],
         "addresses": [
-            "Groutone",
             "Asians",
+            "Sina",
             "Chikiten",
             "Children",
             "Keentity",
-            "Sina"
-        ]
-    },
-    {
-        "file_path": "dummy-pii/dummy-debit-card.jpg",
-        "pii_class": "Banking",
-        "score": 9,
-        "country_of_origin": null,
-        "faces": 0,
-        "identifiers": [
-            "Internati"
-        ],
-        "emails": [],
-        "phone_numbers": [],
-        "addresses": []
-    },
-    {
-        "file_path": "dummy-pii/dummy-drivers-license-maharashtra.jpg",
-        "pii_class": "Maharashtra Driver's License",
-        "score": 28,
-        "country_of_origin": "India",
-        "faces": 0,
-        "identifiers": [
-            "THORISATI",
-            "MAHARASHT",
-            "Impressio",
-            "yignature",
-            "fmpressio",
-            "BAIGANWAD",
-            "HARASHTRA",
-            "FOLLOWING",
-            "Signature",
-            "THROUGHOU",
-            "GAIGANWAD"
-        ],
-        "emails": [],
-        "phone_numbers": [
-            "2633 325301"
-        ],
-        "addresses": [
-            "Holder"
-        ]
-    },
-    {
-        "file_path": "dummy-pii/dummy-hong-kong-resident-id.png",
-        "pii_class": "Permanent Identity Card",
-        "score": 20,
-        "country_of_origin": "Hong Kong",
-        "faces": 2,
-        "identifiers": [
-            "2867 3057 2532"
-        ],
-        "emails": [],
-        "phone_numbers": [],
-        "addresses": [
-            "HONG"
-        ]
-    },
-    {
-        "file_path": "dummy-pii/dummy-PAN-India.jpg",
-        "pii_class": "Permanent Account Number",
-        "score": 49,
-        "country_of_origin": "India",
-        "faces": 0,
-        "identifiers": [
-            "DEPARTMEN",
-            "Signature",
-            "Permanent"
-        ],
-        "emails": [],
-        "phone_numbers": [],
-        "addresses": [
-            "INDIA"
-        ]
-    },
-    {
-        "file_path": "dummy-pii/dummy-passport-britain.jpg",
-        "pii_class": "British Passport",
-        "score": 22,
-        "country_of_origin": "United Kingdom",
-        "faces": 1,
-        "identifiers": [
-            "1063M0004",
-            "Quehrorie",
-            "ccdcddcdc",
-            "cceedddcc",
-            "023477812"
-        ],
-        "emails": [],
-        "phone_numbers": [],
-        "addresses": [
-            "Northern",
-            "Northern Ireland"
-        ]
-    },
-    {
-        "file_path": "dummy-pii/dummy-passport-ukraine.jpg",
-        "pii_class": "Ukrainian Passport",
-        "score": 14,
-        "country_of_origin": "Ukraine",
-        "faces": 1,
-        "identifiers": [
-            "190803330521"
-        ],
-        "emails": [],
-        "phone_numbers": [
-            "1908033305",
-            "3052125257"
-        ],
-        "addresses": [
-            "Uyxpaina",
-            "Opcan"
-        ]
-    },
-    {
-        "file_path": "dummy-pii/dummy-ssn.jpg",
-        "pii_class": null,
-        "score": 1,
-        "country_of_origin": "Sinagpore",
-        "faces": 0,
-        "identifiers": [
-            "esraatise",
-            "ESTABLISH",
-            "SIGNATURE"
-        ],
-        "emails": [],
-        "phone_numbers": [],
-        "addresses": []
-    },
-    {
-        "file_path": "dummy-pii/PAN.jpg",
-        "pii_class": "Permanent Account Number",
-        "score": 54,
-        "country_of_origin": "India",
-        "faces": 0,
-        "identifiers": [
-            "AVYPV5831F"
-        ],
-        "emails": [],
-        "phone_numbers": [],
-        "addresses": [
-            "Birth",
-            "Staeex"
-        ]
-    },
-    {
-        "file_path": ".\\dummy-pii\\adhaar.jpg",
-        "pii_class": "Permanent Account Number",
-        "score": 9,
-        "country_of_origin": "India",
-        "faces": 1,
-        "identifiers": [
-            "9132 9314 9054",
-            "7872 7576 8685"
-        ],
-        "emails": [],
-        "phone_numbers": [],
-        "addresses": [
-            "India"
+            "Groutone"
         ]
     }
 ]

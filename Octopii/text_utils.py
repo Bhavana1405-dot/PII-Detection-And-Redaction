@@ -25,6 +25,7 @@ SOFTWARE.
 """
 
 import pytesseract, re, json, nltk, itertools, spacy, difflib, math
+import pathlib
 
 def string_tokenizer(text):
     final_word_list = []
@@ -39,9 +40,14 @@ def string_tokenizer(text):
 def similarity(a, b): return difflib.SequenceMatcher(None, a, b).ratio() * 100
 
 def get_regexes():
-    with open('definitions.json', "r", encoding='utf-8') as json_file:
-        _rules = json.load(json_file)
-        return _rules
+    # Get the directory where this script is located
+    script_dir = pathlib.Path(__file__).parent.resolve()
+    # Build the full path to definitions.json
+    definitions_path = script_dir / 'definitions.json'
+    
+    with open(definitions_path, "r", encoding='utf-8') as json_file:
+        rules = json.load(json_file)
+    return rules
 
 def email_pii(text, rules):
     email_rules = rules["Email"]["regex"]
