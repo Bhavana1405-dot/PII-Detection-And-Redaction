@@ -73,6 +73,33 @@ Examples:
     
     # Process file
     try:
+
+        # --- Fix relative paths in report before processing ---
+        report_path = Path(args.report).resolve()
+        input_dir = Path(args.input).resolve()
+
+        # Load report and rewrite relative file paths as absolute
+        try:
+            with open(report_path, "r", encoding="utf-8") as f:
+                report_data = json.load(f)
+
+            if isinstance(report_data, list):
+                for entry in report_data:
+                    file_path = Path(entry.get("file_path", ""))
+                    if not file_path.is_absolute():
+                        entry["file_path"] = str((input_dir / file_path.name).resolve())
+
+                # Save fixed version to a temp file
+                fixed_report_path = report_path.parent / "output_fixed.json"
+                with open(fixed_report_path, "w", encoding="utf-8") as f:
+                    json.dump(report_data, f, indent=4)
+
+                args.report = str(fixed_report_path)
+                print(f"[INFO] Normalized file paths in report → {fixed_report_path}")
+        except Exception as e:
+            print(f"[WARN] Could not normalize report paths: {e}")
+
+
         result = pipeline.process_octopii_output(args.report, args.input)
 
         import json

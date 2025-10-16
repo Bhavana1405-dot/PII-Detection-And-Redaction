@@ -1,0 +1,43 @@
+{
+  "audit": {
+    "source_file": "octopii\\dummy-pii\\dummy-aadhaar.png",
+    "redacted_file": "outputs\\redacted\\dummy-aadhaar_redacted_20251016_191015.png",
+    "file_type": "binary",
+    "timestamp": "2025-10-16T19:10:15.919520",
+    "detection_report": {
+      "file_path": "octopii/dummy-pii/dummy-aadhaar.png",
+      "pii_class": "Aadhaar Card",
+      "score": 33,
+      "country_of_origin": "India",
+      "faces": 1,
+      "identifiers": [
+        "3977 8800 0234",
+        "200729490679"
+      ],
+      "emails": [
+        "help@uidal.gov.in",
+        "help@udei.govin"
+      ],
+      "phone_numbers": [
+        "800 100 1007",
+        "2007294906",
+        "800 180 1947"
+      ],
+      "addresses": [
+        "Chikiten",
+        "Keentity",
+        "Asians",
+        "Sina",
+        "Children",
+        "Groutone"
+      ]
+    },
+    "redaction_results": [],
+    "summary": {
+      "total_entities_detected": 0,
+      "entities_redacted": 0,
+      "redaction_failures": 0,
+      "confidence_threshold": 0.7
+    }
+  }
+}

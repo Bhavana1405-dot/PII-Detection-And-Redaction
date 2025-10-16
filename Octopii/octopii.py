@@ -1,28 +1,4 @@
-"""
-MIT License
 
-Copyright (c) Research @ RedHunt Labs Pvt Ltd
-Written by Owais Shaikh
-Email: owais.shaikh@redhuntlabs.com | me@0x4f.in
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-"""
 import nltk
 import nltk.tokenize.punkt as punkt
 import pathlib
@@ -100,8 +76,28 @@ def search_pii(file_path):
         image = cv2.imread(file_path)
         contains_faces = image_utils.scan_image_for_people(image)
 
-        original, intelligible = image_utils.scan_image_for_text(image)
-        text = original
+        # OCR text extraction with bounding boxes for images
+        # pytesseract returns a dict with word-level boxes
+        ocr_data = pytesseract.image_to_data(image, output_type=Output.DICT)
+
+        # Build bounding_box_data same shape as PDF branch so downstream code is unified
+        bounding_box_data = {
+            "text": ocr_data.get("text", []),
+            "left": ocr_data.get("left", []),
+            "top": ocr_data.get("top", []),
+            "width": ocr_data.get("width", []),
+            "height": ocr_data.get("height", [])
+        }
+
+        # Full text string (concatenate OCR tokens) for regex/PII detection
+        text = " ".join([t for t in bounding_box_data["text"] if t and t.strip()])
+
+        # Keep original/intelligible behavior if you still need it
+        try:
+            original, intelligible = image_utils.scan_image_for_text(image)
+        except Exception:
+            intelligible = text_utils.string_tokenizer(text)
+
 
     elif (file_utils.is_pdf(file_path)):
         pdf_pages = convert_from_path(file_path, 400)
@@ -154,7 +150,74 @@ def search_pii(file_path):
         widths = bounding_box_data['width']
         heights = bounding_box_data['height']
 
-        def find_bbox_for_pii(pii):
+        def find_bbox_for_pii(pii, max_tokens_window=6):
+            """
+            Improved matcher:
+            - normalizes PII and OCR tokens (remove non-alphanumerics except @ and . for emails)
+            - tries single-token matches AND multi-token concatenations (sliding window)
+            - returns merged bounding box covering all matched tokens
+            """
+            def norm_for_match(s, is_email=False):
+                if not s:
+                    return ""
+                s = s.strip().lower()
+                if is_email:
+                    # keep alnum + @ + . (remove spaces and parentheses, hyphens)
+                    return "".join([c for c in s if c.isalnum() or c in {"@", "."}])
+                # for numbers/ids/phones: keep only digits and letters
+                return "".join([c for c in s if c.isalnum()])
+
+            is_email = "@" in pii
+            target = norm_for_match(pii, is_email=is_email)
+            if not target:
+                return None
+
+            n = len(texts)
+            # Precompute normalized token list
+            norm_tokens = [norm_for_match(t, is_email=is_email) for t in texts]
+
+            # 1) Try single-token or substrings first
+            match_indices = []
+            for i, tok in enumerate(norm_tokens):
+                if not tok:
+                    continue
+                if tok in target or target in tok:
+                    match_indices = [i]
+                    break
+
+            # 2) If not found, try sliding windows concatenation (up to max_tokens_window)
+            if not match_indices:
+                for start in range(n):
+                    if not norm_tokens[start]:
+                        continue
+                    concat = norm_tokens[start]
+                    if target in concat:
+                        match_indices = [start]
+                        break
+                    for end in range(start+1, min(start + max_tokens_window, n)):
+                        if not norm_tokens[end]:
+                            continue
+                        concat += norm_tokens[end]
+                        if target in concat:
+                            match_indices = list(range(start, end+1))
+                            break
+                    if match_indices:
+                        break
+
+            # 3) If we have match indices, compute merged bbox
+            if match_indices:
+                x_min = min(lefts[i] for i in match_indices)
+                y_min = min(tops[i] for i in match_indices)
+                x_max = max(lefts[i] + widths[i] for i in match_indices)
+                y_max = max(tops[i] + heights[i] for i in match_indices)
+                return {
+                    'x': int(x_min),
+                    'y': int(y_min),
+                    'width': int(x_max - x_min),
+                    'height': int(y_max - y_min)
+                }
+            return None
+
             norm_pii = normalize_text(pii)
             match_indices = []
 
@@ -326,3 +389,5 @@ if __name__ in '__main__':
 
     sys.exit(0)
             
+
+
