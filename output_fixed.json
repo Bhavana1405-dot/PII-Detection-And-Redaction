@@ -143,5 +143,135 @@
                 "height": 10
             }
         }
+    },
+    {
+        "file_path": "C:\\Users\\Bhavana\\Desktop\\PII redaction\\Octopii\\dummy-pii\\hongkong.png\\debitcard.jpg",
+        "pii_class": "Banking",
+        "score": 9,
+        "country_of_origin": null,
+        "faces": 0,
+        "identifiers": [],
+        "emails": [],
+        "phone_numbers": [],
+        "addresses": [],
+        "pii_with_locations": {}
+    },
+    {
+        "file_path": "C:\\Users\\Bhavana\\Desktop\\PII redaction\\Octopii\\dummy-pii\\hongkong.png\\aadhaar.png",
+        "pii_class": "Aadhaar Card",
+        "score": 33,
+        "country_of_origin": "India",
+        "faces": 1,
+        "identifiers": [
+            "3977 8800 0234"
+        ],
+        "emails": [
+            "help@uidai.gov.in"
+        ],
+        "phone_numbers": [
+            "800 190 1047",
+            "800 180 1947"
+        ],
+        "addresses": [
+            "Write",
+            "Children"
+        ],
+        "pii_with_locations": {
+            "help@uidai.gov.in": {
+                "x": 130,
+                "y": 206,
+                "width": 8,
+                "height": 31
+            },
+            "800 190 1047": {
+                "x": 171,
+                "y": 219,
+                "width": 16,
+                "height": 8
+            },
+            "800 180 1947": {
+                "x": 200,
+                "y": 416,
+                "width": 17,
+                "height": 8
+            },
+            "3977 8800 0234": {
+                "x": 480,
+                "y": 478,
+                "width": 51,
+                "height": 17
+            },
+            "Write": {
+                "x": 130,
+                "y": 206,
+                "width": 8,
+                "height": 31
+            },
+            "Children": {
+                "x": 130,
+                "y": 206,
+                "width": 8,
+                "height": 31
+            }
+        }
+    },
+    {
+        "file_path": "C:\\Users\\Bhavana\\Desktop\\PII redaction\\Octopii\\dummy-pii\\hongkong.png\\aadhaar.png",
+        "pii_class": "Aadhaar Card",
+        "score": 33,
+        "country_of_origin": "India",
+        "faces": 1,
+        "identifiers": [
+            "3977 8800 0234"
+        ],
+        "emails": [
+            "help@uidai.gov.in"
+        ],
+        "phone_numbers": [
+            "800 180 1947",
+            "800 190 1047"
+        ],
+        "addresses": [
+            "Children",
+            "Write"
+        ],
+        "pii_with_locations": {
+            "help@uidai.gov.in": {
+                "x": 130,
+                "y": 206,
+                "width": 8,
+                "height": 31
+            },
+            "800 180 1947": {
+                "x": 200,
+                "y": 416,
+                "width": 17,
+                "height": 8
+            },
+            "800 190 1047": {
+                "x": 171,
+                "y": 219,
+                "width": 16,
+                "height": 8
+            },
+            "3977 8800 0234": {
+                "x": 480,
+                "y": 478,
+                "width": 51,
+                "height": 17
+            },
+            "Children": {
+                "x": 130,
+                "y": 206,
+                "width": 8,
+                "height": 31
+            },
+            "Write": {
+                "x": 130,
+                "y": 206,
+                "width": 8,
+                "height": 31
+            }
+        }
     }
 ]

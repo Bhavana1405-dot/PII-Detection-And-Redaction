@@ -1,0 +1,22 @@
+**Document type:** Identity Card 
+**Notice:** This document is wholly synthetic and intended for testing/demo purposes only. It does not represent a real person or a valid government ID.
+
+**Name:** Arin Testar
+**Aadhaar :** 9999 0000 1234  
+**Date of Birth:** 01 January 1990
+**Gender:** X (Non-binary — sample)
+**Address:**
+Flat No. 12B, Example Residency,
+Sector 00, Testpur, Imaginary District, Test State — 000000
+
+---
+
+## Additional information (placeholder)
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus vitae lorem sed augue volutpat pulvinar. Integer nec lorem a arcu volutpat tristique. Sed sit amet eros a nibh facilisis vehicula. Vivamus et sem nec mi posuere faucibus. Curabitur ut turpis sed sem iaculis commodo. Nulla facilisi. Suspendisse potenti.
+
+Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Sed non sapien non orci tristique convallis. Mauris vitae lorem in risus interdum tincidunt. Donec non arcu sed arcu luctus pretium.
+
+---
+
+**Footer:** This is a fictional sample document. Do not use for identity verification or any official purpose.

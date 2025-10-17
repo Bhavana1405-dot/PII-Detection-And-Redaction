@@ -8,6 +8,17 @@ from pytesseract import Output
 # Ensure common NLTK resources are available. The upstream punkt tokenizer
 # may look for 'punkt_tab' in some environments; attempt to download both
 # 'punkt' and 'punkt_tab' and fall back gracefully.
+
+import os, sys
+from pdf2image import convert_from_path
+
+# Detect Windows and set Poppler path
+if os.name == 'nt':  # Windows
+    POPPLER_PATH = r"C:\Users\Bhavana\Downloads\Release-25.07.0-0\poppler-25.07.0\Library\bin"
+else:
+    POPPLER_PATH = None  # Linux/Mac: assumes poppler is in PATH
+
+
 required_nltk = [
     "punkt",
     "punkt_tab",
@@ -70,17 +81,17 @@ Note: Only Unix-like filesystems, S3 and open directory URLs are supported.'''
     print(help)
 
 def search_pii(file_path):
-    
     contains_faces = 0
-    if (file_utils.is_image(file_path)):
+    bounding_box_data = None
+    text = ""
+    intelligible = []
+
+    # --- Image file ---
+    if file_utils.is_image(file_path):
         image = cv2.imread(file_path)
         contains_faces = image_utils.scan_image_for_people(image)
 
-        # OCR text extraction with bounding boxes for images
-        # pytesseract returns a dict with word-level boxes
         ocr_data = pytesseract.image_to_data(image, output_type=Output.DICT)
-
-        # Build bounding_box_data same shape as PDF branch so downstream code is unified
         bounding_box_data = {
             "text": ocr_data.get("text", []),
             "left": ocr_data.get("left", []),
@@ -89,186 +100,109 @@ def search_pii(file_path):
             "height": ocr_data.get("height", [])
         }
 
-        # Full text string (concatenate OCR tokens) for regex/PII detection
         text = " ".join([t for t in bounding_box_data["text"] if t and t.strip()])
-
-        # Keep original/intelligible behavior if you still need it
         try:
             original, intelligible = image_utils.scan_image_for_text(image)
         except Exception:
             intelligible = text_utils.string_tokenizer(text)
 
+    # --- PDF file ---
+    elif file_utils.is_pdf(file_path):
+        pdf_pages = convert_from_path(file_path, 400, poppler_path=POPPLER_PATH)
 
-    elif (file_utils.is_pdf(file_path)):
-        pdf_pages = convert_from_path(file_path, 400)
+
         bounding_box_data = {"text": [], "left": [], "top": [], "width": [], "height": []}
-        text = ""
         for page in pdf_pages:
             contains_faces = image_utils.scan_image_for_people(page)
             ocr_data = pytesseract.image_to_data(page, output_type=Output.DICT)
             text += " ".join(ocr_data['text'])
             for key in ["text", "left", "top", "width", "height"]:
                 bounding_box_data[key].extend(ocr_data[key])
+        intelligible = text_utils.string_tokenizer(text)
 
-
+    # --- Plain text file ---
     else:
         text = textract.process(file_path).decode()
         intelligible = text_utils.string_tokenizer(text)
 
+    # --- PII Detection ---
     addresses = text_utils.regional_pii(text)
     emails = text_utils.email_pii(text, rules)
     phone_numbers = text_utils.phone_pii(text, rules)
-
     keywords_scores = text_utils.keywords_classify_pii(rules, intelligible)
-    score = max(keywords_scores.values())
-    pii_class = list(keywords_scores.keys())[list(keywords_scores.values()).index(score)]
-
-    country_of_origin = rules[pii_class]["region"]
-
+    score = max(keywords_scores.values(), default=0)
+    pii_class = list(keywords_scores.keys())[list(keywords_scores.values()).index(score)] if score >= 5 else None
+    country_of_origin = rules[pii_class]["region"] if pii_class else None
     identifiers = text_utils.id_card_numbers_pii(text, rules)
-
-    if score < 5:
-        pii_class = None
-
-    if len(identifiers) != 0:
-        identifiers = identifiers[0]["result"]
+    identifiers = identifiers[0]["result"] if identifiers else []
 
     if temp_dir in file_path:
-        file_path = file_path.replace(temp_dir, "")
-        file_path = urllib.parse.unquote(file_path)
+        file_path = urllib.parse.unquote(file_path.replace(temp_dir, ""))
 
-    # --- Map detected PII to bounding boxes ---
+    # --- PII Location Mapping ---
     pii_locations = {}
 
     def normalize_text(s):
         return s.lower().replace(' ', '').replace('-', '').replace('(', '').replace(')', '')
 
-    if 'bounding_box_data' in locals():
+    if bounding_box_data:
+        # --- Image/PDF: use bounding boxes ---
         texts = bounding_box_data['text']
         lefts = bounding_box_data['left']
         tops = bounding_box_data['top']
         widths = bounding_box_data['width']
         heights = bounding_box_data['height']
 
-        def find_bbox_for_pii(pii, max_tokens_window=6):
-            """
-            Improved matcher:
-            - normalizes PII and OCR tokens (remove non-alphanumerics except @ and . for emails)
-            - tries single-token matches AND multi-token concatenations (sliding window)
-            - returns merged bounding box covering all matched tokens
-            """
-            def norm_for_match(s, is_email=False):
-                if not s:
-                    return ""
-                s = s.strip().lower()
-                if is_email:
-                    # keep alnum + @ + . (remove spaces and parentheses, hyphens)
-                    return "".join([c for c in s if c.isalnum() or c in {"@", "."}])
-                # for numbers/ids/phones: keep only digits and letters
-                return "".join([c for c in s if c.isalnum()])
-
-            is_email = "@" in pii
-            target = norm_for_match(pii, is_email=is_email)
-            if not target:
-                return None
-
+        def find_bbox_for_pii(pii):
+            norm_pii = normalize_text(pii)
             n = len(texts)
-            # Precompute normalized token list
-            norm_tokens = [norm_for_match(t, is_email=is_email) for t in texts]
-
-            # 1) Try single-token or substrings first
             match_indices = []
+            norm_tokens = [normalize_text(t) for t in texts]
+
+            # single-token match
             for i, tok in enumerate(norm_tokens):
-                if not tok:
-                    continue
-                if tok in target or target in tok:
+                if tok and (tok in norm_pii or norm_pii in tok):
                     match_indices = [i]
                     break
 
-            # 2) If not found, try sliding windows concatenation (up to max_tokens_window)
+            # sliding window (multi-token)
             if not match_indices:
+                max_window = 6
                 for start in range(n):
-                    if not norm_tokens[start]:
-                        continue
                     concat = norm_tokens[start]
-                    if target in concat:
+                    if norm_pii in concat:
                         match_indices = [start]
                         break
-                    for end in range(start+1, min(start + max_tokens_window, n)):
-                        if not norm_tokens[end]:
-                            continue
+                    for end in range(start+1, min(start+max_window, n)):
                         concat += norm_tokens[end]
-                        if target in concat:
+                        if norm_pii in concat:
                             match_indices = list(range(start, end+1))
                             break
                     if match_indices:
                         break
 
-            # 3) If we have match indices, compute merged bbox
             if match_indices:
                 x_min = min(lefts[i] for i in match_indices)
                 y_min = min(tops[i] for i in match_indices)
                 x_max = max(lefts[i] + widths[i] for i in match_indices)
                 y_max = max(tops[i] + heights[i] for i in match_indices)
-                return {
-                    'x': int(x_min),
-                    'y': int(y_min),
-                    'width': int(x_max - x_min),
-                    'height': int(y_max - y_min)
-                }
+                return {"x": int(x_min), "y": int(y_min), "width": int(x_max - x_min), "height": int(y_max - y_min)}
             return None
 
-            norm_pii = normalize_text(pii)
-            match_indices = []
-
-            for i, word in enumerate(texts):
-                if not word.strip():
-                    continue
-                norm_word = normalize_text(word)
-                if norm_word and (norm_word in norm_pii or norm_pii in norm_word):
-                    match_indices.append(i)
-
-            if match_indices:
-                x_min = min(lefts[i] for i in match_indices)
-                y_min = min(tops[i] for i in match_indices)
-                x_max = max(lefts[i] + widths[i] for i in match_indices)
-                y_max = max(tops[i] + heights[i] for i in match_indices)
-                return {
-                    'x': int(x_min),
-                    'y': int(y_min),
-                    'width': int(x_max - x_min),
-                    'height': int(y_max - y_min)
-                }
-            return None
-
-        # Emails
-        for email in emails:
-            bbox = find_bbox_for_pii(email)
+        for pii in emails + phone_numbers + identifiers + addresses:
+            bbox = find_bbox_for_pii(pii)
             if bbox:
-                pii_locations[email] = bbox
+                pii_locations[pii] = bbox
 
-        # Phone numbers
-        for phone in phone_numbers:
-            bbox = find_bbox_for_pii(phone)
-            if bbox:
-                pii_locations[phone] = bbox
-
-        # Identifiers (e.g., Aadhaar)
-        for identifier in identifiers:
-            bbox = find_bbox_for_pii(identifier)
-            if bbox:
-                pii_locations[identifier] = bbox
-
-        # Addresses
-        for address in addresses:
-            bbox = find_bbox_for_pii(address)
-            if bbox:
-                pii_locations[address] = bbox
     else:
-        pii_locations = {}
+        # --- Plain text: use character offsets ---
+        norm_text = normalize_text(text)
+        for pii in emails + phone_numbers + identifiers + addresses:
+            start = norm_text.find(normalize_text(pii))
+            if start != -1:
+                pii_locations[pii] = {"start": start, "end": start + len(pii)}
 
-
-    
+    # --- Result ---
     result = {
         "file_path": file_path,
         "pii_class": pii_class,
@@ -279,12 +213,11 @@ def search_pii(file_path):
         "emails": emails,
         "phone_numbers": phone_numbers,
         "addresses": addresses,
-        "pii_with_locations": pii_locations  # <--- NEW
+        "pii_with_locations": pii_locations
     }
 
-
     return result
-    
+
 
 if __name__ in '__main__':
     if len(sys.argv) == 1:

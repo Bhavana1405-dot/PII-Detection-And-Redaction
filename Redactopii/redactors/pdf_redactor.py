@@ -18,3 +18,4 @@ class PDFRedactor(BaseRedactor):
     
     def validate_input(self, pdf_path: str) -> bool:
         return pdf_path.endswith('.pdf')
+ 
