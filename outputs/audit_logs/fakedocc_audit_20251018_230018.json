@@ -1,0 +1,73 @@
+{
+  "audit": {
+    "source_file": "C:\\Users\\Bhavana\\Desktop\\PII redaction\\Octopii\\dummy-pii\\fakedocc.pdf",
+    "redacted_file": "outputs\\redacted\\fakedocc_redacted_20251018_230018.pdf",
+    "file_type": "pdf",
+    "timestamp": "2025-10-18T23:00:18.726485",
+    "detection_report": {
+      "file_path": "octopii/dummy-pii/fakedocc.pdf",
+      "pii_class": null,
+      "score": 3,
+      "country_of_origin": null,
+      "faces": 0,
+      "identifiers": [
+        "9999 0000 1234"
+      ],
+      "emails": [],
+      "phone_numbers": [],
+      "addresses": [
+        "Birth"
+      ],
+      "pii_with_locations": {
+        "9999 0000 1234": {
+          "x": 776,
+          "y": 999,
+          "width": 119,
+          "height": 40
+        },
+        "Birth": {
+          "x": 661,
+          "y": 1121,
+          "width": 188,
+          "height": 43
+        }
+      }
+    },
+    "redaction_results": [
+      {
+        "entity": {
+          "value": "9999 0000 1234",
+          "page": 0,
+          "location": {
+            "x": 776,
+            "y": 999,
+            "width": 119,
+            "height": 40
+          }
+        },
+        "method": "blur",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "Birth",
+          "page": 0,
+          "location": {
+            "x": 661,
+            "y": 1121,
+            "width": 188,
+            "height": 43
+          }
+        },
+        "method": "blur",
+        "success": true
+      }
+    ],
+    "summary": {
+      "total_entities_detected": 2,
+      "entities_redacted": 2,
+      "redaction_failures": 0,
+      "confidence_threshold": 0.7
+    }
+  }
+}

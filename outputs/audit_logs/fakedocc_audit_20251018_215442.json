@@ -1,0 +1,44 @@
+{
+  "audit": {
+    "source_file": "C:\\Users\\Bhavana\\Desktop\\PII redaction\\Octopii\\dummy-pii\\fakedocc.pdf",
+    "redacted_file": "outputs\\redacted\\fakedocc_redacted_20251018_215442.pdf",
+    "file_type": "text",
+    "timestamp": "2025-10-18T21:54:42.726368",
+    "detection_report": {
+      "file_path": "octopii/dummy-pii/fakedocc.pdf",
+      "pii_class": null,
+      "score": 3,
+      "country_of_origin": null,
+      "faces": 0,
+      "identifiers": [
+        "9999 0000 1234"
+      ],
+      "emails": [],
+      "phone_numbers": [],
+      "addresses": [
+        "Birth"
+      ],
+      "pii_with_locations": {
+        "9999 0000 1234": {
+          "x": 776,
+          "y": 999,
+          "width": 119,
+          "height": 40
+        },
+        "Birth": {
+          "x": 661,
+          "y": 1121,
+          "width": 188,
+          "height": 43
+        }
+      }
+    },
+    "redaction_results": [],
+    "summary": {
+      "total_entities_detected": 0,
+      "entities_redacted": 0,
+      "redaction_failures": 0,
+      "confidence_threshold": 0.7
+    }
+  }
+}

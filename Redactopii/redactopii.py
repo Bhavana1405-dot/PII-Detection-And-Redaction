@@ -1,7 +1,6 @@
 # =============================================================================
 # FILE: Redactopii/redactopii.py
-# DESCRIPTION: Redactopii - PII Redaction Engine CLI with safe redaction
-# USAGE: python redactopii.py --input file.png --report output.json
+# DESCRIPTION: Fixed CLI that handles batch reports correctly
 # =============================================================================
 
 import argparse
@@ -10,13 +9,34 @@ import sys
 from pathlib import Path
 from PIL import Image
 
-# Add current directory to path
 sys.path.insert(0, str(Path(__file__).parent))
 
 from core.redaction_engine import RedactionEngine
 from core.config import RedactionConfig
 from integrations.pipeline_integration import RedactionPipeline
-from integrations.pipeline_integration import normalize_report_paths
+# from core.redaction_engine import process_octopii_report as engine
+
+
+def find_matching_report(reports, input_file):
+    """Find the report entry that matches the input file"""
+    input_path = Path(input_file).resolve()
+    
+    for report in reports:
+        report_path = Path(report.get("file_path", ""))
+        
+        # Try exact match
+        if report_path.resolve() == input_path:
+            return report
+        
+        # Try filename match
+        if report_path.name == input_path.name:
+            return report
+        
+        # Try case-insensitive match
+        if report_path.name.lower() == input_path.name.lower():
+            return report
+    
+    return None
 
 
 def main():
@@ -36,7 +56,7 @@ Examples:
         """
     )
 
-    parser.add_argument('--input', required=True, help='Input file or directory path')
+    parser.add_argument('--input', required=True, help='Input file path')
     parser.add_argument('--report', required=True, help='Octopii detection report (output.json)')
     parser.add_argument('--output-dir', default='./outputs', help='Output base directory')
     parser.add_argument('--config', help='Configuration file path')
@@ -61,7 +81,7 @@ Examples:
     print("=" * 70)
     print("PII REDACTION ENGINE")
     print("=" * 70)
-    print(f"Input path:       {args.input}")
+    print(f"Input file:       {args.input}")
     print(f"Detection report: {args.report}")
     print(f"Output directory: {args.output_dir}")
     if args.method:
@@ -69,102 +89,123 @@ Examples:
     print()
 
     try:
-        # Resolve paths
-        input_path = Path(args.input).resolve()
-        report_path = Path(args.report).resolve()
-
-        # Normalize report paths
-        try:
-            with open(report_path, "r", encoding="utf-8") as f:
-                report_data = json.load(f)
-
-            if isinstance(report_data, list):
-                for entry in report_data:
-                    file_path = Path(entry.get("file_path", ""))
-                    if not file_path.is_absolute():
-                        entry["file_path"] = str((input_path / file_path.name).resolve())
-
-                # Save fixed version
-                fixed_report_path = report_path.parent / "output_fixed.json"
-                with open(fixed_report_path, "w", encoding="utf-8") as f:
-                    json.dump(report_data, f, indent=4)
-
-                args.report = str(fixed_report_path)
-                print(f"[INFO] Normalized file paths in report → {fixed_report_path}")
-        except Exception as e:
-            print(f"[WARN] Could not normalize report paths: {e}")
-
-        # Determine files to process
-        if input_path.is_file():
-            files_to_process = [input_path]
-        elif input_path.is_dir():
-            files_to_process = [f for f in input_path.iterdir() if f.is_file()]
+        # Load the report
+        with open(args.report, 'r', encoding='utf-8') as f:
+            report_data = json.load(f)
+        
+        # Handle batch reports (array of reports)
+        if isinstance(report_data, list):
+            print(f"[INFO] Loaded batch report with {len(report_data)} entries")
+            
+            # Find matching report for this file
+            matching_report = find_matching_report(report_data, args.input)
+            
+            if matching_report is None:
+                print(f"✗ No matching report found for: {args.input}")
+                print(f"\nAvailable files in report:")
+                for r in report_data[:5]:  # Show first 5
+                    print(f"  - {r.get('file_path', 'unknown')}")
+                if len(report_data) > 5:
+                    print(f"  ... and {len(report_data) - 5} more")
+                return 1
+            
+            report = matching_report
+            print(f"[INFO] Found matching report for: {report['file_path']}")
         else:
-            print(f"✗ Invalid input path: {input_path}")
+            report = report_data
+        
+        # Validate input file exists
+        input_path = Path(args.input).resolve()
+        if not input_path.exists():
+            print(f"✗ Input file not found: {input_path}")
             return 1
-
-        for file in files_to_process:
-            print(f"\n[INFO] Processing: {file}")
-
-            # Validate the image
+        
+        # Check if it's an image and validate
+        if input_path.suffix.lower() in ['.png', '.jpg', '.jpeg', '.bmp']:
             try:
-                img = Image.open(file)
-                img.verify()  # checks if the file is corrupted
+                img = Image.open(input_path)
+                img.verify()
+                print(f"[INFO] Image validated: {img.format} {img.size}")
             except Exception as e:
-                print(f"✗ Cannot open image: {file} -> {e}")
-                continue
-
-            # Normalize report paths for this file
-            args.report = normalize_report_paths(args.report, file)
-
-            # Safe redaction
-            try:
-                result = pipeline.process_octopii_output(args.report, file)
-
-                # Check PII coordinates within bounds
-                if Path(file).suffix.lower() in ['.png', '.jpg', '.jpeg']:
-                    img = Image.open(file)
-                    width, height = img.size
-                    for pii_entry in result.get("redaction", {}).get("pii_entries", []):
-                        for loc in pii_entry.get("locations", []):
-                            if loc["x"] + loc["width"] > width or loc["y"] + loc["height"] > height:
-                                print(f"[WARN] Adjusting PII coordinates outside image bounds for {file}")
-                                loc["x"] = min(loc["x"], width - 1)
-                                loc["y"] = min(loc["y"], height - 1)
-
-                # Display results
-                if result.get("redaction", {}).get("status") == "success":
-                    output_path = result["redaction"]["output_path"]
-                    redaction_count = result["redaction"].get("entities_redacted", 0)
-                    print(f"✓ Redacted file saved: {output_path}")
-                    print(f"✓ Redacted {redaction_count} PII entities")
-
-                    print(f"\nOutput locations:")
-                    print(f"  - Redacted file: {output_path}")
-                    if Path(output_path).suffix.lower() in ['.png', '.jpg', '.jpeg']:
-                        comparison_dir = Path(args.output_dir) / "comparisons"
-                        print(f"  - Comparison:    {comparison_dir}/")
-                    audit_dir = Path(args.output_dir) / "audit_logs"
-                    report_dir = Path(args.output_dir) / "reports"
-                    print(f"  - Audit log:     {audit_dir}/")
-                    print(f"  - Full report:   {report_dir}/")
-
-                elif result.get("redaction", {}).get("status") == "no_pii":
-                    print("ℹ No PII entities detected - nothing to redact")
-                else:
-                    print(f"✗ Redaction failed: {result.get('redaction', {}).get('error', 'Unknown error')}")
-
-            except Exception as e:
-                import traceback
-                print(f"[ERROR] Pipeline failed for {file}: {e}")
-                traceback.print_exc()
-                continue
-
-        print("=" * 70)
+                print(f"✗ Cannot open image: {e}")
+                return 1
+        
+        # Check for PII locations
+        pii_locations = report.get("pii_with_locations", {})
+        if not pii_locations:
+            print("[WARN] No PII locations found in report")
+            print("       This might mean:")
+            print("       1. No PII was detected in the file")
+            print("       2. Octopii couldn't determine precise locations")
+            print("       3. The file format doesn't support location mapping")
+        else:
+            print(f"[INFO] Found {len(pii_locations)} PII location(s) to redact:")
+            for pii, loc in pii_locations.items():
+                print(f"       - {pii[:50]}... at {loc}")
+        
+        # Process the file
+        print(f"\n[INFO] Processing redaction...")
+        result = engine.process_octopii_report(
+            report=report,
+            source_file=str(input_path)
+        )
+        
+        # Check if it's a batch result
+        if result.get("status") == "batch_complete":
+            print(f"✗ Unexpected batch result. Use single file mode.")
+            return 1
+        
+        # Display results
+        redaction_status = result.get("redaction", {}).get("status")
+        
+        if redaction_status == "success":
+            output_path = result["redaction"]["output_path"]
+            redaction_count = result["redaction"].get("entities_redacted", 0)
+            
+            print(f"\n{'='*70}")
+            print(f"✓ SUCCESS")
+            print(f"{'='*70}")
+            print(f"Redacted file:    {output_path}")
+            print(f"Entities redacted: {redaction_count}")
+            
+            # Show all output locations
+            print(f"\nGenerated files:")
+            print(f"  📄 Redacted:    {output_path}")
+            
+            report_path = result.get("report")
+            if report_path:
+                print(f"  📊 Report:      {report_path}")
+            
+            audit_dir = Path(args.output_dir) / "audit_logs"
+            print(f"  📝 Audit logs:  {audit_dir}/")
+            
+            if input_path.suffix.lower() in ['.png', '.jpg', '.jpeg']:
+                comparison_dir = Path(args.output_dir) / "comparisons"
+                print(f"  🔍 Comparisons: {comparison_dir}/")
+        
+        elif redaction_status == "no_pii":
+            print(f"\nℹ️  No PII entities detected - nothing to redact")
+            print(f"   Original file copied to: {result['redaction']['output_path']}")
+        
+        elif redaction_status == "error":
+            error_msg = result.get("redaction", {}).get("error", "Unknown error")
+            print(f"\n✗ REDACTION FAILED")
+            print(f"   Error: {error_msg}")
+            return 1
+        
+        else:
+            print(f"\n✗ Unknown status: {redaction_status}")
+            print(f"   Full result: {json.dumps(result, indent=2)}")
+            return 1
+        
+        print(f"\n{'='*70}")
         return 0
 
     except FileNotFoundError as e:
         print(f"\n✗ Error: File not found - {e}")
+        return 1
+    except json.JSONDecodeError as e:
+        print(f"\n✗ Error: Invalid JSON in report file - {e}")
         return 1
     except Exception as e:
         print(f"\n✗ Error: {e}")

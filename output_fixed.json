@@ -273,5 +273,128 @@
                 "height": 31
             }
         }
+    },
+    {
+        "file_path": "C:\\Users\\Bhavana\\Desktop\\PII redaction\\Octopii\\dummy-pii\\hongkong.png\\fakedoc.txt",
+        "pii_class": null,
+        "score": 3,
+        "country_of_origin": "India",
+        "faces": 0,
+        "identifiers": [
+            "9999 0000 1234"
+        ],
+        "emails": [],
+        "phone_numbers": [],
+        "addresses": [
+            "Birth"
+        ],
+        "pii_with_locations": {}
+    },
+    {
+        "file_path": "C:\\Users\\Bhavana\\Desktop\\PII redaction\\Octopii\\dummy-pii\\hongkong.png\\fakedoc.txt",
+        "pii_class": null,
+        "score": 3,
+        "country_of_origin": "Canada",
+        "faces": 0,
+        "identifiers": [
+            "9999 0000 1234"
+        ],
+        "emails": [],
+        "phone_numbers": [],
+        "addresses": [
+            "Birth"
+        ],
+        "pii_with_locations": {}
+    },
+    {
+        "file_path": "C:\\Users\\Bhavana\\Desktop\\PII redaction\\Octopii\\dummy-pii\\hongkong.png\\fakedoc.txt",
+        "pii_class": null,
+        "score": 3,
+        "country_of_origin": "Canada",
+        "faces": 0,
+        "identifiers": [
+            "9999 0000 1234"
+        ],
+        "emails": [],
+        "phone_numbers": [],
+        "addresses": [
+            "Birth"
+        ],
+        "pii_with_locations": {}
+    },
+    {
+        "file_path": "C:\\Users\\Bhavana\\Desktop\\PII redaction\\Octopii\\dummy-pii\\hongkong.png\\fakedoc.txt",
+        "pii_class": null,
+        "score": 3,
+        "country_of_origin": null,
+        "faces": 0,
+        "identifiers": [
+            "9999 0000 1234"
+        ],
+        "emails": [],
+        "phone_numbers": [],
+        "addresses": [
+            "Birth"
+        ],
+        "pii_with_locations": {
+            "9999 0000 1234": {
+                "start": 193,
+                "end": 207
+            },
+            "Birth": {
+                "start": 214,
+                "end": 219
+            }
+        }
+    },
+    {
+        "file_path": "C:\\Users\\Bhavana\\Desktop\\PII redaction\\Octopii\\dummy-pii\\hongkong.png\\fakedocc.pdf",
+        "pii_class": null,
+        "score": 3,
+        "country_of_origin": null,
+        "faces": 0,
+        "identifiers": [
+            "9999 0000 1234"
+        ],
+        "emails": [],
+        "phone_numbers": [],
+        "addresses": [
+            "Birth"
+        ],
+        "pii_with_locations": {
+            "9999 0000 1234": {
+                "x": 776,
+                "y": 999,
+                "width": 119,
+                "height": 40
+            },
+            "Birth": {
+                "x": 661,
+                "y": 1121,
+                "width": 188,
+                "height": 43
+            }
+        }
+    },
+    {
+        "file_path": "C:\\Users\\Bhavana\\Desktop\\PII redaction\\Octopii\\dummy-pii\\hongkong.png\\hongkong.png",
+        "pii_class": "Permanent Identity Card",
+        "score": 20,
+        "country_of_origin": "Hong Kong",
+        "faces": 2,
+        "identifiers": [
+            "2867 3057 2532"
+        ],
+        "emails": [],
+        "phone_numbers": [],
+        "addresses": [],
+        "pii_with_locations": {
+            "2867 3057 2532": {
+                "x": 157,
+                "y": 94,
+                "width": 33,
+                "height": 10
+            }
+        }
     }
 ]

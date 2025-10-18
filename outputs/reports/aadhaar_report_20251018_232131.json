@@ -1,0 +1,151 @@
+{
+  "source_file": "C:\\Users\\Bhavana\\Desktop\\PII redaction\\Octopii\\dummy-pii\\aadhaar.png",
+  "redacted_file": "outputs\\redacted\\aadhaar_redacted_20251018_232131.png",
+  "file_type": "png",
+  "timestamp": "2025-10-18T23:21:31.423706",
+  "detection_report": {
+    "file_path": "octopii/dummy-pii/aadhaar.png",
+    "pii_class": "Aadhaar Card",
+    "score": 33,
+    "country_of_origin": "India",
+    "faces": 1,
+    "identifiers": [
+      "3977 8800 0234"
+    ],
+    "emails": [
+      "help@uidai.gov.in"
+    ],
+    "phone_numbers": [
+      "800 190 1047",
+      "800 180 1947"
+    ],
+    "addresses": [
+      "Write",
+      "Children"
+    ],
+    "pii_with_locations": {
+      "help@uidai.gov.in": {
+        "x": 130,
+        "y": 206,
+        "width": 8,
+        "height": 31
+      },
+      "800 190 1047": {
+        "x": 171,
+        "y": 219,
+        "width": 16,
+        "height": 8
+      },
+      "800 180 1947": {
+        "x": 200,
+        "y": 416,
+        "width": 17,
+        "height": 8
+      },
+      "3977 8800 0234": {
+        "x": 480,
+        "y": 478,
+        "width": 51,
+        "height": 17
+      },
+      "Write": {
+        "x": 130,
+        "y": 206,
+        "width": 8,
+        "height": 31
+      },
+      "Children": {
+        "x": 130,
+        "y": 206,
+        "width": 8,
+        "height": 31
+      }
+    }
+  },
+  "redaction_results": [
+    {
+      "entity": {
+        "value": "help@uidai.gov.in",
+        "location": {
+          "x": 130,
+          "y": 206,
+          "width": 8,
+          "height": 31
+        }
+      },
+      "method": "blackbox",
+      "success": true
+    },
+    {
+      "entity": {
+        "value": "800 190 1047",
+        "location": {
+          "x": 171,
+          "y": 219,
+          "width": 16,
+          "height": 8
+        }
+      },
+      "method": "blackbox",
+      "success": true
+    },
+    {
+      "entity": {
+        "value": "800 180 1947",
+        "location": {
+          "x": 200,
+          "y": 416,
+          "width": 17,
+          "height": 8
+        }
+      },
+      "method": "blackbox",
+      "success": true
+    },
+    {
+      "entity": {
+        "value": "3977 8800 0234",
+        "location": {
+          "x": 480,
+          "y": 478,
+          "width": 51,
+          "height": 17
+        }
+      },
+      "method": "blackbox",
+      "success": true
+    },
+    {
+      "entity": {
+        "value": "Write",
+        "location": {
+          "x": 130,
+          "y": 206,
+          "width": 8,
+          "height": 31
+        }
+      },
+      "method": "blackbox",
+      "success": true
+    },
+    {
+      "entity": {
+        "value": "Children",
+        "location": {
+          "x": 130,
+          "y": 206,
+          "width": 8,
+          "height": 31
+        }
+      },
+      "method": "blackbox",
+      "success": true
+    }
+  ],
+  "summary": {
+    "total_entities_detected": 6,
+    "entities_redacted": 6,
+    "redaction_failures": 0,
+    "confidence_threshold": 0.7
+  }
+}

@@ -346,5 +346,173 @@
                 "end": 219
             }
         }
+    },
+    {
+        "file_path": "octopii/dummy-pii/fakedocc.pdf",
+        "pii_class": null,
+        "score": 3,
+        "country_of_origin": null,
+        "faces": 0,
+        "identifiers": [
+            "9999 0000 1234"
+        ],
+        "emails": [],
+        "phone_numbers": [],
+        "addresses": [
+            "Birth"
+        ],
+        "pii_with_locations": {
+            "9999 0000 1234": {
+                "x": 776,
+                "y": 999,
+                "width": 119,
+                "height": 40
+            },
+            "Birth": {
+                "x": 661,
+                "y": 1121,
+                "width": 188,
+                "height": 43
+            }
+        }
+    },
+    {
+        "file_path": "octopii/dummy-pii/hongkong.png",
+        "pii_class": "Permanent Identity Card",
+        "score": 20,
+        "country_of_origin": "Hong Kong",
+        "faces": 2,
+        "identifiers": [
+            "2867 3057 2532"
+        ],
+        "emails": [],
+        "phone_numbers": [],
+        "addresses": [],
+        "pii_with_locations": {
+            "2867 3057 2532": {
+                "x": 157,
+                "y": 94,
+                "width": 33,
+                "height": 10
+            }
+        }
+    },
+    {
+        "file_path": "octopii/dummy-pii/aadhaar.png",
+        "pii_class": "Aadhaar Card",
+        "score": 33,
+        "country_of_origin": "India",
+        "faces": 1,
+        "identifiers": [
+            "3977 8800 0234"
+        ],
+        "emails": [
+            "help@uidai.gov.in"
+        ],
+        "phone_numbers": [
+            "800 190 1047",
+            "800 180 1947"
+        ],
+        "addresses": [
+            "Write",
+            "Children"
+        ],
+        "pii_with_locations": {
+            "help@uidai.gov.in": {
+                "x": 127,
+                "y": 250,
+                "width": 164,
+                "height": 13
+            },
+            "800 190 1047": {
+                "x": 171,
+                "y": 219,
+                "width": 16,
+                "height": 8
+            },
+            "800 180 1947": {
+                "x": 200,
+                "y": 416,
+                "width": 17,
+                "height": 8
+            },
+            "3977 8800 0234": {
+                "x": 480,
+                "y": 478,
+                "width": 51,
+                "height": 17
+            },
+            "Write": {
+                "x": 80,
+                "y": 432,
+                "width": 37,
+                "height": 9
+            },
+            "Children": {
+                "x": 105,
+                "y": 486,
+                "width": 39,
+                "height": 9
+            }
+        }
+    },
+    {
+        "file_path": "octopii/dummy-pii/aadhaar.png",
+        "pii_class": "Aadhaar Card",
+        "score": 33,
+        "country_of_origin": "India",
+        "faces": 1,
+        "identifiers": [
+            "3977 8800 0234"
+        ],
+        "emails": [
+            "help@uidai.gov.in"
+        ],
+        "phone_numbers": [
+            "800 180 1947",
+            "800 190 1047"
+        ],
+        "addresses": [
+            "Write",
+            "Children"
+        ],
+        "pii_with_locations": {
+            "help@uidai.gov.in": {
+                "x": 127,
+                "y": 250,
+                "width": 164,
+                "height": 13
+            },
+            "800 180 1947": {
+                "x": 200,
+                "y": 416,
+                "width": 17,
+                "height": 8
+            },
+            "800 190 1047": {
+                "x": 171,
+                "y": 219,
+                "width": 16,
+                "height": 8
+            },
+            "3977 8800 0234": {
+                "x": 480,
+                "y": 478,
+                "width": 51,
+                "height": 17
+            },
+            "Write": {
+                "x": 80,
+                "y": 432,
+                "width": 37,
+                "height": 9
+            },
+            "Children": {
+                "x": 105,
+                "y": 486,
+                "width": 39,
+                "height": 9
+            }
+        }
     }
 ]

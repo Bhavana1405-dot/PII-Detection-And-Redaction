@@ -118,9 +118,22 @@ def list_local_files(local_path):
     return files_list
 
 def is_pdf(file_path):
+    """
+    Check if a file is a PDF by examining its header and extension.
+    More reliable than trying to convert it.
+    """
+    import os
+    
+    # Check file extension first
+    _, ext = os.path.splitext(file_path)
+    if ext.lower() != '.pdf':
+        return False
+    
+    # Check PDF magic bytes (PDF files start with %PDF-)
     try:
-        convert_from_path(file_path, 100)
-        return True
+        with open(file_path, 'rb') as f:
+            header = f.read(5)
+            return header == b'%PDF-'
     except:
         return False
 
