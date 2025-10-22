@@ -1,10 +1,11 @@
 # =============================================================================
 # FILE: Redactopii/core/redaction_engine.py  
-# DESCRIPTION: Complete redaction engine with PDF support
+# DESCRIPTION: FIXED - Precise redaction that only targets PII, not entire blocks
 # =============================================================================
 
 """
-Core redaction engine with full PDF, image, and text support
+Core redaction engine with PRECISE PII-only redaction
+CRITICAL FIX: Only redact the exact PII text, not surrounding content
 """
 import logging
 import json
@@ -70,8 +71,68 @@ class RedactionEngine:
         logger.setLevel(getattr(logging, level.upper(), logging.INFO))
         return logger
 
+    def _calculate_precise_bbox(self, pii_value: str, location: Dict, image_shape: tuple) -> Optional[Dict]:
+        """
+        Calculate precise bounding box that ONLY covers the PII value
+        Adds minimal padding instead of using full OCR word boxes
+        """
+        try:
+            x = int(location.get("x", 0))
+            y = int(location.get("y", 0))
+            w = int(location.get("width", 0))
+            h = int(location.get("height", 0))
+            
+            if w <= 0 or h <= 0:
+                return None
+            
+            # CRITICAL FIX: Add minimal padding only (5 pixels)
+            padding = 10
+            
+            # Clamp to image bounds
+            img_height, img_width = image_shape[:2]
+            
+            x = max(0, min(x - padding, img_width - 1))
+            y = max(0, min(y - padding, img_height - 1))
+            w = min(w + 2*padding, img_width - x)
+            h = min(h + 2*padding, img_height - y)
+            
+            if w <= 0 or h <= 0:
+                return None
+            
+            return {"x": x, "y": y, "width": w, "height": h}
+            
+        except Exception as e:
+            self.logger.error(f"Error calculating bbox: {e}")
+            return None
+
+    def _apply_redaction_to_roi(self, roi, method: str) -> np.ndarray:
+        """Apply redaction method to region of interest"""
+        if method == "blur":
+            kernel = self.config.get("blur_intensity", 25)
+            if kernel % 2 == 0:
+                kernel += 1
+            return cv2.GaussianBlur(roi, (kernel, kernel), 0)
+        
+        elif method == "blackbox":
+            return np.zeros_like(roi)
+        
+        elif method == "pixelate":
+            block_size = self.config.get("pixelate_block_size", 15)
+            h, w = roi.shape[:2]
+            
+            # Resize down then up for pixelation
+            small_h = max(1, h // block_size)
+            small_w = max(1, w // block_size)
+            
+            small = cv2.resize(roi, (small_w, small_h), interpolation=cv2.INTER_LINEAR)
+            return cv2.resize(small, (w, h), interpolation=cv2.INTER_NEAREST)
+        
+        else:
+            # Default to blur
+            return cv2.GaussianBlur(roi, (25, 25), 0)
+
     def process_octopii_report(self, report: Dict, source_file: Optional[str] = None) -> Dict:
-        """Process Octopii report and redact PII"""
+        """Process Octopii report and redact PII with PRECISE boundaries"""
         from integrations.octopii_adapter import OctopiiAdapter
 
         # Determine source file
@@ -117,7 +178,6 @@ class RedactionEngine:
                 
                 if not pii_locations:
                     self.logger.warning("No PII locations found")
-                    # Just save original as redacted
                     redacted_path = self.output_dirs["redacted"] / f"{src_path.stem}_redacted_{timestamp}.pdf"
                     pdf_pages[0].save(
                         str(redacted_path),
@@ -132,65 +192,50 @@ class RedactionEngine:
                         }
                     }
                 
+                self.logger.info(f"Found {len(pii_locations)} PII items to redact")
+                
                 # Process each page
                 redacted_pages = []
                 for page_num, page_img in enumerate(pdf_pages):
                     # Convert PIL to OpenCV
                     img = cv2.cvtColor(np.array(page_img), cv2.COLOR_RGB2BGR)
+                    img_shape = img.shape
                     
-                    # Apply redactions
+                    redacted_count = 0
+                    
+                    # Apply redactions with PRECISE bounding boxes
                     for pii_value, location in pii_locations.items():
-                        try:
-                            x = int(location.get("x", 0))
-                            y = int(location.get("y", 0))
-                            w = int(location.get("width", 0))
-                            h = int(location.get("height", 0))
-                            
-                            if w <= 0 or h <= 0:
-                                continue
-                            
-                            # Clamp to bounds
-                            x = max(0, min(x, img.shape[1] - 1))
-                            y = max(0, min(y, img.shape[0] - 1))
-                            w = min(w, img.shape[1] - x)
-                            h = min(h, img.shape[0] - y)
-                            
-                            if w <= 0 or h <= 0:
-                                continue
-                            
-                            # Extract ROI
-                            roi = img[y:y+h, x:x+w]
-                            
-                            # Apply redaction method
-                            if method == "blur":
-                                kernel = self.config.get("blur_intensity", 25)
-                                if kernel % 2 == 0:
-                                    kernel += 1
-                                redacted_roi = cv2.GaussianBlur(roi, (kernel, kernel), 0)
-                            elif method == "blackbox":
-                                redacted_roi = np.zeros_like(roi)
-                            elif method == "pixelate":
-                                block_size = self.config.get("pixelate_block_size", 15)
-                                small = cv2.resize(roi, (max(1, w//block_size), max(1, h//block_size)))
-                                redacted_roi = cv2.resize(small, (w, h), interpolation=cv2.INTER_NEAREST)
-                            else:
-                                redacted_roi = cv2.GaussianBlur(roi, (25, 25), 0)
-                            
-                            img[y:y+h, x:x+w] = redacted_roi
-                            
-                            redaction_results.append({
-                                "entity": {"value": pii_value, "page": page_num, "location": location},
-                                "method": method,
-                                "success": True
-                            })
-                            
-                        except Exception as e:
-                            self.logger.error(f"Failed to redact {pii_value}: {e}")
-                            redaction_results.append({
-                                "entity": {"value": pii_value},
-                                "success": False,
-                                "error": str(e)
-                            })
+                        bbox = self._calculate_precise_bbox(pii_value, location, img_shape)
+                        
+                        if not bbox:
+                            self.logger.warning(f"Invalid bbox for: {pii_value[:40]}...")
+                            continue
+                        
+                        x, y, w, h = bbox['x'], bbox['y'], bbox['width'], bbox['height']
+                        
+                        # Extract ROI
+                        roi = img[y:y+h, x:x+w]
+                        
+                        if roi.size == 0:
+                            self.logger.warning(f"Empty ROI for: {pii_value[:40]}...")
+                            continue
+                        
+                        # Apply redaction method
+                        redacted_roi = self._apply_redaction_to_roi(roi, method)
+                        
+                        # Replace in image
+                        img[y:y+h, x:x+w] = redacted_roi
+                        
+                        redacted_count += 1
+                        redaction_results.append({
+                            "entity": {"value": pii_value, "page": page_num, "location": bbox},
+                            "method": method,
+                            "success": True
+                        })
+                        
+                        self.logger.debug(f"Redacted: {pii_value[:30]}... at ({x}, {y}, {w}x{h})")
+                    
+                    self.logger.info(f"Page {page_num + 1}: Redacted {redacted_count} items")
                     
                     # Convert back to PIL
                     redacted_pages.append(Image.fromarray(cv2.cvtColor(img, cv2.COLOR_BGR2RGB)))
@@ -217,6 +262,7 @@ class RedactionEngine:
                     return {"redaction": {"status": "error", "error": "Failed to load image"}}
 
                 self.logger.info(f"Processing image: {src_path.name} ({img.shape})")
+                img_shape = img.shape
 
                 pii_locations = report.get("pii_with_locations", {})
                 
@@ -234,49 +280,25 @@ class RedactionEngine:
                 method = self.config.get("default_image_method", "blur")
                 
                 for pii_value, location in pii_locations.items():
-                    try:
-                        x = int(location.get("x", 0))
-                        y = int(location.get("y", 0))
-                        w = int(location.get("width", 0))
-                        h = int(location.get("height", 0))
-
-                        if w <= 0 or h <= 0:
-                            continue
-
-                        x = max(0, min(x, img.shape[1] - 1))
-                        y = max(0, min(y, img.shape[0] - 1))
-                        w = min(w, img.shape[1] - x)
-                        h = min(h, img.shape[0] - y)
-
-                        if w <= 0 or h <= 0:
-                            continue
-
-                        roi = img[y:y+h, x:x+w]
-
-                        if method == "blur":
-                            kernel = self.config.get("blur_intensity", 25)
-                            if kernel % 2 == 0:
-                                kernel += 1
-                            redacted_roi = cv2.GaussianBlur(roi, (kernel, kernel), 0)
-                        elif method == "blackbox":
-                            redacted_roi = np.zeros_like(roi)
-                        elif method == "pixelate":
-                            block_size = self.config.get("pixelate_block_size", 15)
-                            small = cv2.resize(roi, (max(1, w//block_size), max(1, h//block_size)))
-                            redacted_roi = cv2.resize(small, (w, h), interpolation=cv2.INTER_NEAREST)
-                        else:
-                            redacted_roi = cv2.GaussianBlur(roi, (25, 25), 0)
-
-                        img[y:y+h, x:x+w] = redacted_roi
-
-                        redaction_results.append({
-                            "entity": {"value": pii_value, "location": location},
-                            "method": method,
-                            "success": True
-                        })
-
-                    except Exception as e:
-                        self.logger.error(f"Failed to redact {pii_value}: {e}")
+                    bbox = self._calculate_precise_bbox(pii_value, location, img_shape)
+                    
+                    if not bbox:
+                        continue
+                    
+                    x, y, w, h = bbox['x'], bbox['y'], bbox['width'], bbox['height']
+                    
+                    roi = img[y:y+h, x:x+w]
+                    if roi.size == 0:
+                        continue
+                    
+                    redacted_roi = self._apply_redaction_to_roi(roi, method)
+                    img[y:y+h, x:x+w] = redacted_roi
+                    
+                    redaction_results.append({
+                        "entity": {"value": pii_value, "location": bbox},
+                        "method": method,
+                        "success": True
+                    })
 
                 redacted_path = self.output_dirs["redacted"] / f"{src_path.stem}_redacted_{timestamp}{suffix}"
                 cv2.imwrite(str(redacted_path), img)

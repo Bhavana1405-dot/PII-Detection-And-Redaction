@@ -1,0 +1,2581 @@
+{
+  "audit": {
+    "source_file": "C:\\Users\\Bhavana\\Desktop\\PII redaction\\Octopii\\dummy-pii\\InsureLoans.pdf",
+    "redacted_file": "outputs\\redacted\\InsureLoans_redacted_20251022_031803.pdf",
+    "file_type": "pdf",
+    "timestamp": "2025-10-22T03:18:06.478237",
+    "detection_report": {
+      "file_path": "octopii/dummy-pii/InsureLoans.pdf",
+      "pii_class": "Banking",
+      "score": 42,
+      "country_of_origin": null,
+      "faces": 0,
+      "identifiers": [
+        "4444 5555 6666",
+        "000123456789",
+        "000987654321"
+      ],
+      "emails": [
+        "aarti.kumari.synthetic@example.com",
+        "rohit.verma.synthetic@example.com"
+      ],
+      "phone_numbers": [
+        "0009876543",
+        "0001234567"
+      ],
+      "addresses": [
+        "PAN",
+        "Branch",
+        "Insured",
+        "Loan",
+        "Greens Avenue",
+        "Hospital",
+        "Account",
+        "Policy",
+        "Medical",
+        "Bank",
+        "Amount",
+        "Net",
+        "Male",
+        "India",
+        "Sanction",
+        "Jaipur",
+        "Tenure",
+        "Aadhaar",
+        "Anesthesia",
+        "Physician",
+        "Indrapuri"
+      ],
+      "pii_with_locations": {
+        "aarti.kumari.synthetic@example.com": {
+          "x": 438,
+          "y": 508,
+          "width": 541,
+          "height": 73
+        },
+        "rohit.verma.synthetic@example.com": {
+          "x": 438,
+          "y": 508,
+          "width": 541,
+          "height": 73
+        },
+        "0009876543": {
+          "x": 913,
+          "y": 1197,
+          "width": 54,
+          "height": 71
+        },
+        "0001234567": {
+          "x": 1196,
+          "y": 1047,
+          "width": 82,
+          "height": 87
+        },
+        "4444 5555 6666": {
+          "x": 913,
+          "y": 1197,
+          "width": 54,
+          "height": 71
+        },
+        "000123456789": {
+          "x": 1196,
+          "y": 1047,
+          "width": 82,
+          "height": 87
+        },
+        "000987654321": {
+          "x": 1196,
+          "y": 1047,
+          "width": 82,
+          "height": 87
+        },
+        "PAN": {
+          "x": 594,
+          "y": 2417,
+          "width": 88,
+          "height": 36
+        },
+        "Branch": {
+          "x": 2791,
+          "y": 3401,
+          "width": 171,
+          "height": 39
+        },
+        "Insured": {
+          "x": 912,
+          "y": 703,
+          "width": 36,
+          "height": 37
+        },
+        "Loan": {
+          "x": 1598,
+          "y": 2842,
+          "width": 228,
+          "height": 72
+        },
+        "Greens Avenue": {
+          "x": 1179,
+          "y": 2267,
+          "width": 162,
+          "height": 37
+        },
+        "Hospital": {
+          "x": 437,
+          "y": 2573,
+          "width": 200,
+          "height": 50
+        },
+        "Account": {
+          "x": 1010,
+          "y": 3478,
+          "width": 189,
+          "height": 37
+        },
+        "Policy": {
+          "x": 1642,
+          "y": 1400,
+          "width": 213,
+          "height": 75
+        },
+        "Medical": {
+          "x": 1647,
+          "y": 2648,
+          "width": 174,
+          "height": 39
+        },
+        "Bank": {
+          "x": 653,
+          "y": 3401,
+          "width": 112,
+          "height": 39
+        },
+        "Amount": {
+          "x": 1810,
+          "y": 3192,
+          "width": 198,
+          "height": 37
+        },
+        "Net": {
+          "x": 437,
+          "y": 3087,
+          "width": 86,
+          "height": 37
+        },
+        "Male": {
+          "x": 2081,
+          "y": 2190,
+          "width": 163,
+          "height": 39
+        },
+        "India": {
+          "x": 912,
+          "y": 703,
+          "width": 36,
+          "height": 37
+        },
+        "Sanction": {
+          "x": 741,
+          "y": 3425,
+          "width": 13,
+          "height": 36
+        },
+        "Jaipur": {
+          "x": 2061,
+          "y": 2266,
+          "width": 142,
+          "height": 49
+        },
+        "Tenure": {
+          "x": 909,
+          "y": 804,
+          "width": 160,
+          "height": 37
+        },
+        "Aadhaar": {
+          "x": 2204,
+          "y": 2340,
+          "width": 198,
+          "height": 39
+        },
+        "Anesthesia": {
+          "x": 741,
+          "y": 3425,
+          "width": 13,
+          "height": 36
+        },
+        "Physician": {
+          "x": 2394,
+          "y": 2957,
+          "width": 224,
+          "height": 50
+        },
+        "Indrapuri": {
+          "x": 912,
+          "y": 703,
+          "width": 36,
+          "height": 37
+        }
+      }
+    },
+    "redaction_results": [
+      {
+        "entity": {
+          "value": "aarti.kumari.synthetic@example.com",
+          "page": 0,
+          "location": {
+            "x": 438,
+            "y": 508,
+            "width": 541,
+            "height": 73
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "rohit.verma.synthetic@example.com",
+          "page": 0,
+          "location": {
+            "x": 438,
+            "y": 508,
+            "width": 541,
+            "height": 73
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "0009876543",
+          "page": 0,
+          "location": {
+            "x": 913,
+            "y": 1197,
+            "width": 54,
+            "height": 71
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "0001234567",
+          "page": 0,
+          "location": {
+            "x": 1196,
+            "y": 1047,
+            "width": 82,
+            "height": 87
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "4444 5555 6666",
+          "page": 0,
+          "location": {
+            "x": 913,
+            "y": 1197,
+            "width": 54,
+            "height": 71
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "000123456789",
+          "page": 0,
+          "location": {
+            "x": 1196,
+            "y": 1047,
+            "width": 82,
+            "height": 87
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "000987654321",
+          "page": 0,
+          "location": {
+            "x": 1196,
+            "y": 1047,
+            "width": 82,
+            "height": 87
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "PAN",
+          "page": 0,
+          "location": {
+            "x": 594,
+            "y": 2417,
+            "width": 88,
+            "height": 36
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "Branch",
+          "page": 0,
+          "location": {
+            "x": 2791,
+            "y": 3401,
+            "width": 171,
+            "height": 39
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "Insured",
+          "page": 0,
+          "location": {
+            "x": 912,
+            "y": 703,
+            "width": 36,
+            "height": 37
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "Loan",
+          "page": 0,
+          "location": {
+            "x": 1598,
+            "y": 2842,
+            "width": 228,
+            "height": 72
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "Greens Avenue",
+          "page": 0,
+          "location": {
+            "x": 1179,
+            "y": 2267,
+            "width": 162,
+            "height": 37
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "Hospital",
+          "page": 0,
+          "location": {
+            "x": 437,
+            "y": 2573,
+            "width": 200,
+            "height": 50
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "Account",
+          "page": 0,
+          "location": {
+            "x": 1010,
+            "y": 3478,
+            "width": 189,
+            "height": 37
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "Policy",
+          "page": 0,
+          "location": {
+            "x": 1642,
+            "y": 1400,
+            "width": 213,
+            "height": 75
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "Medical",
+          "page": 0,
+          "location": {
+            "x": 1647,
+            "y": 2648,
+            "width": 174,
+            "height": 39
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "Bank",
+          "page": 0,
+          "location": {
+            "x": 653,
+            "y": 3401,
+            "width": 112,
+            "height": 39
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "Amount",
+          "page": 0,
+          "location": {
+            "x": 1810,
+            "y": 3192,
+            "width": 198,
+            "height": 37
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "Net",
+          "page": 0,
+          "location": {
+            "x": 437,
+            "y": 3087,
+            "width": 86,
+            "height": 37
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "Male",
+          "page": 0,
+          "location": {
+            "x": 2081,
+            "y": 2190,
+            "width": 163,
+            "height": 39
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "India",
+          "page": 0,
+          "location": {
+            "x": 912,
+            "y": 703,
+            "width": 36,
+            "height": 37
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "Sanction",
+          "page": 0,
+          "location": {
+            "x": 741,
+            "y": 3425,
+            "width": 13,
+            "height": 36
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "Jaipur",
+          "page": 0,
+          "location": {
+            "x": 2061,
+            "y": 2266,
+            "width": 142,
+            "height": 49
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "Tenure",
+          "page": 0,
+          "location": {
+            "x": 909,
+            "y": 804,
+            "width": 160,
+            "height": 37
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "Aadhaar",
+          "page": 0,
+          "location": {
+            "x": 2204,
+            "y": 2340,
+            "width": 198,
+            "height": 39
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "Anesthesia",
+          "page": 0,
+          "location": {
+            "x": 741,
+            "y": 3425,
+            "width": 13,
+            "height": 36
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "Physician",
+          "page": 0,
+          "location": {
+            "x": 2394,
+            "y": 2957,
+            "width": 224,
+            "height": 50
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "Indrapuri",
+          "page": 0,
+          "location": {
+            "x": 912,
+            "y": 703,
+            "width": 36,
+            "height": 37
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "aarti.kumari.synthetic@example.com",
+          "page": 1,
+          "location": {
+            "x": 438,
+            "y": 508,
+            "width": 541,
+            "height": 73
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "rohit.verma.synthetic@example.com",
+          "page": 1,
+          "location": {
+            "x": 438,
+            "y": 508,
+            "width": 541,
+            "height": 73
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "0009876543",
+          "page": 1,
+          "location": {
+            "x": 913,
+            "y": 1197,
+            "width": 54,
+            "height": 71
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "0001234567",
+          "page": 1,
+          "location": {
+            "x": 1196,
+            "y": 1047,
+            "width": 82,
+            "height": 87
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "4444 5555 6666",
+          "page": 1,
+          "location": {
+            "x": 913,
+            "y": 1197,
+            "width": 54,
+            "height": 71
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "000123456789",
+          "page": 1,
+          "location": {
+            "x": 1196,
+            "y": 1047,
+            "width": 82,
+            "height": 87
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "000987654321",
+          "page": 1,
+          "location": {
+            "x": 1196,
+            "y": 1047,
+            "width": 82,
+            "height": 87
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "PAN",
+          "page": 1,
+          "location": {
+            "x": 594,
+            "y": 2417,
+            "width": 88,
+            "height": 36
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "Branch",
+          "page": 1,
+          "location": {
+            "x": 2791,
+            "y": 3401,
+            "width": 171,
+            "height": 39
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "Insured",
+          "page": 1,
+          "location": {
+            "x": 912,
+            "y": 703,
+            "width": 36,
+            "height": 37
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "Loan",
+          "page": 1,
+          "location": {
+            "x": 1598,
+            "y": 2842,
+            "width": 228,
+            "height": 72
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "Greens Avenue",
+          "page": 1,
+          "location": {
+            "x": 1179,
+            "y": 2267,
+            "width": 162,
+            "height": 37
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "Hospital",
+          "page": 1,
+          "location": {
+            "x": 437,
+            "y": 2573,
+            "width": 200,
+            "height": 50
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "Account",
+          "page": 1,
+          "location": {
+            "x": 1010,
+            "y": 3478,
+            "width": 189,
+            "height": 37
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "Policy",
+          "page": 1,
+          "location": {
+            "x": 1642,
+            "y": 1400,
+            "width": 213,
+            "height": 75
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "Medical",
+          "page": 1,
+          "location": {
+            "x": 1647,
+            "y": 2648,
+            "width": 174,
+            "height": 39
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "Bank",
+          "page": 1,
+          "location": {
+            "x": 653,
+            "y": 3401,
+            "width": 112,
+            "height": 39
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "Amount",
+          "page": 1,
+          "location": {
+            "x": 1810,
+            "y": 3192,
+            "width": 198,
+            "height": 37
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "Net",
+          "page": 1,
+          "location": {
+            "x": 437,
+            "y": 3087,
+            "width": 86,
+            "height": 37
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "Male",
+          "page": 1,
+          "location": {
+            "x": 2081,
+            "y": 2190,
+            "width": 163,
+            "height": 39
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "India",
+          "page": 1,
+          "location": {
+            "x": 912,
+            "y": 703,
+            "width": 36,
+            "height": 37
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "Sanction",
+          "page": 1,
+          "location": {
+            "x": 741,
+            "y": 3425,
+            "width": 13,
+            "height": 36
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "Jaipur",
+          "page": 1,
+          "location": {
+            "x": 2061,
+            "y": 2266,
+            "width": 142,
+            "height": 49
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "Tenure",
+          "page": 1,
+          "location": {
+            "x": 909,
+            "y": 804,
+            "width": 160,
+            "height": 37
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "Aadhaar",
+          "page": 1,
+          "location": {
+            "x": 2204,
+            "y": 2340,
+            "width": 198,
+            "height": 39
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "Anesthesia",
+          "page": 1,
+          "location": {
+            "x": 741,
+            "y": 3425,
+            "width": 13,
+            "height": 36
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "Physician",
+          "page": 1,
+          "location": {
+            "x": 2394,
+            "y": 2957,
+            "width": 224,
+            "height": 50
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "Indrapuri",
+          "page": 1,
+          "location": {
+            "x": 912,
+            "y": 703,
+            "width": 36,
+            "height": 37
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "aarti.kumari.synthetic@example.com",
+          "page": 2,
+          "location": {
+            "x": 438,
+            "y": 508,
+            "width": 541,
+            "height": 73
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "rohit.verma.synthetic@example.com",
+          "page": 2,
+          "location": {
+            "x": 438,
+            "y": 508,
+            "width": 541,
+            "height": 73
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "0009876543",
+          "page": 2,
+          "location": {
+            "x": 913,
+            "y": 1197,
+            "width": 54,
+            "height": 71
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "0001234567",
+          "page": 2,
+          "location": {
+            "x": 1196,
+            "y": 1047,
+            "width": 82,
+            "height": 87
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "4444 5555 6666",
+          "page": 2,
+          "location": {
+            "x": 913,
+            "y": 1197,
+            "width": 54,
+            "height": 71
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "000123456789",
+          "page": 2,
+          "location": {
+            "x": 1196,
+            "y": 1047,
+            "width": 82,
+            "height": 87
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "000987654321",
+          "page": 2,
+          "location": {
+            "x": 1196,
+            "y": 1047,
+            "width": 82,
+            "height": 87
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "PAN",
+          "page": 2,
+          "location": {
+            "x": 594,
+            "y": 2417,
+            "width": 88,
+            "height": 36
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "Branch",
+          "page": 2,
+          "location": {
+            "x": 2791,
+            "y": 3401,
+            "width": 171,
+            "height": 39
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "Insured",
+          "page": 2,
+          "location": {
+            "x": 912,
+            "y": 703,
+            "width": 36,
+            "height": 37
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "Loan",
+          "page": 2,
+          "location": {
+            "x": 1598,
+            "y": 2842,
+            "width": 228,
+            "height": 72
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "Greens Avenue",
+          "page": 2,
+          "location": {
+            "x": 1179,
+            "y": 2267,
+            "width": 162,
+            "height": 37
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "Hospital",
+          "page": 2,
+          "location": {
+            "x": 437,
+            "y": 2573,
+            "width": 200,
+            "height": 50
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "Account",
+          "page": 2,
+          "location": {
+            "x": 1010,
+            "y": 3478,
+            "width": 189,
+            "height": 37
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "Policy",
+          "page": 2,
+          "location": {
+            "x": 1642,
+            "y": 1400,
+            "width": 213,
+            "height": 75
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "Medical",
+          "page": 2,
+          "location": {
+            "x": 1647,
+            "y": 2648,
+            "width": 174,
+            "height": 39
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "Bank",
+          "page": 2,
+          "location": {
+            "x": 653,
+            "y": 3401,
+            "width": 112,
+            "height": 39
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "Amount",
+          "page": 2,
+          "location": {
+            "x": 1810,
+            "y": 3192,
+            "width": 198,
+            "height": 37
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "Net",
+          "page": 2,
+          "location": {
+            "x": 437,
+            "y": 3087,
+            "width": 86,
+            "height": 37
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "Male",
+          "page": 2,
+          "location": {
+            "x": 2081,
+            "y": 2190,
+            "width": 163,
+            "height": 39
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "India",
+          "page": 2,
+          "location": {
+            "x": 912,
+            "y": 703,
+            "width": 36,
+            "height": 37
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "Sanction",
+          "page": 2,
+          "location": {
+            "x": 741,
+            "y": 3425,
+            "width": 13,
+            "height": 36
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "Jaipur",
+          "page": 2,
+          "location": {
+            "x": 2061,
+            "y": 2266,
+            "width": 142,
+            "height": 49
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "Tenure",
+          "page": 2,
+          "location": {
+            "x": 909,
+            "y": 804,
+            "width": 160,
+            "height": 37
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "Aadhaar",
+          "page": 2,
+          "location": {
+            "x": 2204,
+            "y": 2340,
+            "width": 198,
+            "height": 39
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "Anesthesia",
+          "page": 2,
+          "location": {
+            "x": 741,
+            "y": 3425,
+            "width": 13,
+            "height": 36
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "Physician",
+          "page": 2,
+          "location": {
+            "x": 2394,
+            "y": 2957,
+            "width": 224,
+            "height": 50
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "Indrapuri",
+          "page": 2,
+          "location": {
+            "x": 912,
+            "y": 703,
+            "width": 36,
+            "height": 37
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "aarti.kumari.synthetic@example.com",
+          "page": 3,
+          "location": {
+            "x": 438,
+            "y": 508,
+            "width": 541,
+            "height": 73
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "rohit.verma.synthetic@example.com",
+          "page": 3,
+          "location": {
+            "x": 438,
+            "y": 508,
+            "width": 541,
+            "height": 73
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "0009876543",
+          "page": 3,
+          "location": {
+            "x": 913,
+            "y": 1197,
+            "width": 54,
+            "height": 71
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "0001234567",
+          "page": 3,
+          "location": {
+            "x": 1196,
+            "y": 1047,
+            "width": 82,
+            "height": 87
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "4444 5555 6666",
+          "page": 3,
+          "location": {
+            "x": 913,
+            "y": 1197,
+            "width": 54,
+            "height": 71
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "000123456789",
+          "page": 3,
+          "location": {
+            "x": 1196,
+            "y": 1047,
+            "width": 82,
+            "height": 87
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "000987654321",
+          "page": 3,
+          "location": {
+            "x": 1196,
+            "y": 1047,
+            "width": 82,
+            "height": 87
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "PAN",
+          "page": 3,
+          "location": {
+            "x": 594,
+            "y": 2417,
+            "width": 88,
+            "height": 36
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "Branch",
+          "page": 3,
+          "location": {
+            "x": 2791,
+            "y": 3401,
+            "width": 171,
+            "height": 39
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "Insured",
+          "page": 3,
+          "location": {
+            "x": 912,
+            "y": 703,
+            "width": 36,
+            "height": 37
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "Loan",
+          "page": 3,
+          "location": {
+            "x": 1598,
+            "y": 2842,
+            "width": 228,
+            "height": 72
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "Greens Avenue",
+          "page": 3,
+          "location": {
+            "x": 1179,
+            "y": 2267,
+            "width": 162,
+            "height": 37
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "Hospital",
+          "page": 3,
+          "location": {
+            "x": 437,
+            "y": 2573,
+            "width": 200,
+            "height": 50
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "Account",
+          "page": 3,
+          "location": {
+            "x": 1010,
+            "y": 3478,
+            "width": 189,
+            "height": 37
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "Policy",
+          "page": 3,
+          "location": {
+            "x": 1642,
+            "y": 1400,
+            "width": 213,
+            "height": 75
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "Medical",
+          "page": 3,
+          "location": {
+            "x": 1647,
+            "y": 2648,
+            "width": 174,
+            "height": 39
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "Bank",
+          "page": 3,
+          "location": {
+            "x": 653,
+            "y": 3401,
+            "width": 112,
+            "height": 39
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "Amount",
+          "page": 3,
+          "location": {
+            "x": 1810,
+            "y": 3192,
+            "width": 198,
+            "height": 37
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "Net",
+          "page": 3,
+          "location": {
+            "x": 437,
+            "y": 3087,
+            "width": 86,
+            "height": 37
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "Male",
+          "page": 3,
+          "location": {
+            "x": 2081,
+            "y": 2190,
+            "width": 163,
+            "height": 39
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "India",
+          "page": 3,
+          "location": {
+            "x": 912,
+            "y": 703,
+            "width": 36,
+            "height": 37
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "Sanction",
+          "page": 3,
+          "location": {
+            "x": 741,
+            "y": 3425,
+            "width": 13,
+            "height": 36
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "Jaipur",
+          "page": 3,
+          "location": {
+            "x": 2061,
+            "y": 2266,
+            "width": 142,
+            "height": 49
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "Tenure",
+          "page": 3,
+          "location": {
+            "x": 909,
+            "y": 804,
+            "width": 160,
+            "height": 37
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "Aadhaar",
+          "page": 3,
+          "location": {
+            "x": 2204,
+            "y": 2340,
+            "width": 198,
+            "height": 39
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "Anesthesia",
+          "page": 3,
+          "location": {
+            "x": 741,
+            "y": 3425,
+            "width": 13,
+            "height": 36
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "Physician",
+          "page": 3,
+          "location": {
+            "x": 2394,
+            "y": 2957,
+            "width": 224,
+            "height": 50
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "Indrapuri",
+          "page": 3,
+          "location": {
+            "x": 912,
+            "y": 703,
+            "width": 36,
+            "height": 37
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "aarti.kumari.synthetic@example.com",
+          "page": 4,
+          "location": {
+            "x": 438,
+            "y": 508,
+            "width": 541,
+            "height": 73
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "rohit.verma.synthetic@example.com",
+          "page": 4,
+          "location": {
+            "x": 438,
+            "y": 508,
+            "width": 541,
+            "height": 73
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "0009876543",
+          "page": 4,
+          "location": {
+            "x": 913,
+            "y": 1197,
+            "width": 54,
+            "height": 71
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "0001234567",
+          "page": 4,
+          "location": {
+            "x": 1196,
+            "y": 1047,
+            "width": 82,
+            "height": 87
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "4444 5555 6666",
+          "page": 4,
+          "location": {
+            "x": 913,
+            "y": 1197,
+            "width": 54,
+            "height": 71
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "000123456789",
+          "page": 4,
+          "location": {
+            "x": 1196,
+            "y": 1047,
+            "width": 82,
+            "height": 87
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "000987654321",
+          "page": 4,
+          "location": {
+            "x": 1196,
+            "y": 1047,
+            "width": 82,
+            "height": 87
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "PAN",
+          "page": 4,
+          "location": {
+            "x": 594,
+            "y": 2417,
+            "width": 88,
+            "height": 36
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "Branch",
+          "page": 4,
+          "location": {
+            "x": 2791,
+            "y": 3401,
+            "width": 171,
+            "height": 39
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "Insured",
+          "page": 4,
+          "location": {
+            "x": 912,
+            "y": 703,
+            "width": 36,
+            "height": 37
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "Loan",
+          "page": 4,
+          "location": {
+            "x": 1598,
+            "y": 2842,
+            "width": 228,
+            "height": 72
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "Greens Avenue",
+          "page": 4,
+          "location": {
+            "x": 1179,
+            "y": 2267,
+            "width": 162,
+            "height": 37
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "Hospital",
+          "page": 4,
+          "location": {
+            "x": 437,
+            "y": 2573,
+            "width": 200,
+            "height": 50
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "Account",
+          "page": 4,
+          "location": {
+            "x": 1010,
+            "y": 3478,
+            "width": 189,
+            "height": 37
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "Policy",
+          "page": 4,
+          "location": {
+            "x": 1642,
+            "y": 1400,
+            "width": 213,
+            "height": 75
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "Medical",
+          "page": 4,
+          "location": {
+            "x": 1647,
+            "y": 2648,
+            "width": 174,
+            "height": 39
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "Bank",
+          "page": 4,
+          "location": {
+            "x": 653,
+            "y": 3401,
+            "width": 112,
+            "height": 39
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "Amount",
+          "page": 4,
+          "location": {
+            "x": 1810,
+            "y": 3192,
+            "width": 198,
+            "height": 37
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "Net",
+          "page": 4,
+          "location": {
+            "x": 437,
+            "y": 3087,
+            "width": 86,
+            "height": 37
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "Male",
+          "page": 4,
+          "location": {
+            "x": 2081,
+            "y": 2190,
+            "width": 163,
+            "height": 39
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "India",
+          "page": 4,
+          "location": {
+            "x": 912,
+            "y": 703,
+            "width": 36,
+            "height": 37
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "Sanction",
+          "page": 4,
+          "location": {
+            "x": 741,
+            "y": 3425,
+            "width": 13,
+            "height": 36
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "Jaipur",
+          "page": 4,
+          "location": {
+            "x": 2061,
+            "y": 2266,
+            "width": 142,
+            "height": 49
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "Tenure",
+          "page": 4,
+          "location": {
+            "x": 909,
+            "y": 804,
+            "width": 160,
+            "height": 37
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "Aadhaar",
+          "page": 4,
+          "location": {
+            "x": 2204,
+            "y": 2340,
+            "width": 198,
+            "height": 39
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "Anesthesia",
+          "page": 4,
+          "location": {
+            "x": 741,
+            "y": 3425,
+            "width": 13,
+            "height": 36
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "Physician",
+          "page": 4,
+          "location": {
+            "x": 2394,
+            "y": 2957,
+            "width": 224,
+            "height": 50
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "Indrapuri",
+          "page": 4,
+          "location": {
+            "x": 912,
+            "y": 703,
+            "width": 36,
+            "height": 37
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "aarti.kumari.synthetic@example.com",
+          "page": 5,
+          "location": {
+            "x": 438,
+            "y": 508,
+            "width": 541,
+            "height": 73
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "rohit.verma.synthetic@example.com",
+          "page": 5,
+          "location": {
+            "x": 438,
+            "y": 508,
+            "width": 541,
+            "height": 73
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "0009876543",
+          "page": 5,
+          "location": {
+            "x": 913,
+            "y": 1197,
+            "width": 54,
+            "height": 71
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "0001234567",
+          "page": 5,
+          "location": {
+            "x": 1196,
+            "y": 1047,
+            "width": 82,
+            "height": 87
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "4444 5555 6666",
+          "page": 5,
+          "location": {
+            "x": 913,
+            "y": 1197,
+            "width": 54,
+            "height": 71
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "000123456789",
+          "page": 5,
+          "location": {
+            "x": 1196,
+            "y": 1047,
+            "width": 82,
+            "height": 87
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "000987654321",
+          "page": 5,
+          "location": {
+            "x": 1196,
+            "y": 1047,
+            "width": 82,
+            "height": 87
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "PAN",
+          "page": 5,
+          "location": {
+            "x": 594,
+            "y": 2417,
+            "width": 88,
+            "height": 36
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "Branch",
+          "page": 5,
+          "location": {
+            "x": 2791,
+            "y": 3401,
+            "width": 171,
+            "height": 39
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "Insured",
+          "page": 5,
+          "location": {
+            "x": 912,
+            "y": 703,
+            "width": 36,
+            "height": 37
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "Loan",
+          "page": 5,
+          "location": {
+            "x": 1598,
+            "y": 2842,
+            "width": 228,
+            "height": 72
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "Greens Avenue",
+          "page": 5,
+          "location": {
+            "x": 1179,
+            "y": 2267,
+            "width": 162,
+            "height": 37
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "Hospital",
+          "page": 5,
+          "location": {
+            "x": 437,
+            "y": 2573,
+            "width": 200,
+            "height": 50
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "Account",
+          "page": 5,
+          "location": {
+            "x": 1010,
+            "y": 3478,
+            "width": 189,
+            "height": 37
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "Policy",
+          "page": 5,
+          "location": {
+            "x": 1642,
+            "y": 1400,
+            "width": 213,
+            "height": 75
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "Medical",
+          "page": 5,
+          "location": {
+            "x": 1647,
+            "y": 2648,
+            "width": 174,
+            "height": 39
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "Bank",
+          "page": 5,
+          "location": {
+            "x": 653,
+            "y": 3401,
+            "width": 112,
+            "height": 39
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "Amount",
+          "page": 5,
+          "location": {
+            "x": 1810,
+            "y": 3192,
+            "width": 198,
+            "height": 37
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "Net",
+          "page": 5,
+          "location": {
+            "x": 437,
+            "y": 3087,
+            "width": 86,
+            "height": 37
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "Male",
+          "page": 5,
+          "location": {
+            "x": 2081,
+            "y": 2190,
+            "width": 163,
+            "height": 39
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "India",
+          "page": 5,
+          "location": {
+            "x": 912,
+            "y": 703,
+            "width": 36,
+            "height": 37
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "Sanction",
+          "page": 5,
+          "location": {
+            "x": 741,
+            "y": 3425,
+            "width": 13,
+            "height": 36
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "Jaipur",
+          "page": 5,
+          "location": {
+            "x": 2061,
+            "y": 2266,
+            "width": 142,
+            "height": 49
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "Tenure",
+          "page": 5,
+          "location": {
+            "x": 909,
+            "y": 804,
+            "width": 160,
+            "height": 37
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "Aadhaar",
+          "page": 5,
+          "location": {
+            "x": 2204,
+            "y": 2340,
+            "width": 198,
+            "height": 39
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "Anesthesia",
+          "page": 5,
+          "location": {
+            "x": 741,
+            "y": 3425,
+            "width": 13,
+            "height": 36
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "Physician",
+          "page": 5,
+          "location": {
+            "x": 2394,
+            "y": 2957,
+            "width": 224,
+            "height": 50
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "Indrapuri",
+          "page": 5,
+          "location": {
+            "x": 912,
+            "y": 703,
+            "width": 36,
+            "height": 37
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      }
+    ],
+    "summary": {
+      "total_entities_detected": 168,
+      "entities_redacted": 168,
+      "redaction_failures": 0,
+      "confidence_threshold": 0.7
+    }
+  }
+}

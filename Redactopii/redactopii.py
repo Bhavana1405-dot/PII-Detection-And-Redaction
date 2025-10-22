@@ -1,6 +1,6 @@
 # =============================================================================
-# FILE: Redactopii/redactopii.py
-# DESCRIPTION: Fixed CLI that handles batch reports correctly
+# FILE: redactopii.py
+# DESCRIPTION: Updated CLI with better error handling and validation
 # =============================================================================
 
 import argparse
@@ -9,12 +9,19 @@ import sys
 from pathlib import Path
 from PIL import Image
 
+# Add paths
 sys.path.insert(0, str(Path(__file__).parent))
+sys.path.insert(0, str(Path(__file__).parent / 'core'))
+sys.path.insert(0, str(Path(__file__).parent / 'integrations'))
 
-from core.redaction_engine import RedactionEngine
-from core.config import RedactionConfig
-from integrations.pipeline_integration import RedactionPipeline
-# from core.redaction_engine import process_octopii_report as engine
+try:
+    from core.redaction_engine import RedactionEngine
+    from core.config import RedactionConfig
+    from integrations.pipeline_integration import RedactionPipeline
+except ImportError as e:
+    print(f"Error importing modules: {e}")
+    print("Make sure you're running from the Redactopii directory")
+    sys.exit(1)
 
 
 def find_matching_report(reports, input_file):
@@ -22,11 +29,18 @@ def find_matching_report(reports, input_file):
     input_path = Path(input_file).resolve()
     
     for report in reports:
-        report_path = Path(report.get("file_path", ""))
+        report_path_str = report.get("file_path", "")
+        if not report_path_str:
+            continue
+            
+        report_path = Path(report_path_str)
         
         # Try exact match
-        if report_path.resolve() == input_path:
-            return report
+        try:
+            if report_path.resolve() == input_path:
+                return report
+        except:
+            pass
         
         # Try filename match
         if report_path.name == input_path.name:
@@ -35,21 +49,73 @@ def find_matching_report(reports, input_file):
         # Try case-insensitive match
         if report_path.name.lower() == input_path.name.lower():
             return report
+        
+        # Try stem match (without extension)
+        if report_path.stem == input_path.stem:
+            return report
     
     return None
 
 
+def validate_input_file(input_path):
+    """Validate input file exists and is readable"""
+    if not input_path.exists():
+        print(f"✗ Error: Input file not found: {input_path}")
+        return False
+    
+    # Check if it's an image and validate
+    if input_path.suffix.lower() in ['.png', '.jpg', '.jpeg', '.bmp', '.tiff']:
+        try:
+            img = Image.open(input_path)
+            img.verify()
+            print(f"[INFO] Image validated: {img.format} {img.size}")
+            return True
+        except Exception as e:
+            print(f"✗ Error: Cannot open image: {e}")
+            return False
+    
+    # Check if it's a PDF
+    elif input_path.suffix.lower() == '.pdf':
+        try:
+            with open(input_path, 'rb') as f:
+                header = f.read(5)
+                if header != b'%PDF-':
+                    print(f"✗ Error: File does not appear to be a valid PDF")
+                    return False
+            print(f"[INFO] PDF file validated")
+            return True
+        except Exception as e:
+            print(f"✗ Error: Cannot read PDF: {e}")
+            return False
+    
+    # Text files
+    elif input_path.suffix.lower() in ['.txt', '.csv', '.md', '.json']:
+        try:
+            input_path.read_text(encoding='utf-8')
+            print(f"[INFO] Text file validated")
+            return True
+        except Exception as e:
+            print(f"✗ Error: Cannot read text file: {e}")
+            return False
+    
+    print(f"[WARN] Unknown file type: {input_path.suffix}")
+    return True  # Allow unknown types to proceed
+
+
 def main():
     parser = argparse.ArgumentParser(
-        description='PII Redaction Engine - Automatically saves masked files',
+        description='PII Redaction Engine - Automatically redacts PII from documents',
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
   # Basic redaction
   python redactopii.py --input document.txt --report output.json
   
-  # With custom method
-  python redactopii.py --input scan.png --report output.json --method blur
+  # Redact PDF with blur method
+  python redactopii.py --input scan.pdf --report output.json --method blur
+  
+  # Redact image with blackbox method
+  python redactopii.py --input photo.jpg --report output.json --method blackbox
   
   # Custom output directory
   python redactopii.py --input file.txt --report output.json --output-dir ./my_outputs
@@ -58,39 +124,65 @@ Examples:
 
     parser.add_argument('--input', required=True, help='Input file path')
     parser.add_argument('--report', required=True, help='Octopii detection report (output.json)')
-    parser.add_argument('--output-dir', default='./outputs', help='Output base directory')
-    parser.add_argument('--config', help='Configuration file path')
+    parser.add_argument('--output-dir', default='./outputs', help='Output base directory (default: ./outputs)')
+    parser.add_argument('--config', help='Configuration file path (optional)')
     parser.add_argument('--method', choices=['blur', 'blackbox', 'pixelate'], 
-                        help='Redaction method for images')
-    parser.add_argument('--threshold', type=float, help='Confidence threshold (0.0-1.0)')
+                        default='blur',
+                        help='Redaction method for images/PDFs (default: blur)')
+    parser.add_argument('--threshold', type=float, default=0.7,
+                        help='Confidence threshold 0.0-1.0 (default: 0.7)')
+    parser.add_argument('--verbose', action='store_true', 
+                        help='Enable verbose output')
 
     args = parser.parse_args()
 
-    # Initialize engine
-    config = RedactionConfig(args.config) if args.config else RedactionConfig()
-    config.set("output_base_dir", args.output_dir)
-    
-    if args.method:
-        config.set("default_image_method", args.method)
-    if args.threshold:
-        config.set("confidence_threshold", args.threshold)
-
-    engine = RedactionEngine(config)
-    pipeline = RedactionPipeline(engine)
-
+    # Print header
     print("=" * 70)
     print("PII REDACTION ENGINE")
     print("=" * 70)
     print(f"Input file:       {args.input}")
     print(f"Detection report: {args.report}")
     print(f"Output directory: {args.output_dir}")
-    if args.method:
-        print(f"Method:           {args.method}")
+    print(f"Method:           {args.method}")
+    print(f"Threshold:        {args.threshold}")
     print()
+
+    # Validate input file
+    input_path = Path(args.input).resolve()
+    if not validate_input_file(input_path):
+        return 1
+
+    # Validate report file
+    report_path = Path(args.report)
+    if not report_path.exists():
+        print(f"✗ Error: Report file not found: {report_path}")
+        return 1
+
+    # Initialize engine
+    try:
+        config = RedactionConfig(args.config) if args.config else RedactionConfig()
+        config.set("output_base_dir", args.output_dir)
+        config.set("default_image_method", args.method)
+        config.set("confidence_threshold", args.threshold)
+        
+        if args.verbose:
+            config.set("log_level", "DEBUG")
+
+        engine = RedactionEngine(config)
+        pipeline = RedactionPipeline(engine)
+        
+        print("[INFO] Redaction engine initialized")
+    except Exception as e:
+        print(f"✗ Error initializing engine: {e}")
+        if args.verbose:
+            import traceback
+            traceback.print_exc()
+        return 1
 
     try:
         # Load the report
-        with open(args.report, 'r', encoding='utf-8') as f:
+        print(f"[INFO] Loading detection report...")
+        with open(report_path, 'r', encoding='utf-8') as f:
             report_data = json.load(f)
         
         # Handle batch reports (array of reports)
@@ -98,62 +190,54 @@ Examples:
             print(f"[INFO] Loaded batch report with {len(report_data)} entries")
             
             # Find matching report for this file
-            matching_report = find_matching_report(report_data, args.input)
+            matching_report = find_matching_report(report_data, str(input_path))
             
             if matching_report is None:
-                print(f"✗ No matching report found for: {args.input}")
-                print(f"\nAvailable files in report:")
-                for r in report_data[:5]:  # Show first 5
-                    print(f"  - {r.get('file_path', 'unknown')}")
-                if len(report_data) > 5:
-                    print(f"  ... and {len(report_data) - 5} more")
+                print(f"✗ No matching report found for: {input_path.name}")
+                print(f"\n[INFO] Available files in report:")
+                for i, r in enumerate(report_data[:10], 1):  # Show first 10
+                    print(f"  {i}. {r.get('file_path', 'unknown')}")
+                if len(report_data) > 10:
+                    print(f"  ... and {len(report_data) - 10} more")
+                print(f"\n[HINT] Make sure the file path in the report matches your input file")
                 return 1
             
             report = matching_report
-            print(f"[INFO] Found matching report for: {report['file_path']}")
+            print(f"[INFO] Found matching report for: {report.get('file_path')}")
         else:
             report = report_data
+            print(f"[INFO] Loaded single report")
         
-        # Validate input file exists
-        input_path = Path(args.input).resolve()
-        if not input_path.exists():
-            print(f"✗ Input file not found: {input_path}")
-            return 1
+        # Check for PII in report
+        pii_count = 0
+        pii_count += len(report.get("emails", []))
+        pii_count += len(report.get("phone_numbers", []))
+        pii_count += len(report.get("identifiers", []))
+        pii_count += len(report.get("addresses", []))
         
-        # Check if it's an image and validate
-        if input_path.suffix.lower() in ['.png', '.jpg', '.jpeg', '.bmp']:
-            try:
-                img = Image.open(input_path)
-                img.verify()
-                print(f"[INFO] Image validated: {img.format} {img.size}")
-            except Exception as e:
-                print(f"✗ Cannot open image: {e}")
-                return 1
+        print(f"[INFO] Report contains {pii_count} PII entities")
         
-        # Check for PII locations
         pii_locations = report.get("pii_with_locations", {})
         if not pii_locations:
             print("[WARN] No PII locations found in report")
             print("       This might mean:")
             print("       1. No PII was detected in the file")
             print("       2. Octopii couldn't determine precise locations")
-            print("       3. The file format doesn't support location mapping")
+            print("       3. The file is plain text (no bounding boxes needed)")
         else:
-            print(f"[INFO] Found {len(pii_locations)} PII location(s) to redact:")
-            for pii, loc in pii_locations.items():
-                print(f"       - {pii[:50]}... at {loc}")
+            print(f"[INFO] Found {len(pii_locations)} PII location(s) with coordinates")
+            if args.verbose:
+                for pii, loc in list(pii_locations.items())[:5]:
+                    print(f"       - {pii[:40]}... at {loc}")
+                if len(pii_locations) > 5:
+                    print(f"       ... and {len(pii_locations) - 5} more")
         
         # Process the file
-        print(f"\n[INFO] Processing redaction...")
+        print(f"\n[INFO] Starting redaction process...")
         result = engine.process_octopii_report(
             report=report,
             source_file=str(input_path)
         )
-        
-        # Check if it's a batch result
-        if result.get("status") == "batch_complete":
-            print(f"✗ Unexpected batch result. Use single file mode.")
-            return 1
         
         # Display results
         redaction_status = result.get("redaction", {}).get("status")
@@ -165,23 +249,21 @@ Examples:
             print(f"\n{'='*70}")
             print(f"✓ SUCCESS")
             print(f"{'='*70}")
-            print(f"Redacted file:    {output_path}")
+            print(f"Redacted file:     {output_path}")
             print(f"Entities redacted: {redaction_count}")
             
             # Show all output locations
-            print(f"\nGenerated files:")
+            print(f"\n[INFO] Generated files:")
             print(f"  📄 Redacted:    {output_path}")
             
-            report_path = result.get("report")
-            if report_path:
-                print(f"  📊 Report:      {report_path}")
+            report_file = result.get("report")
+            if report_file:
+                print(f"  📊 Report:      {report_file}")
             
             audit_dir = Path(args.output_dir) / "audit_logs"
             print(f"  📝 Audit logs:  {audit_dir}/")
             
-            if input_path.suffix.lower() in ['.png', '.jpg', '.jpeg']:
-                comparison_dir = Path(args.output_dir) / "comparisons"
-                print(f"  🔍 Comparisons: {comparison_dir}/")
+            print(f"\n[INFO] All outputs saved to: {args.output_dir}/")
         
         elif redaction_status == "no_pii":
             print(f"\nℹ️  No PII entities detected - nothing to redact")
@@ -191,11 +273,14 @@ Examples:
             error_msg = result.get("redaction", {}).get("error", "Unknown error")
             print(f"\n✗ REDACTION FAILED")
             print(f"   Error: {error_msg}")
+            if args.verbose:
+                print(f"\n   Full result: {json.dumps(result, indent=2)}")
             return 1
         
         else:
             print(f"\n✗ Unknown status: {redaction_status}")
-            print(f"   Full result: {json.dumps(result, indent=2)}")
+            if args.verbose:
+                print(f"   Full result: {json.dumps(result, indent=2)}")
             return 1
         
         print(f"\n{'='*70}")
@@ -205,12 +290,18 @@ Examples:
         print(f"\n✗ Error: File not found - {e}")
         return 1
     except json.JSONDecodeError as e:
-        print(f"\n✗ Error: Invalid JSON in report file - {e}")
+        print(f"\n✗ Error: Invalid JSON in report file")
+        print(f"   {e}")
+        print(f"\n[HINT] Make sure {args.report} is a valid JSON file")
+        return 1
+    except KeyboardInterrupt:
+        print(f"\n\n✗ Interrupted by user")
         return 1
     except Exception as e:
         print(f"\n✗ Error: {e}")
-        import traceback
-        traceback.print_exc()
+        if args.verbose:
+            import traceback
+            traceback.print_exc()
         return 1
 
 

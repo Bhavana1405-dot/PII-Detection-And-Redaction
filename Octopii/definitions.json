@@ -1,17 +1,18 @@
 {
    "Email": {
-      "regex":"[A-Za-z0-9._+\\-\\']+@[A-Za-z0-9.\\-]+\\.[A-Za-z]{2,}",
+      "regex":"\\b[A-Za-z0-9._+\\-']+@[A-Za-z0-9.\\-]+\\.[A-Za-z]{2,}\\b",
       "region":null,
       "keywords":null
    },
    "Phone Number": {
-      "regex":"((\\+\\d{1,2}\\s)?\\(?\\d{3}\\)?[\\s.-]\\d{3}[\\s.-]\\d{4}|[0-9]{10}|\\+{1}[0-9 ]{11,15}|[0-9]{4} [0-9]{6})",
+      "regex":"\\+\\d{1,2}[\\s.-]?\\(?\\d{3}\\)?[\\s.-]?\\d{3}[\\s.-]?\\d{4}|\\b\\d{10}\\b|\\+91[\\s-]?\\d{5}[\\s-]?\\d{5}",
       "region":null,
       "keywords":[
          "phone",
          "telephone",
          "tel",
          "contact",
+         "mobile",
          "whatsapp",
          "telegram",
          "sms"
@@ -19,19 +20,19 @@
    },
    "Banking": {
      "keywords": ["bank", "bank account", "statement", "ifsc", "branch", "savings", "account number", "amount", "credit", "debit"],
-     "regex": null,
-     "region": null
+     "regex": "\\b\\d{9,18}\\b",
+     "region": "India"
    },
    "Payment Card": {
       "keywords": [
           "visa", "mastercard", "amex", "american express", "rupay",
           "debit card", "credit card", "atm card", "bank", "valid", "expires", "expiry", "thru", "cvv"
       ],
-      "regex": ["\\b(?:\\d{4}[ -]?){3}(?=\\d{4}\\b)(?:\\d{4})"],
+      "regex": "\\b(?:\\d{4}[\\s-]?){3}\\d{4}\\b",
       "region": null
    },
    "Aadhaar Card": {
-      "regex":"([0-9]{4} [0-9]{4} [0-9]{4}|[0-9]{4}-[0-9]{4}-[0-9]{4}|[0-9]{12})",
+      "regex":"\\b\\d{4}[\\s-]?\\d{4}[\\s-]?\\d{4}\\b",
       "region":"India",
       "keywords":[
          "Aadhaar",
@@ -46,11 +47,11 @@
    },
    "Permanent Account Number": {
      "keywords": ["PAN", "income", "tax", "permanent", "account", "department", "India", "Govt."],
-     "regex": "[A-Z]{5}?[0-9]{4}[A-Z]",
+     "regex": "\\b[A-Z]{5}\\d{4}[A-Z]\\b",
      "region": "India"
    },
    "Election Photo ID Card": {
-      "regex":"[A-Za-z]{3}[0-9]{7}",
+      "regex":"\\b[A-Za-z]{3}\\d{7}\\b",
       "region":"India",
       "keywords":[
          "Voter ID",
@@ -62,7 +63,7 @@
       ]
    },
    "Social Security Number": {
-      "regex":"[0-9]{3}-[0-9]{2}-[0-9]{3,4}",
+      "regex":"\\b\\d{3}-\\d{2}-\\d{3,4}\\b",
       "region":"United States",
       "keywords":[
          "SSN",
@@ -72,7 +73,7 @@
       ]
    },
    "Social Insurance Number": {
-      "regex":"([0-9]{3}-[0-9]{3}-[0-9]{3}|[0-9]{3} [0-9]{3} [0-9]{3})",
+      "regex":"\\b\\d{3}[\\s-]\\d{3}[\\s-]\\d{3}\\b",
       "region":"Canada",
       "keywords":[
          "Development Canada",
@@ -84,7 +85,7 @@
       ]
    },
    "Permanent Resident Card": {
-      "regex":"^([0-9]{4}-[0-9]{4})$",
+      "regex":"\\b\\d{4}-\\d{4}\\b",
       "region":"Canada",
       "keywords":[
          "Permanent",
@@ -96,7 +97,7 @@
       ]
    },
    "Permanent Identity Card": {
-      "regex":"^([0-9]{4}-[0-9]{4})$",
+      "regex":"\\b\\d{4}-\\d{4}\\b",
       "region":"Hong Kong",
       "keywords":[
          "Permanent",
@@ -106,7 +107,7 @@
       ]
    },
    "Resident ID Card": {
-      "regex":"[0-9]{6}20[0-9]{2}[0-1][0-9][0-3][0-9][0-9]{3}[0-9]{1,2}",
+      "regex":"\\b\\d{6}20\\d{2}[0-1]\\d[0-3]\\d\\d{3}\\d{1,2}\\b",
       "region":"China",
       "keywords":[
          "National ID",
@@ -115,7 +116,7 @@
       ]
    },
    "British Passport":{
-      "regex":"(?:P<GBR)(?:[A-Z0-9<].+)",
+      "regex":"P<GBR[A-Z0-9<]+",
       "region":"United Kingdom",
       "keywords":[
          "Passport",
@@ -124,7 +125,7 @@
       ]
    },
    "Indian Passport": {
-      "regex":"(?:P<IND)(?:[A-Z0-9<].+)",
+      "regex":"P<IND[A-Z0-9<]+",
       "region":"India",
       "keywords":[
          "Passport",
@@ -133,7 +134,7 @@
       ]
    },
    "United States Passport": {
-      "regex":"(?:P<USA)(?:[A-Z0-9<].+)",
+      "regex":"P<USA[A-Z0-9<]+",
       "region":"United States",
       "keywords":[
          "Passport",
@@ -142,7 +143,7 @@
       ]
    },
    "Saudi Arabian Passport": {
-      "regex":"(?:P<SAU)(?:[A-Z0-9<].+)",
+      "regex":"P<SAU[A-Z0-9<]+",
       "region":"Saudi Arabia",
       "keywords":[
          "Passport",
@@ -167,7 +168,7 @@
       ]
    },
    "Saudi Driver's License": {
-      "regex":"\b[0-9]{10}\b",
+      "regex":"\\b\\d{10}\\b",
       "region":"Saudi Arabia",
       "keywords":[
          "Kingdom",
@@ -180,7 +181,7 @@
       ]
    },
    "Saudi Arabian Visa": {
-      "regex":"(?:V<SAU)(?:[A-Z0-9<].+)",
+      "regex":"V<SAU[A-Z0-9<]+",
       "region":"Saudi Arabia",
       "keywords":[
          "Visa",
@@ -194,7 +195,7 @@
       ]
    },
    "Tawuniya Health Insurance": {
-      "regex":"\b[0-9]{5}\b",
+      "regex":"\\b\\d{5}\\b",
       "region":"Saudi Arabia",
       "keywords":[
          "Tawuniya",
@@ -206,7 +207,7 @@
       ]
    },
    "Nebraska Driver's License": {
-      "regex":"[A-Z]{1}[0-9]{9,11}",
+      "regex":"\\b[A-Z]\\d{9,11}\\b",
       "region":"United States",
       "keywords":[
          "License",
@@ -216,7 +217,7 @@
       ]
    },
    "California Driver's License":{
-      "regex":"[A-Z]{1}[0-9]{9,11}",
+      "regex":"\\b[A-Z]\\d{9,11}\\b",
       "region":"United States",
       "keywords":[
          "License",
@@ -226,7 +227,7 @@
       ]
    },
    "Maharashtra Driver's License": {
-      "regex":"[A-Z]{2}[0-9]{2} [0-9]{12}",
+      "regex":"\\b[A-Z]{2}\\d{2}\\s\\d{12}\\b",
       "region":"India",
       "keywords":[
          "Licence",
@@ -237,7 +238,7 @@
       ]
    },
    "Goa Driver's License": {
-      "regex":"GA[0-9]{2} \\d{11}",
+      "regex":"\\bGA\\d{2}\\s\\d{11}\\b",
       "region":"India",
       "keywords":[
          "Licence",
@@ -248,7 +249,7 @@
       ]
    },
    "Karnataka Driver's License": {
-      "regex":"GA[0-9]{2} \\d{11}",
+      "regex":"\\bKA\\d{2}\\s\\d{11}\\b",
       "region":"India",
       "keywords":[
          "Licence",
@@ -259,7 +260,7 @@
       ]
    },
    "UUID4": {
-       "regex":"[a-f0-9]{8}-?[a-f0-9]{4}-?4[a-f0-9]{3}-?[89ab][a-f0-9]{3}-?[a-f0-9]{12}",
+       "regex":"\\b[a-f0-9]{8}-?[a-f0-9]{4}-?4[a-f0-9]{3}-?[89ab][a-f0-9]{3}-?[a-f0-9]{12}\\b",
        "region":null,
        "keywords":null
    },
@@ -276,7 +277,7 @@
       ]
    },
    "Ukraine ID Card": {
-      "regex":"(?:IDUKR)(?:[A-Z0-9<].+)",
+      "regex":"IDUKR[A-Z0-9<]+",
       "region":"Ukraine",
       "keywords":[
          "Ukraine",
@@ -287,7 +288,7 @@
       ]
    },
    "Ukrainian Passport": {
-      "regex":"(?:P<UKR)(?:[A-Z0-9<].+)",
+      "regex":"P<UKR[A-Z0-9<]+",
       "region":"Ukraine",
       "keywords":[
          "Ukraine",
@@ -298,7 +299,7 @@
       ]
    },
    "Russian Passport": {
-      "regex":"(?:P<RUS)(?:[A-Z0-9<].+)",
+      "regex":"P<RUS[A-Z0-9<]+",
       "region":"Russia",
       "keywords":[
          "Rus",
@@ -309,7 +310,7 @@
       ]
    },
    "Russia Driver's License": {
-      "regex":"^[0-9 ]{9,11}$",
+      "regex":"\\b\\d{4}\\s?\\d{6}\\b",
       "region":"Russia",
       "keywords":[
          "4a)",
@@ -320,7 +321,7 @@
       ]
    },
    "Singaporean National Registration Identity Card": {
-      "regex": "(?i)[a-z0-9]{9}?",
+      "regex": "\\b[A-Z]\\d{7}[A-Z]\\b",
       "region": "Singapore",
       "keywords": [
          "Identity Card No",
@@ -329,8 +330,8 @@
       ]
    },
    "Singaporean Passport": {
-      "regex": "(?:P<SGP|PASGP)<<(?:[A-Z0-9<].+)",
-      "region": "Sinagpore",
+      "regex": "(?:P<SGP|PASGP)<<[A-Z0-9<]+",
+      "region": "Singapore",
       "keywords": [
          "Singapore Citizen",
          "SGP",
@@ -339,7 +340,7 @@
       ]
    },
    "South African Identity Card": {
-      "regex": "^[0-9]{5,}$",
+      "regex": "\\b\\d{13}\\b",
       "region": "South Africa",
       "keywords": [
          "South Africa",
@@ -347,7 +348,7 @@
       ]
    },
    "South African Passport": {
-      "regex": "(?:P<ZAF|PMZAF)<<(?:[A-Z0-9<].+)",
+      "regex": "(?:P<ZAF|PMZAF)<<[A-Z0-9<]+",
       "region": "South Africa",
       "keywords": [
          "South Africa",
@@ -357,7 +358,7 @@
       ]
    },
    "South Korean Passport": {
-      "regex": "(?:P<KOR|PPKOR)(?:[A-Z0-9<].+)",
+      "regex": "(?:P<KOR|PPKOR)[A-Z0-9<]+",
       "region": "South Korea",
       "keywords": [
          "Korea",
@@ -367,7 +368,7 @@
       ]
    },   
    "North Korean Passport": {
-      "regex": "(?:P<PRK|PPPRK)(?:[A-Z0-9<].+)",
+      "regex": "(?:P<PRK|PPPRK)[A-Z0-9<]+",
       "region": "North Korea",
       "keywords": [
          "PRK",
@@ -377,7 +378,7 @@
       ]
    },
    "Israeli Passport": {
-      "regex": "(?:P<ISR|PMISR)(?:[A-Z0-9<].+)",
+      "regex": "(?:P<ISR|PMISR)[A-Z0-9<]+",
       "region": "Israel",
       "keywords": [
          "Israel",
@@ -386,7 +387,7 @@
       ]
    },
    "Palestinian Passport": {
-      "regex": "(?:P<PSE|PDPSE)(?:[A-Z0-9<].+)",
+      "regex": "(?:P<PSE|PDPSE)[A-Z0-9<]+",
       "region": "Palestine",
       "keywords": [
          "Palestinian",
@@ -396,7 +397,7 @@
       ]
    },
    "Australian Passport": {
-      "regex": "(?:P<PSE|PDPSE)(?:[A-Z0-9<].+)",
+      "regex": "(?:P<AUS|PDAUS)[A-Z0-9<]+",
       "region": "Australia",
       "keywords": [
          "Australia",
@@ -406,7 +407,7 @@
       ]
    },
    "Canadian Passport": {
-      "regex": "(?:P<CAN|PPCAN)(?:[A-Z0-9<].+)",
+      "regex": "(?:P<CAN|PPCAN)[A-Z0-9<]+",
       "region": "Canada",
       "keywords": [
          "PPCAN",
@@ -418,7 +419,7 @@
       ]
    },
    "Irish Public Services Card": {
-      "regex": "[A-Z][0-9]{7}",
+      "regex": "\\b[A-Z]\\d{7}\\b",
       "region": "Ireland",
       "keywords": [
          "Public",

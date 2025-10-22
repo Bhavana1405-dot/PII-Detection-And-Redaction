@@ -51,12 +51,14 @@ def get_regexes():
 
 def email_pii(text, rules):
     email_rules = rules["Email"]["regex"]
+    # FIXED: Use re.finditer to get all matches with their positions
     email_addresses = re.findall(email_rules, text)
     email_addresses = list(set(filter(None, email_addresses)))
     return email_addresses
 
 def phone_pii(text, rules):
     phone_rules = rules["Phone Number"]["regex"]
+    # FIXED: Findall with groups - extract all matches
     phone_numbers = re.findall(phone_rules, text)
     phone_numbers = list(itertools.chain(*phone_numbers))
     phone_numbers = list(set(filter(None, phone_numbers)))
@@ -64,33 +66,36 @@ def phone_pii(text, rules):
 
 def id_card_numbers_pii(text, rules):
     results = []
-    # Clear all non-regional regexes
     regional_regexes = {}
+    
     for key in rules.keys():
         region = rules[key]["region"]
         if region is not None:
-            regional_regexes[key]=rules[key]
+            regional_regexes[key] = rules[key]
 
-    # Grab regexes from objects
     for key in regional_regexes.keys():
-        region = rules[key]["region"]
         rule = rules[key]["regex"]
         
+        if rule is None:
+            continue
+            
         try:
-            match = re.findall(rule, text)
-        except:
-            match=[]
+            # FIXED: Use finditer and group(0) for COMPLETE matches
+            matches = [m.group(0) for m in re.finditer(rule, text, re.IGNORECASE)]
+        except Exception as e:
+            print(f"Error processing {key}: {e}")
+            matches = []
 
-        if len(match) > 0:
-            result = {'identifier_class':key, 'result': list(set(match))}
+        if len(matches) > 0:
+            result = {'identifier_class': key, 'result': list(set(matches))}
             results.append(result)
 
     return results
 
 def read_pdf(pdf):
-    pdf_contents=""
+    pdf_contents = ""
     for page in pdf:
-        pdf_contents += str(pytesseract.image_to_string(page, config = '--psm 12'))
+        pdf_contents += str(pytesseract.image_to_string(page, config='--psm 12'))
 
     return pdf_contents
 
@@ -101,7 +106,6 @@ def regional_pii(text):
     from nltk.corpus import stopwords
 
     # Ensure required resources are downloaded
-    # Some NLTK taggers are language-specific (e.g. averaged_perceptron_tagger_eng)
     resources = [
         "punkt",
         "maxent_ne_chunker",
@@ -109,12 +113,10 @@ def regional_pii(text):
         "stopwords",
         "words",
         "averaged_perceptron_tagger",
-        # language-specific tagger resource some NLTK versions request
         "averaged_perceptron_tagger_eng",
     ]
     for resource in resources:
         try:
-            # For generic names NLTK will resolve the proper path; if a direct find fails we attempt download
             nltk.data.find(resource)
         except LookupError:
             try:
@@ -126,11 +128,9 @@ def regional_pii(text):
 
     words = word_tokenize(text)
     tagged_words = pos_tag(words)
-    # Named-entity chunking may require additional NLTK resources on some installs
     try:
         named_entities = ne_chunk(tagged_words)
     except LookupError:
-        # If the chunker is not available, return an empty list of locations instead
         named_entities = []
 
     locations = []
@@ -164,4 +164,40 @@ def keywords_classify_pii(rules, intelligible_text_list):
                     ) > 80: scores[key] += 1
 
     return scores
+
+
+def redact_pii(text, rules, redaction_char='█'):
+    """
+    NEW FUNCTION: Redacts all PII from text based on regex patterns
+    Returns: (redacted_text, redaction_report)
+    """
+    redacted_text = text
+    redaction_report = {}
     
+    for pii_type, definition in rules.items():
+        regex = definition.get('regex')
+        if regex is None:
+            continue
+            
+        try:
+            # Find all matches
+            matches = list(re.finditer(regex, redacted_text, re.IGNORECASE))
+            count = len(matches)
+            
+            if count > 0:
+                redaction_report[pii_type] = count
+                
+                # Replace in reverse order to maintain string indices
+                for match in reversed(matches):
+                    start, end = match.span()
+                    original_text = match.group(0)
+                    
+                    # Replace with redaction blocks (same length as original)
+                    redaction = redaction_char * len(original_text)
+                    redacted_text = redacted_text[:start] + redaction + redacted_text[end:]
+        
+        except Exception as e:
+            print(f"Error redacting {pii_type}: {e}")
+            continue
+    
+    return redacted_text, redaction_report

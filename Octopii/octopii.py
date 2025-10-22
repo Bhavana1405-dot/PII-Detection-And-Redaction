@@ -80,6 +80,13 @@ def help_screen():
 Note: Only Unix-like filesystems, S3 and open directory URLs are supported.'''
     print(help)
 
+"""
+CRITICAL FIX for octopii.py - search_pii function
+This ensures complete PII values are mapped to their bounding boxes
+
+REPLACE the search_pii function in Octopii/octopii.py with this version
+"""
+
 def search_pii(file_path):
     contains_faces = 0
     bounding_box_data = None
@@ -110,7 +117,6 @@ def search_pii(file_path):
     elif file_utils.is_pdf(file_path):
         pdf_pages = convert_from_path(file_path, 400, poppler_path=POPPLER_PATH)
 
-
         bounding_box_data = {"text": [], "left": [], "top": [], "width": [], "height": []}
         for page in pdf_pages:
             contains_faces = image_utils.scan_image_for_people(page)
@@ -125,7 +131,7 @@ def search_pii(file_path):
         text = textract.process(file_path).decode()
         intelligible = text_utils.string_tokenizer(text)
 
-    # --- PII Detection ---
+    # --- PII Detection (FIXED) ---
     addresses = text_utils.regional_pii(text)
     emails = text_utils.email_pii(text, rules)
     phone_numbers = text_utils.phone_pii(text, rules)
@@ -133,17 +139,24 @@ def search_pii(file_path):
     score = max(keywords_scores.values(), default=0)
     pii_class = list(keywords_scores.keys())[list(keywords_scores.values()).index(score)] if score >= 5 else None
     country_of_origin = rules[pii_class]["region"] if pii_class else None
-    identifiers = text_utils.id_card_numbers_pii(text, rules)
-    identifiers = identifiers[0]["result"] if identifiers else []
+    
+    # FIXED: Get identifiers correctly
+    identifiers_result = text_utils.id_card_numbers_pii(text, rules)
+    identifiers = []
+    for id_result in identifiers_result:
+        identifiers.extend(id_result['result'])
 
     if temp_dir in file_path:
         file_path = urllib.parse.unquote(file_path.replace(temp_dir, ""))
 
-    # --- PII Location Mapping ---
+    # --- PII Location Mapping (FIXED) ---
     pii_locations = {}
 
     def normalize_text(s):
-        return s.lower().replace(' ', '').replace('-', '').replace('(', '').replace(')', '')
+        """Normalize text for matching"""
+        if not s:
+            return ""
+        return s.lower().replace(' ', '').replace('-', '').replace('(', '').replace(')', '').replace(':', '')
 
     if bounding_box_data:
         # --- Image/PDF: use bounding boxes ---
@@ -154,51 +167,113 @@ def search_pii(file_path):
         heights = bounding_box_data['height']
 
         def find_bbox_for_pii(pii):
+            """Find bounding box for a PII value"""
             norm_pii = normalize_text(pii)
             n = len(texts)
             match_indices = []
-            norm_tokens = [normalize_text(t) for t in texts]
+            norm_tokens = [normalize_text(str(t)) for t in texts]
 
-            # single-token match
+            # Try single-token match first
             for i, tok in enumerate(norm_tokens):
-                if tok and (tok in norm_pii or norm_pii in tok):
-                    match_indices = [i]
-                    break
+                if tok and len(tok) >= 3:
+                    # Check if token is significant part of PII
+                    if tok in norm_pii and len(tok) / len(norm_pii) > 0.3:
+                        match_indices = [i]
+                        break
 
-            # sliding window (multi-token)
+            # Try multi-token sliding window
             if not match_indices:
-                max_window = 6
+                max_window = 10
                 for start in range(n):
+                    if not norm_tokens[start]:
+                        continue
                     concat = norm_tokens[start]
-                    if norm_pii in concat:
-                        match_indices = [start]
-                        break
-                    for end in range(start+1, min(start+max_window, n)):
-                        concat += norm_tokens[end]
-                        if norm_pii in concat:
-                            match_indices = list(range(start, end+1))
+                    
+                    # Check single token first
+                    if len(concat) >= 3 and norm_pii.startswith(concat):
+                        # Try to extend
+                        for end in range(start + 1, min(start + max_window, n)):
+                            if not norm_tokens[end]:
+                                continue
+                            concat += norm_tokens[end]
+                            
+                            # Check if we have a good match
+                            if concat == norm_pii or (len(concat) >= len(norm_pii) * 0.8 and concat in norm_pii):
+                                match_indices = list(range(start, end + 1))
+                                break
+                        
+                        if match_indices:
                             break
-                    if match_indices:
-                        break
+
+            # If still no match, try fuzzy matching for complex PIIs
+            if not match_indices:
+                # For PIIs with special characters (Aadhaar, phone, etc.)
+                # Remove all separators and try matching sequences
+                pii_digits = ''.join(c for c in pii if c.isdigit())
+                pii_letters = ''.join(c for c in pii if c.isalpha())
+                
+                if len(pii_digits) >= 8:  # Likely Aadhaar or phone
+                    # Try to find sequence of numbers
+                    current_seq = ""
+                    seq_indices = []
+                    
+                    for i, tok in enumerate(texts):
+                        tok_str = str(tok)
+                        tok_digits = ''.join(c for c in tok_str if c.isdigit())
+                        
+                        if tok_digits:
+                            current_seq += tok_digits
+                            seq_indices.append(i)
+                            
+                            # Check if we have enough
+                            if len(current_seq) >= len(pii_digits) * 0.8:
+                                if pii_digits in current_seq or current_seq in pii_digits:
+                                    match_indices = seq_indices
+                                    break
 
             if match_indices:
-                x_min = min(lefts[i] for i in match_indices)
-                y_min = min(tops[i] for i in match_indices)
-                x_max = max(lefts[i] + widths[i] for i in match_indices)
-                y_max = max(tops[i] + heights[i] for i in match_indices)
-                return {"x": int(x_min), "y": int(y_min), "width": int(x_max - x_min), "height": int(y_max - y_min)}
+                try:
+                    x_coords = [lefts[i] for i in match_indices]
+                    y_coords = [tops[i] for i in match_indices]
+                    w_coords = [widths[i] for i in match_indices]
+                    h_coords = [heights[i] for i in match_indices]
+                    
+                    x_min = min(x_coords)
+                    y_min = min(y_coords)
+                    x_max = max(x_coords[i] + w_coords[i] for i in range(len(x_coords)))
+                    y_max = max(y_coords[i] + h_coords[i] for i in range(len(y_coords)))
+                    return {
+                        "x": int(x_min),
+                        "y": int(y_min),
+                        "width": int(x_max - x_min),
+                        "height": int(y_max - y_min)
+                    }
+                
+                except (ValueError, IndexError) as e:
+                    print(f"Warning: Could not calculate bbox for {pii}: {e}")
+                    return None
+            
             return None
 
-        for pii in emails + phone_numbers + identifiers + addresses:
+        # Find locations for all detected PII
+        all_pii = emails + phone_numbers + identifiers + addresses
+        
+        print(f"Searching for bounding boxes for {len(all_pii)} PII values...")
+        
+        for pii in all_pii:
             bbox = find_bbox_for_pii(pii)
             if bbox:
                 pii_locations[pii] = bbox
+                print(f"  ✓ Found location for: {pii[:40]}...")
+            else:
+                print(f"  ✗ Could not find location for: {pii[:40]}...")
 
     else:
         # --- Plain text: use character offsets ---
         norm_text = normalize_text(text)
         for pii in emails + phone_numbers + identifiers + addresses:
-            start = norm_text.find(normalize_text(pii))
+            norm_pii = normalize_text(pii)
+            start = norm_text.find(norm_pii)
             if start != -1:
                 pii_locations[pii] = {"start": start, "end": start + len(pii)}
 
@@ -322,5 +397,4 @@ if __name__ in '__main__':
 
     sys.exit(0)
             
-
 
