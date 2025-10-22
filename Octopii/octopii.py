@@ -148,10 +148,37 @@ def search_pii(file_path):
     country_of_origin = rules[pii_class]["region"] if pii_class else None
     
     # Get identifiers correctly
-    identifiers_result = text_utils.id_card_numbers_pii(text, rules)
+    import re
+
+    # Build alternative detection strings for PDF/image OCR that may split digits
+    detection_texts = [text]
+
+    # add whitespace-collapsed version
+    collapsed = re.sub(r'\s+', '', text)
+    if collapsed != text:
+        detection_texts.append(collapsed)
+
+    # add digits-only version (useful when non-digit noise exists)
+    digits_only = ''.join(c for c in text if c.isdigit())
+    if digits_only and digits_only != collapsed:
+        detection_texts.append(digits_only)
+
+    # run id detection on all variants and merge unique results
     identifiers = []
-    for id_result in identifiers_result:
-        identifiers.extend(id_result['result'])
+    seen_ids = set()
+    for dt in detection_texts:
+        try:
+            ids_result = text_utils.id_card_numbers_pii(dt, rules)
+        except Exception:
+            ids_result = []
+        for id_result in ids_result:
+            for r in id_result.get('result', []):
+                # normalize identifier string (remove spaces/hyphens)
+                norm = re.sub(r'[\s-]+', '', str(r))
+                if norm not in seen_ids:
+                    seen_ids.add(norm)
+                    identifiers.append(r)
+
 
     if temp_dir in file_path:
         file_path = urllib.parse.unquote(file_path.replace(temp_dir, ""))
