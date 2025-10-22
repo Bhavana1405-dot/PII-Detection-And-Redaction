@@ -203,7 +203,7 @@ def search_pii(file_path):
         def find_precise_bbox_for_pii(pii):
             """
             CRITICAL FIX: Find MINIMAL bounding box that covers ONLY the PII
-            Uses character-level matching and stops as soon as PII is covered
+            NOW HANDLES: Split numbers like "999900001111" that OCR reads as "9999 0000 1111"
             """
             norm_pii = normalize_text(pii)
             n = len(texts)
@@ -213,10 +213,9 @@ def search_pii(file_path):
             
             norm_tokens = [normalize_text(str(t)) for t in texts]
             
-            # Strategy 1: Single token exact match
+            # ========== STRATEGY 1: Single token exact match ==========
             for i, tok in enumerate(norm_tokens):
                 if tok and tok == norm_pii:
-                    # Found exact match in single token
                     return {
                         "x": int(lefts[i]),
                         "y": int(tops[i]),
@@ -224,27 +223,22 @@ def search_pii(file_path):
                         "height": int(heights[i])
                     }
             
-            # Strategy 2: Consecutive tokens that form the PII
-            # Use a sliding window approach with STRICT length limits
+            # ========== STRATEGY 2: Consecutive tokens that form the PII ==========
             max_tokens_in_pii = min(8, len(norm_pii.replace(' ', '')) // 2 + 1)
             
             for start in range(n):
                 if not norm_tokens[start]:
                     continue
                 
-                # Try windows of increasing size
                 for window_size in range(1, max_tokens_in_pii + 1):
                     end = start + window_size
                     if end > n:
                         break
                     
-                    # Get tokens in this window
                     window_indices = list(range(start, end))
                     window_text = ''.join(norm_tokens[i] for i in window_indices)
                     
-                    # Check if this window matches the PII
                     if window_text == norm_pii:
-                        # Calculate TIGHT bounding box
                         try:
                             x_min = min(lefts[i] for i in window_indices)
                             y_min = min(tops[i] for i in window_indices)
@@ -260,13 +254,47 @@ def search_pii(file_path):
                         except (ValueError, IndexError):
                             continue
             
-            # Strategy 3: Fuzzy matching for complex PIIs (Aadhaar with spaces)
-            # Only look for sequences of digits/letters that match PII
-            pii_digits = ''.join(c for c in pii if c.isdigit())
-            pii_letters = ''.join(c for c in pii if c.isalpha())
+            # ========== STRATEGY 3: AADHAAR-SPECIFIC - Handle split 12-digit numbers ==========
+            # For numbers like "999900001111" that might be split as "9999" "0000" "1111"
+            if len(norm_pii) == 12 and norm_pii.isdigit():
+                # Look for pattern: 4 digits + 4 digits + 4 digits
+                for start in range(n):
+                    if start + 2 >= n:
+                        break
+                    
+                    # Get 3 consecutive tokens
+                    token1 = norm_tokens[start]
+                    token2 = norm_tokens[start + 1] if start + 1 < n else ""
+                    token3 = norm_tokens[start + 2] if start + 2 < n else ""
+                    
+                    # Check if they form our 12-digit number
+                    combined = token1 + token2 + token3
+                    
+                    if combined == norm_pii:
+                        # Calculate bounding box covering all 3 tokens
+                        try:
+                            indices = [start, start + 1, start + 2]
+                            x_min = min(lefts[i] for i in indices if i < n)
+                            y_min = min(tops[i] for i in indices if i < n)
+                            x_max = max(lefts[i] + widths[i] for i in indices if i < n)
+                            y_max = max(tops[i] + heights[i] for i in indices if i < n)
+                            
+                            bbox = {
+                                "x": int(x_min),
+                                "y": int(y_min),
+                                "width": int(x_max - x_min),
+                                "height": int(y_max - y_min)
+                            }
+                            
+                            print(f"  ✓ Found split Aadhaar: {token1} {token2} {token3} → {pii}")
+                            return bbox
+                        except (ValueError, IndexError):
+                            continue
             
-            if len(pii_digits) >= 8:  # Likely numeric ID (Aadhaar, phone, account)
-                # Find consecutive tokens that contain these digits
+            # ========== STRATEGY 4: Fuzzy digit matching for complex PIIs ==========
+            pii_digits = ''.join(c for c in pii if c.isdigit())
+            
+            if len(pii_digits) >= 8:  # Likely numeric ID
                 current_digits = ""
                 digit_indices = []
                 
@@ -278,33 +306,30 @@ def search_pii(file_path):
                         current_digits += tok_digits
                         digit_indices.append(i)
                         
-                        # Stop as soon as we have enough digits
-                        if len(current_digits) >= len(pii_digits):
-                            # Check if we matched the PII
-                            if pii_digits in current_digits or current_digits in pii_digits:
-                                # Calculate tight box around ONLY these tokens
-                                try:
-                                    x_min = min(lefts[j] for j in digit_indices)
-                                    y_min = min(tops[j] for j in digit_indices)
-                                    x_max = max(lefts[j] + widths[j] for j in digit_indices)
-                                    y_max = max(tops[j] + heights[j] for j in digit_indices)
-                                    
-                                    return {
-                                        "x": int(x_min),
-                                        "y": int(y_min),
-                                        "width": int(x_max - x_min),
-                                        "height": int(y_max - y_min)
-                                    }
-                                except (ValueError, IndexError):
-                                    pass
-                            
-                            # Reset if no match
+                        # Check if we matched the PII
+                        if current_digits == pii_digits:
+                            try:
+                                x_min = min(lefts[j] for j in digit_indices)
+                                y_min = min(tops[j] for j in digit_indices)
+                                x_max = max(lefts[j] + widths[j] for j in digit_indices)
+                                y_max = max(tops[j] + heights[j] for j in digit_indices)
+                                
+                                return {
+                                    "x": int(x_min),
+                                    "y": int(y_min),
+                                    "width": int(x_max - x_min),
+                                    "height": int(y_max - y_min)
+                                }
+                            except (ValueError, IndexError):
+                                pass
+                        
+                        # If we have too many digits, reset
+                        if len(current_digits) > len(pii_digits):
                             current_digits = tok_digits
                             digit_indices = [i]
                     else:
-                        # Non-digit token breaks the sequence
-                        if len(current_digits) >= len(pii_digits) * 0.8:
-                            # We might have missed it, reset
+                        # Non-digit token - only reset if we haven't found a match yet
+                        if len(current_digits) > 0 and current_digits != pii_digits:
                             current_digits = ""
                             digit_indices = []
             

@@ -32,7 +32,7 @@
       "region": null
    },
    "Aadhaar Card": {
-      "regex": "(?:\\d[\\s-]*){12}",
+      "regex": "\\b\\d{4}[\\s-]?\\d{4}[\\s-]?\\d{4}\\b",
       "region": "India",
       "keywords": [
          "Aadhaar",
@@ -45,6 +45,7 @@
          "Government of India"
       ]
    },
+
 
    "Permanent Account Number": {
      "keywords": ["PAN", "income", "tax", "permanent", "account", "department", "India", "Govt."],

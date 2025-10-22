@@ -66,37 +66,137 @@ def phone_pii(text, rules):
 
 def id_card_numbers_pii(text, rules):
     """
-    FIXED: Extract COMPLETE PII values using re.finditer and match.group(0)
+    FIXED VERSION: Extract COMPLETE PII values and properly classify them
+    
+    CRITICAL FIXES:
+    1. Use re.finditer() with .group(0) to get COMPLETE matches
+    2. Test each PII type's regex separately
+    3. Return results grouped by PII type (not mixed together)
     """
     results = []
     
-    # Filter regional regexes
+    # Filter regional regexes (those with a region specified)
     regional_regexes = {}
     for key in rules.keys():
         region = rules[key]["region"]
         if region is not None:
             regional_regexes[key] = rules[key]
 
-    # Process each PII type
+    # Process each PII type SEPARATELY
     for key in regional_regexes.keys():
         rule = rules[key]["regex"]
         
         if rule is None:
             continue
-            
+        
         try:
             # CRITICAL FIX: Use finditer and group(0) to get COMPLETE matches
             matches = [m.group(0) for m in re.finditer(rule, text, re.IGNORECASE)]
             
+            # Remove duplicates while preserving order
+            seen = set()
+            unique_matches = []
+            for match in matches:
+                # Normalize for comparison (remove spaces/hyphens)
+                normalized = match.replace(' ', '').replace('-', '').replace('(', '').replace(')', '')
+                if normalized not in seen and len(normalized) > 0:
+                    seen.add(normalized)
+                    unique_matches.append(match)
+            
         except Exception as e:
             print(f"Error processing {key}: {e}")
-            matches = []
+            unique_matches = []
 
-        if len(matches) > 0:
-            result = {'identifier_class': key, 'result': list(set(matches))}
+        # Only add result if we found matches
+        if len(unique_matches) > 0:
+            result = {
+                'identifier_class': key,
+                'result': unique_matches
+            }
             results.append(result)
+            
+            # DEBUG: Print what was found
+            print(f"[DEBUG] {key}: Found {len(unique_matches)} value(s)")
+            for val in unique_matches[:3]:  # Show first 3
+                print(f"        - {val}")
 
     return results
+
+
+# ALTERNATIVE: If you want Aadhaar to be prioritized, add special handling:
+
+def id_card_numbers_pii_with_priority(text, rules):
+    """
+    VERSION 2: With Aadhaar priority handling
+    Checks Aadhaar first, then other IDs
+    """
+    results = []
+    
+    # 1. Check Aadhaar FIRST with multiple patterns
+    aadhaar_patterns = [
+        r'\b\d{4}[\s-]?\d{4}[\s-]?\d{4}\b',  # 4-4-4 format
+        r'\b\d{12}\b',                        # 12 consecutive digits
+    ]
+    
+    aadhaar_found = set()
+    for pattern in aadhaar_patterns:
+        matches = [m.group(0) for m in re.finditer(pattern, text)]
+        for match in matches:
+            normalized = match.replace(' ', '').replace('-', '')
+            if len(normalized) == 12 and normalized.isdigit():
+                aadhaar_found.add(match)
+    
+    if aadhaar_found:
+        results.append({
+            'identifier_class': 'Aadhaar Card',
+            'result': list(aadhaar_found)
+        })
+        print(f"[DEBUG] Aadhaar Card: Found {len(aadhaar_found)} value(s)")
+        for val in list(aadhaar_found)[:3]:
+            print(f"        - {val}")
+    
+    # 2. Check other regional IDs (excluding Aadhaar)
+    regional_regexes = {}
+    for key in rules.keys():
+        region = rules[key]["region"]
+        if region is not None and key != "Aadhaar Card":
+            regional_regexes[key] = rules[key]
+
+    for key in regional_regexes.keys():
+        rule = rules[key]["regex"]
+        
+        if rule is None:
+            continue
+        
+        try:
+            matches = [m.group(0) for m in re.finditer(rule, text, re.IGNORECASE)]
+            
+            # Remove duplicates
+            seen = set()
+            unique_matches = []
+            for match in matches:
+                normalized = match.replace(' ', '').replace('-', '').replace('(', '').replace(')', '')
+                if normalized not in seen:
+                    seen.add(normalized)
+                    unique_matches.append(match)
+            
+        except Exception as e:
+            print(f"Error processing {key}: {e}")
+            unique_matches = []
+
+        if len(unique_matches) > 0:
+            results.append({
+                'identifier_class': key,
+                'result': unique_matches
+            })
+            print(f"[DEBUG] {key}: Found {len(unique_matches)} value(s)")
+
+    return results
+
+
+# WHICH VERSION TO USE:
+# - Use id_card_numbers_pii() if the regex in definitions.json is correct
+# - Use id_card_numbers_pii_with_priority() if Aadhaar detection is still failing
 
 def read_pdf(pdf):
     pdf_contents = ""
