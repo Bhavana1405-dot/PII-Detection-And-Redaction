@@ -6,517 +6,21 @@
         "country_of_origin": "India",
         "faces": 0,
         "identifiers": [
-            "000987654321",
             "000123456789",
             "000987654321",
+            "000123456789",
             "4444 5555 6666",
             "2025-00012345",
-            "000123456789",
-            "RERVP9876Z",
+            "000987654321",
             "AAAAP1234Q",
+            "RERVP9876Z",
             "2025-7788",
             "2025-7788",
-            "98111",
-            "22334",
-            "98234",
             "99876",
-            "55443",
-            "56789"
-        ],
-        "emails": [
-            "rohit.verma.synthetic@example.com",
-            "aarti.kumari.synthetic@example.com"
-        ],
-        "phone_numbers": [
-            "5",
-            "6",
-            "8",
-            "9",
-            "+",
-            "2",
-            "4",
-            "1",
-            "0",
-            "3",
-            "7",
-            "-"
-        ],
-        "addresses": [
-            "Bank",
-            "Aadhaar",
-            "India",
-            "Anesthesia",
-            "PAN",
-            "Medical",
-            "Net",
-            "Indrapuri",
-            "Physician",
-            "Amount",
-            "Greens Avenue",
-            "Account",
-            "Loan",
-            "Branch",
-            "Tenure",
-            "Male",
-            "Sanction",
-            "Jaipur",
-            "Policy",
-            "Insured",
-            "Hospital"
-        ],
-        "pii_with_locations": {
-            "rohit.verma.synthetic@example.com": {
-                "x": 596,
-                "y": 493,
-                "width": 852,
-                "height": 50
-            },
-            "aarti.kumari.synthetic@example.com": {
-                "x": 1265,
-                "y": 2340,
-                "width": 867,
-                "height": 50
-            },
-            "000987654321": {
-                "x": 435,
-                "y": 2262,
-                "width": 330,
-                "height": 37
-            },
-            "000123456789": {
-                "x": 704,
-                "y": 3553,
-                "width": 338,
-                "height": 37
-            },
-            "4444 5555 6666": {
-                "x": 1919,
-                "y": 1420,
-                "width": 112,
-                "height": 36
-            },
-            "2025-00012345": {
-                "x": 435,
-                "y": 1047,
-                "width": 843,
-                "height": 949
-            },
-            "RERVP9876Z": {
-                "x": 1894,
-                "y": 495,
-                "width": 286,
-                "height": 37
-            },
-            "AAAAP1234Q": {
-                "x": 969,
-                "y": 2417,
-                "width": 308,
-                "height": 45
-            },
-            "2025-7788": {
-                "x": 433,
-                "y": 1047,
-                "width": 2531,
-                "height": 1715
-            },
-            "Bank": {
-                "x": 653,
-                "y": 3401,
-                "width": 112,
-                "height": 39
-            },
-            "Aadhaar": {
-                "x": 2204,
-                "y": 2340,
-                "width": 198,
-                "height": 39
-            },
-            "India": {
-                "x": 437,
-                "y": 1192,
-                "width": 319,
-                "height": 92
-            },
-            "Anesthesia": {
-                "x": 720,
-                "y": 1893,
-                "width": 253,
-                "height": 39
-            },
-            "PAN": {
-                "x": 594,
-                "y": 2417,
-                "width": 88,
-                "height": 36
-            },
-            "Medical": {
-                "x": 1647,
-                "y": 2648,
-                "width": 174,
-                "height": 39
-            },
-            "Net": {
-                "x": 437,
-                "y": 3087,
-                "width": 86,
-                "height": 37
-            },
-            "Indrapuri": {
-                "x": 1593,
-                "y": 1964,
-                "width": 198,
-                "height": 58
-            },
-            "Physician": {
-                "x": 2394,
-                "y": 2957,
-                "width": 224,
-                "height": 50
-            },
-            "Amount": {
-                "x": 1810,
-                "y": 3192,
-                "width": 198,
-                "height": 37
-            },
-            "Greens Avenue": {
-                "x": 1179,
-                "y": 2267,
-                "width": 162,
-                "height": 37
-            },
-            "Account": {
-                "x": 1010,
-                "y": 3478,
-                "width": 189,
-                "height": 37
-            },
-            "Loan": {
-                "x": 1598,
-                "y": 2842,
-                "width": 228,
-                "height": 72
-            },
-            "Branch": {
-                "x": 2791,
-                "y": 3401,
-                "width": 171,
-                "height": 39
-            },
-            "Tenure": {
-                "x": 909,
-                "y": 804,
-                "width": 160,
-                "height": 37
-            },
-            "Male": {
-                "x": 1126,
-                "y": 3939,
-                "width": 107,
-                "height": 39
-            },
-            "Sanction": {
-                "x": 1584,
-                "y": 3440,
-                "width": 317,
-                "height": 58
-            },
-            "Jaipur": {
-                "x": 805,
-                "y": 3477,
-                "width": 141,
-                "height": 49
-            },
-            "Policy": {
-                "x": 1642,
-                "y": 1400,
-                "width": 213,
-                "height": 75
-            },
-            "Insured": {
-                "x": 2179,
-                "y": 1882,
-                "width": 190,
-                "height": 39
-            },
-            "Hospital": {
-                "x": 437,
-                "y": 2573,
-                "width": 200,
-                "height": 50
-            }
-        }
-    },
-    {
-        "file_path": "octopii/dummy-pii/InsureLoans.pdf",
-        "pii_class": "Banking",
-        "score": 42,
-        "country_of_origin": "India",
-        "faces": 0,
-        "identifiers": [
-            "000123456789",
-            "000987654321",
-            "4444 5555 6666",
-            "2025-00012345",
-            "000123456789",
-            "000987654321",
-            "AAAAP1234Q",
-            "RERVP9876Z",
-            "2025-7788",
-            "2025-7788",
-            "56789",
-            "22334",
             "98234",
-            "55443",
-            "98111",
-            "99876"
-        ],
-        "emails": [
-            "rohit.verma.synthetic@example.com",
-            "aarti.kumari.synthetic@example.com"
-        ],
-        "phone_numbers": [
-            "8",
-            "6",
-            "1",
-            "0",
-            "4",
-            "9",
-            "-",
-            "3",
-            "+",
-            "2",
-            "7",
-            "5"
-        ],
-        "addresses": [
-            "Aadhaar",
-            "Male",
-            "Loan",
-            "Physician",
-            "PAN",
-            "India",
-            "Bank",
-            "Hospital",
-            "Branch",
-            "Tenure",
-            "Medical",
-            "Policy",
-            "Net",
-            "Jaipur",
-            "Anesthesia",
-            "Insured",
-            "Greens Avenue",
-            "Sanction",
-            "Account",
-            "Indrapuri",
-            "Amount"
-        ],
-        "pii_with_locations": {
-            "rohit.verma.synthetic@example.com": {
-                "x": 596,
-                "y": 493,
-                "width": 852,
-                "height": 50
-            },
-            "aarti.kumari.synthetic@example.com": {
-                "x": 1265,
-                "y": 2340,
-                "width": 867,
-                "height": 50
-            },
-            "000123456789": {
-                "x": 704,
-                "y": 3553,
-                "width": 338,
-                "height": 37
-            },
-            "000987654321": {
-                "x": 435,
-                "y": 2262,
-                "width": 330,
-                "height": 37
-            },
-            "4444 5555 6666": {
-                "x": 1919,
-                "y": 1420,
-                "width": 112,
-                "height": 36
-            },
-            "2025-00012345": {
-                "x": 435,
-                "y": 1047,
-                "width": 843,
-                "height": 949
-            },
-            "AAAAP1234Q": {
-                "x": 969,
-                "y": 2417,
-                "width": 308,
-                "height": 45
-            },
-            "RERVP9876Z": {
-                "x": 1894,
-                "y": 495,
-                "width": 286,
-                "height": 37
-            },
-            "2025-7788": {
-                "x": 433,
-                "y": 1047,
-                "width": 2531,
-                "height": 1715
-            },
-            "Aadhaar": {
-                "x": 2204,
-                "y": 2340,
-                "width": 198,
-                "height": 39
-            },
-            "Male": {
-                "x": 1126,
-                "y": 3939,
-                "width": 107,
-                "height": 39
-            },
-            "Loan": {
-                "x": 1598,
-                "y": 2842,
-                "width": 228,
-                "height": 72
-            },
-            "Physician": {
-                "x": 2394,
-                "y": 2957,
-                "width": 224,
-                "height": 50
-            },
-            "PAN": {
-                "x": 594,
-                "y": 2417,
-                "width": 88,
-                "height": 36
-            },
-            "India": {
-                "x": 437,
-                "y": 1192,
-                "width": 319,
-                "height": 92
-            },
-            "Bank": {
-                "x": 653,
-                "y": 3401,
-                "width": 112,
-                "height": 39
-            },
-            "Hospital": {
-                "x": 437,
-                "y": 2573,
-                "width": 200,
-                "height": 50
-            },
-            "Branch": {
-                "x": 2791,
-                "y": 3401,
-                "width": 171,
-                "height": 39
-            },
-            "Tenure": {
-                "x": 909,
-                "y": 804,
-                "width": 160,
-                "height": 37
-            },
-            "Medical": {
-                "x": 1647,
-                "y": 2648,
-                "width": 174,
-                "height": 39
-            },
-            "Policy": {
-                "x": 1642,
-                "y": 1400,
-                "width": 213,
-                "height": 75
-            },
-            "Net": {
-                "x": 437,
-                "y": 3087,
-                "width": 86,
-                "height": 37
-            },
-            "Jaipur": {
-                "x": 805,
-                "y": 3477,
-                "width": 141,
-                "height": 49
-            },
-            "Anesthesia": {
-                "x": 720,
-                "y": 1893,
-                "width": 253,
-                "height": 39
-            },
-            "Insured": {
-                "x": 2179,
-                "y": 1882,
-                "width": 190,
-                "height": 39
-            },
-            "Greens Avenue": {
-                "x": 1179,
-                "y": 2267,
-                "width": 162,
-                "height": 37
-            },
-            "Sanction": {
-                "x": 1584,
-                "y": 3440,
-                "width": 317,
-                "height": 58
-            },
-            "Account": {
-                "x": 1010,
-                "y": 3478,
-                "width": 189,
-                "height": 37
-            },
-            "Indrapuri": {
-                "x": 1593,
-                "y": 1964,
-                "width": 198,
-                "height": 58
-            },
-            "Amount": {
-                "x": 1810,
-                "y": 3192,
-                "width": 198,
-                "height": 37
-            }
-        }
-    },
-    {
-        "file_path": "octopii/dummy-pii/InsureLoans.pdf",
-        "pii_class": "Banking",
-        "score": 42,
-        "country_of_origin": "India",
-        "faces": 0,
-        "identifiers": [
-            "000123456789",
-            "000987654321",
-            "000123456789",
-            "4444 5555 6666",
-            "000987654321",
-            "2025-00012345",
-            "AAAAP1234Q",
-            "RERVP9876Z",
-            "2025-7788",
-            "2025-7788",
-            "98111",
-            "99876",
             "22334",
             "56789",
-            "98234",
+            "98111",
             "55443"
         ],
         "emails": [
@@ -524,22 +28,22 @@
             "rohit.verma.synthetic@example.com"
         ],
         "phone_numbers": [
-            "8",
             "-",
-            "2",
+            "8",
+            "5",
+            "1",
+            "4",
             "3",
+            "7",
+            "0",
+            "2",
             "9",
             "+",
-            "5",
-            "0",
-            "4",
-            "7",
-            "1",
             "6"
         ],
         "addresses": [
-            "Greens Avenue",
             "Indrapuri",
+            "Greens Avenue",
             "Jaipur"
         ],
         "pii_with_locations": {
@@ -555,6 +59,12 @@
                 "width": 852,
                 "height": 50
             },
+            "6": {
+                "x": 2342,
+                "y": 2187,
+                "width": 9,
+                "height": 37
+            },
             "000123456789": {
                 "x": 704,
                 "y": 3553,
@@ -570,14 +80,8 @@
             "4444 5555 6666": {
                 "x": 1919,
                 "y": 1420,
-                "width": 112,
-                "height": 36
-            },
-            "2025-00012345": {
-                "x": 435,
-                "y": 1047,
-                "width": 843,
-                "height": 949
+                "width": 365,
+                "height": 37
             },
             "AAAAP1234Q": {
                 "x": 969,
@@ -589,18 +93,6 @@
                 "x": 1894,
                 "y": 495,
                 "width": 286,
-                "height": 37
-            },
-            "2025-7788": {
-                "x": 433,
-                "y": 1047,
-                "width": 2531,
-                "height": 1715
-            },
-            "Greens Avenue": {
-                "x": 1179,
-                "y": 2267,
-                "width": 162,
                 "height": 37
             },
             "Indrapuri": {

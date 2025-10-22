@@ -73,8 +73,8 @@ class RedactionEngine:
 
     def _calculate_precise_bbox(self, pii_value: str, location: Dict, image_shape: tuple) -> Optional[Dict]:
         """
-        Calculate precise bounding box that ONLY covers the PII value
-        Adds minimal padding instead of using full OCR word boxes
+        Calculate ULTRA-PRECISE bounding box with MINIMAL padding
+        CRITICAL: Only adds 3-5 pixels padding, not full OCR word boxes
         """
         try:
             x = int(location.get("x", 0))
@@ -83,26 +83,51 @@ class RedactionEngine:
             h = int(location.get("height", 0))
             
             if w <= 0 or h <= 0:
+                self.logger.warning(f"Invalid dimensions for {pii_value[:30]}: w={w}, h={h}")
                 return None
             
-            # CRITICAL FIX: Add minimal padding only (5 pixels)
-            padding = 10
+            # CRITICAL FIX: Use MINIMAL padding (3-5 pixels only)
+            # This ensures we only redact the PII, not surrounding text
+            padding = 3  # Changed from 10 to 3 pixels
             
             # Clamp to image bounds
             img_height, img_width = image_shape[:2]
             
-            x = max(0, min(x - padding, img_width - 1))
-            y = max(0, min(y - padding, img_height - 1))
+            x = max(0, x - padding)
+            y = max(0, y - padding)
             w = min(w + 2*padding, img_width - x)
             h = min(h + 2*padding, img_height - y)
             
+            # Final validation
             if w <= 0 or h <= 0:
+                self.logger.warning(f"Dimensions became invalid after padding for {pii_value[:30]}")
                 return None
             
-            return {"x": x, "y": y, "width": w, "height": h}
+            # Sanity check: Bounding box shouldn't be huge
+            area = w * h
+            pii_len = len(pii_value.replace(' ', '').replace('-', ''))
+            
+            # Expected: ~15 pixels/char width, ~30 pixels height
+            expected_max_area = pii_len * 20 * 40
+            
+            if area > expected_max_area * 3:
+                self.logger.warning(
+                    f"Bbox too large for '{pii_value[:30]}': "
+                    f"{w}x{h}={area}px² (expected ~{expected_max_area}px²)"
+                )
+                return None
+            
+            result = {"x": x, "y": y, "width": w, "height": h}
+            
+            self.logger.debug(
+                f"Calculated bbox for '{pii_value[:30]}': "
+                f"({x}, {y}, {w}x{h}) = {area}px²"
+            )
+            
+            return result
             
         except Exception as e:
-            self.logger.error(f"Error calculating bbox: {e}")
+            self.logger.error(f"Error calculating bbox for {pii_value[:30]}: {e}")
             return None
 
     def _apply_redaction_to_roi(self, roi, method: str) -> np.ndarray:

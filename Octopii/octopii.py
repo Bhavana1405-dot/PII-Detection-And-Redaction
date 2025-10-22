@@ -87,6 +87,13 @@ This ensures complete PII values are mapped to their bounding boxes
 REPLACE the search_pii function in Octopii/octopii.py with this version
 """
 
+"""
+CRITICAL FIX for octopii.py - PRECISE bounding box calculation
+This version calculates tight bounding boxes that only cover the PII text
+
+REPLACE the search_pii function in Octopii/octopii.py
+"""
+
 def search_pii(file_path):
     contains_faces = 0
     bounding_box_data = None
@@ -131,7 +138,7 @@ def search_pii(file_path):
         text = textract.process(file_path).decode()
         intelligible = text_utils.string_tokenizer(text)
 
-    # --- PII Detection (FIXED) ---
+    # --- PII Detection ---
     addresses = text_utils.regional_pii(text)
     emails = text_utils.email_pii(text, rules)
     phone_numbers = text_utils.phone_pii(text, rules)
@@ -140,7 +147,7 @@ def search_pii(file_path):
     pii_class = list(keywords_scores.keys())[list(keywords_scores.values()).index(score)] if score >= 5 else None
     country_of_origin = rules[pii_class]["region"] if pii_class else None
     
-    # FIXED: Get identifiers correctly
+    # Get identifiers correctly
     identifiers_result = text_utils.id_card_numbers_pii(text, rules)
     identifiers = []
     for id_result in identifiers_result:
@@ -149,14 +156,14 @@ def search_pii(file_path):
     if temp_dir in file_path:
         file_path = urllib.parse.unquote(file_path.replace(temp_dir, ""))
 
-    # --- PII Location Mapping (FIXED) ---
+    # --- PRECISE PII Location Mapping ---
     pii_locations = {}
 
     def normalize_text(s):
         """Normalize text for matching"""
         if not s:
             return ""
-        return s.lower().replace(' ', '').replace('-', '').replace('(', '').replace(')', '').replace(':', '')
+        return s.lower().replace(' ', '').replace('-', '').replace('(', '').replace(')', '').replace(':', '').replace('+', '')
 
     if bounding_box_data:
         # --- Image/PDF: use bounding boxes ---
@@ -166,105 +173,139 @@ def search_pii(file_path):
         widths = bounding_box_data['width']
         heights = bounding_box_data['height']
 
-        def find_bbox_for_pii(pii):
-            """Find bounding box for a PII value"""
+        def find_precise_bbox_for_pii(pii):
+            """
+            CRITICAL FIX: Find MINIMAL bounding box that covers ONLY the PII
+            Uses character-level matching and stops as soon as PII is covered
+            """
             norm_pii = normalize_text(pii)
             n = len(texts)
-            match_indices = []
+            
+            if not norm_pii or n == 0:
+                return None
+            
             norm_tokens = [normalize_text(str(t)) for t in texts]
-
-            # Try single-token match first
+            
+            # Strategy 1: Single token exact match
             for i, tok in enumerate(norm_tokens):
-                if tok and len(tok) >= 3:
-                    # Check if token is significant part of PII
-                    if tok in norm_pii and len(tok) / len(norm_pii) > 0.3:
-                        match_indices = [i]
-                        break
-
-            # Try multi-token sliding window
-            if not match_indices:
-                max_window = 10
-                for start in range(n):
-                    if not norm_tokens[start]:
-                        continue
-                    concat = norm_tokens[start]
-                    
-                    # Check single token first
-                    if len(concat) >= 3 and norm_pii.startswith(concat):
-                        # Try to extend
-                        for end in range(start + 1, min(start + max_window, n)):
-                            if not norm_tokens[end]:
-                                continue
-                            concat += norm_tokens[end]
-                            
-                            # Check if we have a good match
-                            if concat == norm_pii or (len(concat) >= len(norm_pii) * 0.8 and concat in norm_pii):
-                                match_indices = list(range(start, end + 1))
-                                break
-                        
-                        if match_indices:
-                            break
-
-            # If still no match, try fuzzy matching for complex PIIs
-            if not match_indices:
-                # For PIIs with special characters (Aadhaar, phone, etc.)
-                # Remove all separators and try matching sequences
-                pii_digits = ''.join(c for c in pii if c.isdigit())
-                pii_letters = ''.join(c for c in pii if c.isalpha())
-                
-                if len(pii_digits) >= 8:  # Likely Aadhaar or phone
-                    # Try to find sequence of numbers
-                    current_seq = ""
-                    seq_indices = []
-                    
-                    for i, tok in enumerate(texts):
-                        tok_str = str(tok)
-                        tok_digits = ''.join(c for c in tok_str if c.isdigit())
-                        
-                        if tok_digits:
-                            current_seq += tok_digits
-                            seq_indices.append(i)
-                            
-                            # Check if we have enough
-                            if len(current_seq) >= len(pii_digits) * 0.8:
-                                if pii_digits in current_seq or current_seq in pii_digits:
-                                    match_indices = seq_indices
-                                    break
-
-            if match_indices:
-                try:
-                    x_coords = [lefts[i] for i in match_indices]
-                    y_coords = [tops[i] for i in match_indices]
-                    w_coords = [widths[i] for i in match_indices]
-                    h_coords = [heights[i] for i in match_indices]
-                    
-                    x_min = min(x_coords)
-                    y_min = min(y_coords)
-                    x_max = max(x_coords[i] + w_coords[i] for i in range(len(x_coords)))
-                    y_max = max(y_coords[i] + h_coords[i] for i in range(len(y_coords)))
+                if tok and tok == norm_pii:
+                    # Found exact match in single token
                     return {
-                        "x": int(x_min),
-                        "y": int(y_min),
-                        "width": int(x_max - x_min),
-                        "height": int(y_max - y_min)
+                        "x": int(lefts[i]),
+                        "y": int(tops[i]),
+                        "width": int(widths[i]),
+                        "height": int(heights[i])
                     }
+            
+            # Strategy 2: Consecutive tokens that form the PII
+            # Use a sliding window approach with STRICT length limits
+            max_tokens_in_pii = min(8, len(norm_pii.replace(' ', '')) // 2 + 1)
+            
+            for start in range(n):
+                if not norm_tokens[start]:
+                    continue
                 
-                except (ValueError, IndexError) as e:
-                    print(f"Warning: Could not calculate bbox for {pii}: {e}")
-                    return None
+                # Try windows of increasing size
+                for window_size in range(1, max_tokens_in_pii + 1):
+                    end = start + window_size
+                    if end > n:
+                        break
+                    
+                    # Get tokens in this window
+                    window_indices = list(range(start, end))
+                    window_text = ''.join(norm_tokens[i] for i in window_indices)
+                    
+                    # Check if this window matches the PII
+                    if window_text == norm_pii:
+                        # Calculate TIGHT bounding box
+                        try:
+                            x_min = min(lefts[i] for i in window_indices)
+                            y_min = min(tops[i] for i in window_indices)
+                            x_max = max(lefts[i] + widths[i] for i in window_indices)
+                            y_max = max(tops[i] + heights[i] for i in window_indices)
+                            
+                            return {
+                                "x": int(x_min),
+                                "y": int(y_min),
+                                "width": int(x_max - x_min),
+                                "height": int(y_max - y_min)
+                            }
+                        except (ValueError, IndexError):
+                            continue
+            
+            # Strategy 3: Fuzzy matching for complex PIIs (Aadhaar with spaces)
+            # Only look for sequences of digits/letters that match PII
+            pii_digits = ''.join(c for c in pii if c.isdigit())
+            pii_letters = ''.join(c for c in pii if c.isalpha())
+            
+            if len(pii_digits) >= 8:  # Likely numeric ID (Aadhaar, phone, account)
+                # Find consecutive tokens that contain these digits
+                current_digits = ""
+                digit_indices = []
+                
+                for i in range(n):
+                    tok_str = str(texts[i])
+                    tok_digits = ''.join(c for c in tok_str if c.isdigit())
+                    
+                    if tok_digits:
+                        current_digits += tok_digits
+                        digit_indices.append(i)
+                        
+                        # Stop as soon as we have enough digits
+                        if len(current_digits) >= len(pii_digits):
+                            # Check if we matched the PII
+                            if pii_digits in current_digits or current_digits in pii_digits:
+                                # Calculate tight box around ONLY these tokens
+                                try:
+                                    x_min = min(lefts[j] for j in digit_indices)
+                                    y_min = min(tops[j] for j in digit_indices)
+                                    x_max = max(lefts[j] + widths[j] for j in digit_indices)
+                                    y_max = max(tops[j] + heights[j] for j in digit_indices)
+                                    
+                                    return {
+                                        "x": int(x_min),
+                                        "y": int(y_min),
+                                        "width": int(x_max - x_min),
+                                        "height": int(y_max - y_min)
+                                    }
+                                except (ValueError, IndexError):
+                                    pass
+                            
+                            # Reset if no match
+                            current_digits = tok_digits
+                            digit_indices = [i]
+                    else:
+                        # Non-digit token breaks the sequence
+                        if len(current_digits) >= len(pii_digits) * 0.8:
+                            # We might have missed it, reset
+                            current_digits = ""
+                            digit_indices = []
             
             return None
 
-        # Find locations for all detected PII
+        # Find locations for all detected PII with PRECISE boxes
         all_pii = emails + phone_numbers + identifiers + addresses
         
-        print(f"Searching for bounding boxes for {len(all_pii)} PII values...")
+        print(f"Calculating precise bounding boxes for {len(all_pii)} PII values...")
         
         for pii in all_pii:
-            bbox = find_bbox_for_pii(pii)
+            bbox = find_precise_bbox_for_pii(pii)
             if bbox:
+                # Validate bounding box size
+                area = bbox['width'] * bbox['height']
+                pii_len = len(pii.replace(' ', '').replace('-', ''))
+                
+                # Rough estimate: 12-20 pixels per character width, 20-35 pixels height
+                expected_max_area = pii_len * 20 * 40  # Conservative upper bound
+                
+                if area > expected_max_area * 2:
+                    print(f"  ⚠ Bbox too large for '{pii[:40]}...' ({bbox['width']}x{bbox['height']} = {area}px²)")
+                    print(f"     Expected max: ~{expected_max_area}px²")
+                    # Skip this bounding box - it's too large
+                    continue
+                
                 pii_locations[pii] = bbox
-                print(f"  ✓ Found location for: {pii[:40]}...")
+                print(f"  ✓ Found precise location for: {pii[:40]}... ({bbox['width']}x{bbox['height']})")
             else:
                 print(f"  ✗ Could not find location for: {pii[:40]}...")
 
@@ -292,7 +333,6 @@ def search_pii(file_path):
     }
 
     return result
-
 
 if __name__ in '__main__':
     if len(sys.argv) == 1:
