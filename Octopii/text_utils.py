@@ -65,14 +65,19 @@ def phone_pii(text, rules):
     return phone_numbers
 
 def id_card_numbers_pii(text, rules):
+    """
+    FIXED: Extract COMPLETE PII values using re.finditer and match.group(0)
+    """
     results = []
-    regional_regexes = {}
     
+    # Filter regional regexes
+    regional_regexes = {}
     for key in rules.keys():
         region = rules[key]["region"]
         if region is not None:
             regional_regexes[key] = rules[key]
 
+    # Process each PII type
     for key in regional_regexes.keys():
         rule = rules[key]["regex"]
         
@@ -80,8 +85,9 @@ def id_card_numbers_pii(text, rules):
             continue
             
         try:
-            # FIXED: Use finditer and group(0) for COMPLETE matches
+            # CRITICAL FIX: Use finditer and group(0) to get COMPLETE matches
             matches = [m.group(0) for m in re.finditer(rule, text, re.IGNORECASE)]
+            
         except Exception as e:
             print(f"Error processing {key}: {e}")
             matches = []
@@ -134,12 +140,23 @@ def regional_pii(text):
         named_entities = []
 
     locations = []
+    
+    # COMMON KEYWORDS TO EXCLUDE (not actual addresses)
+    KEYWORD_BLACKLIST = {
+        'bank', 'aadhaar', 'india', 'pan', 'medical', 'hospital', 
+        'loan', 'physician', 'amount', 'account', 'branch', 'tenure',
+        'male', 'female', 'sanction', 'policy', 'insured', 'net',
+        'anesthesia', 'email', 'phone', 'address', 'name'
+    }
 
     for entity in named_entities:
         if isinstance(entity, nltk.tree.Tree):
             if entity.label() in ['GPE', 'GSP', 'LOCATION', 'FACILITY']:
                 location_name = ' '.join([word for word, tag in entity.leaves() if word.lower() not in stop_words and len(word) > 2])
-                locations.append(location_name)
+                
+                # FILTER OUT KEYWORDS
+                if location_name.lower() not in KEYWORD_BLACKLIST and len(location_name) > 3:
+                    locations.append(location_name)
 
     return list(set(locations))
 

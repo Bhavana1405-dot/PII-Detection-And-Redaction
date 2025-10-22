@@ -494,5 +494,127 @@
                 "height": 37
             }
         }
+    },
+    {
+        "file_path": "octopii/dummy-pii/InsureLoans.pdf",
+        "pii_class": "Banking",
+        "score": 42,
+        "country_of_origin": "India",
+        "faces": 0,
+        "identifiers": [
+            "000123456789",
+            "000987654321",
+            "000123456789",
+            "4444 5555 6666",
+            "000987654321",
+            "2025-00012345",
+            "AAAAP1234Q",
+            "RERVP9876Z",
+            "2025-7788",
+            "2025-7788",
+            "98111",
+            "99876",
+            "22334",
+            "56789",
+            "98234",
+            "55443"
+        ],
+        "emails": [
+            "aarti.kumari.synthetic@example.com",
+            "rohit.verma.synthetic@example.com"
+        ],
+        "phone_numbers": [
+            "8",
+            "-",
+            "2",
+            "3",
+            "9",
+            "+",
+            "5",
+            "0",
+            "4",
+            "7",
+            "1",
+            "6"
+        ],
+        "addresses": [
+            "Greens Avenue",
+            "Indrapuri",
+            "Jaipur"
+        ],
+        "pii_with_locations": {
+            "aarti.kumari.synthetic@example.com": {
+                "x": 1265,
+                "y": 2340,
+                "width": 867,
+                "height": 50
+            },
+            "rohit.verma.synthetic@example.com": {
+                "x": 596,
+                "y": 493,
+                "width": 852,
+                "height": 50
+            },
+            "000123456789": {
+                "x": 704,
+                "y": 3553,
+                "width": 338,
+                "height": 37
+            },
+            "000987654321": {
+                "x": 435,
+                "y": 2262,
+                "width": 330,
+                "height": 37
+            },
+            "4444 5555 6666": {
+                "x": 1919,
+                "y": 1420,
+                "width": 112,
+                "height": 36
+            },
+            "2025-00012345": {
+                "x": 435,
+                "y": 1047,
+                "width": 843,
+                "height": 949
+            },
+            "AAAAP1234Q": {
+                "x": 969,
+                "y": 2417,
+                "width": 308,
+                "height": 45
+            },
+            "RERVP9876Z": {
+                "x": 1894,
+                "y": 495,
+                "width": 286,
+                "height": 37
+            },
+            "2025-7788": {
+                "x": 433,
+                "y": 1047,
+                "width": 2531,
+                "height": 1715
+            },
+            "Greens Avenue": {
+                "x": 1179,
+                "y": 2267,
+                "width": 162,
+                "height": 37
+            },
+            "Indrapuri": {
+                "x": 1593,
+                "y": 1964,
+                "width": 198,
+                "height": 58
+            },
+            "Jaipur": {
+                "x": 805,
+                "y": 3477,
+                "width": 141,
+                "height": 49
+            }
+        }
     }
 ]
