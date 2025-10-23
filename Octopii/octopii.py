@@ -244,7 +244,7 @@ def search_pii(file_path):
                                     
                                     # Allow max 50px gap on same line
                                     if gap > 50:
-                                        print(f"  ⚠ Large horizontal gap: {gap}px for '{pii[:30]}...'")
+                                        print(f"  Large horizontal gap: {gap}px for '{pii[:30]}...'")
                                         is_valid = False
                                         break
                                 
@@ -266,14 +266,14 @@ def search_pii(file_path):
                                     
                                     # Vertical: must go down (20-80px typical line height)
                                     if not (20 < y_progression < 100):
-                                        print(f"  ⚠ Invalid vertical progression: {y_progression}px")
+                                        print(f"  Invalid vertical progression: {y_progression}px")
                                         is_valid = False
                                         break
                                     
                                     # Horizontal: second line should start left of first line end (wrap)
                                     # But not too far left (must be reasonable wrap)
                                     if x_regression > 50:  # Moving right = not a wrap
-                                        print(f"  ⚠ Not a line wrap (moving right: {x_regression}px)")
+                                        print(f"  Not a line wrap (moving right: {x_regression}px)")
                                         is_valid = False
                                         break
                             
@@ -299,7 +299,7 @@ def search_pii(file_path):
                             expected_max_height = num_lines * 80  # Max 80px per line
                             
                             if bbox_height > expected_max_height:
-                                print(f"  ⚠ Bbox too tall: {bbox_height}px for {num_lines} line(s)")
+                                print(f"  Bbox too tall: {bbox_height}px for {num_lines} line(s)")
                                 continue
                             
                             # Area check (more lenient for multi-line)
@@ -308,10 +308,10 @@ def search_pii(file_path):
                             max_reasonable_area = 800 * num_lines * 60  # Assume max 800px page width
                             
                             if bbox_area > max_reasonable_area:
-                                print(f"  ⚠ Bbox area too large: {bbox_area}px² for {num_lines} line(s)")
+                                print(f"  Bbox area too large: {bbox_area}px² for {num_lines} line(s)")
                                 continue
                             
-                            print(f"  ✓ Found {num_lines}-line match for '{pii[:30]}...': {bbox_width}x{bbox_height}")
+                            print(f"  Found {num_lines}-line match for '{pii[:30]}...': {bbox_width}x{bbox_height}")
                             
                             return {
                                 "x": int(x_min),
@@ -320,7 +320,7 @@ def search_pii(file_path):
                                 "height": int(bbox_height)
                             }
                         except (ValueError, IndexError) as e:
-                            print(f"  ⚠ Error processing window: {e}")
+                            print(f"  Error processing window: {e}")
                             continue
             
             # ========== STRATEGY 3: AADHAAR-SPECIFIC with line-wrap support ==========
@@ -384,7 +384,7 @@ def search_pii(file_path):
                                     continue
                                 
                                 token_preview = '-'.join(tokens[:5])
-                                print(f"  ✓ Found {len(lines)}-line Aadhaar: {token_preview} → {pii}")
+                                print(f"  Found {len(lines)}-line Aadhaar: {token_preview} → {pii}")
                                 
                                 return {
                                     "x": int(x_min),
@@ -451,7 +451,7 @@ def search_pii(file_path):
                                 expected_max = 800 * max(num_lines, 1) * 60
                                 
                                 if bbox_area <= expected_max:
-                                    print(f"  ✓ Fuzzy match ({num_lines} line(s)): {bbox_width}x{bbox_height}")
+                                    print(f"  Fuzzy match ({num_lines} line(s)): {bbox_width}x{bbox_height}")
                                     return {
                                         "x": int(x_min),
                                         "y": int(y_min),
@@ -483,7 +483,7 @@ def search_pii(file_path):
                     }
                     
                     if bbox['width'] * bbox['height'] < len(norm_pii) * 30 * 60:
-                        print(f"  ✓ Substring match for '{pii[:30]}...'")
+                        print(f"   Substring match for '{pii[:30]}...'")
                         return bbox
             
             return None
@@ -504,15 +504,15 @@ def search_pii(file_path):
                 expected_max_area = pii_len * 20 * 40  # Conservative upper bound
                 
                 if area > expected_max_area * 10:
-                    print(f"  ⚠ Bbox too large for '{pii[:40]}...' ({bbox['width']}x{bbox['height']} = {area}px²)")
+                    print(f"  Bbox too large for '{pii[:40]}...' ({bbox['width']}x{bbox['height']} = {area}px²)")
                     print(f"     Expected max: ~{expected_max_area}px²")
                     # Skip this bounding box - it's too large
                     continue
                 
                 pii_locations[pii] = bbox
-                print(f"  ✓ Found precise location for: {pii[:40]}... ({bbox['width']}x{bbox['height']})")
+                print(f"  [OK] Found precise location for: {pii[:40]}... ({bbox['width']}x{bbox['height']})")
             else:
-                print(f"  ✗ Could not find location for: {pii[:40]}...")
+                print(f"  Could not find location for: {pii[:40]}...")
 
     else:
         # --- Plain text: use character offsets ---
