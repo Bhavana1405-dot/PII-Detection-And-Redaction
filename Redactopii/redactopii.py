@@ -1,6 +1,6 @@
 # =============================================================================
-# FILE: redactopii.py
-# DESCRIPTION: Updated CLI with better error handling and validation
+# FILE: redactopii.py - FIXED VERSION
+# DESCRIPTION: Fixed to return proper exit codes (0 for success, 1 for failure)
 # =============================================================================
 
 import argparse
@@ -60,7 +60,7 @@ def find_matching_report(reports, input_file):
 def validate_input_file(input_path):
     """Validate input file exists and is readable"""
     if not input_path.exists():
-        print(f"✗ Error: Input file not found: {input_path}")
+        print(f"✗ Error: Input file not found: {input_path}", file=sys.stderr)
         return False
     
     # Check if it's an image and validate
@@ -71,7 +71,7 @@ def validate_input_file(input_path):
             print(f"[INFO] Image validated: {img.format} {img.size}")
             return True
         except Exception as e:
-            print(f"✗ Error: Cannot open image: {e}")
+            print(f"✗ Error: Cannot open image: {e}", file=sys.stderr)
             return False
     
     # Check if it's a PDF
@@ -80,12 +80,12 @@ def validate_input_file(input_path):
             with open(input_path, 'rb') as f:
                 header = f.read(5)
                 if header != b'%PDF-':
-                    print(f"✗ Error: File does not appear to be a valid PDF")
+                    print(f"✗ Error: File does not appear to be a valid PDF", file=sys.stderr)
                     return False
             print(f"[INFO] PDF file validated")
             return True
         except Exception as e:
-            print(f"✗ Error: Cannot read PDF: {e}")
+            print(f"✗ Error: Cannot read PDF: {e}", file=sys.stderr)
             return False
     
     # Text files
@@ -95,7 +95,7 @@ def validate_input_file(input_path):
             print(f"[INFO] Text file validated")
             return True
         except Exception as e:
-            print(f"✗ Error: Cannot read text file: {e}")
+            print(f"✗ Error: Cannot read text file: {e}", file=sys.stderr)
             return False
     
     print(f"[WARN] Unknown file type: {input_path.suffix}")
@@ -150,13 +150,13 @@ Examples:
     # Validate input file
     input_path = Path(args.input).resolve()
     if not validate_input_file(input_path):
-        return 1
+        sys.exit(1)  # Explicit exit code
 
     # Validate report file
     report_path = Path(args.report)
     if not report_path.exists():
-        print(f"✗ Error: Report file not found: {report_path}")
-        return 1
+        print(f"✗ Error: Report file not found: {report_path}", file=sys.stderr)
+        sys.exit(1)  # Explicit exit code
 
     # Initialize engine
     try:
@@ -173,11 +173,11 @@ Examples:
         
         print("[INFO] Redaction engine initialized")
     except Exception as e:
-        print(f"✗ Error initializing engine: {e}")
+        print(f"✗ Error initializing engine: {e}", file=sys.stderr)
         if args.verbose:
             import traceback
             traceback.print_exc()
-        return 1
+        sys.exit(1)  # Explicit exit code
 
     try:
         # Load the report
@@ -193,14 +193,14 @@ Examples:
             matching_report = find_matching_report(report_data, str(input_path))
             
             if matching_report is None:
-                print(f"✗ No matching report found for: {input_path.name}")
+                print(f"✗ No matching report found for: {input_path.name}", file=sys.stderr)
                 print(f"\n[INFO] Available files in report:")
                 for i, r in enumerate(report_data[:10], 1):  # Show first 10
                     print(f"  {i}. {r.get('file_path', 'unknown')}")
                 if len(report_data) > 10:
                     print(f"  ... and {len(report_data) - 10} more")
                 print(f"\n[HINT] Make sure the file path in the report matches your input file")
-                return 1
+                sys.exit(1)  # Explicit exit code
             
             report = matching_report
             print(f"[INFO] Found matching report for: {report.get('file_path')}")
@@ -264,46 +264,49 @@ Examples:
             print(f"  📝 Audit logs:  {audit_dir}/")
             
             print(f"\n[INFO] All outputs saved to: {args.output_dir}/")
+            
+            # CRITICAL: Return 0 for success
+            sys.exit(0)
         
         elif redaction_status == "no_pii":
             print(f"\nℹ️  No PII entities detected - nothing to redact")
             print(f"   Original file copied to: {result['redaction']['output_path']}")
+            
+            # Still a success - return 0
+            sys.exit(0)
         
         elif redaction_status == "error":
             error_msg = result.get("redaction", {}).get("error", "Unknown error")
-            print(f"\n✗ REDACTION FAILED")
-            print(f"   Error: {error_msg}")
+            print(f"\n✗ REDACTION FAILED", file=sys.stderr)
+            print(f"   Error: {error_msg}", file=sys.stderr)
             if args.verbose:
-                print(f"\n   Full result: {json.dumps(result, indent=2)}")
-            return 1
+                print(f"\n   Full result: {json.dumps(result, indent=2)}", file=sys.stderr)
+            sys.exit(1)  # Explicit exit code
         
         else:
-            print(f"\n✗ Unknown status: {redaction_status}")
+            print(f"\n✗ Unknown status: {redaction_status}", file=sys.stderr)
             if args.verbose:
-                print(f"   Full result: {json.dumps(result, indent=2)}")
-            return 1
-        
-        print(f"\n{'='*70}")
-        return 0
+                print(f"   Full result: {json.dumps(result, indent=2)}", file=sys.stderr)
+            sys.exit(1)  # Explicit exit code
 
     except FileNotFoundError as e:
-        print(f"\n✗ Error: File not found - {e}")
-        return 1
+        print(f"\n✗ Error: File not found - {e}", file=sys.stderr)
+        sys.exit(1)  # Explicit exit code
     except json.JSONDecodeError as e:
-        print(f"\n✗ Error: Invalid JSON in report file")
-        print(f"   {e}")
-        print(f"\n[HINT] Make sure {args.report} is a valid JSON file")
-        return 1
+        print(f"\n✗ Error: Invalid JSON in report file", file=sys.stderr)
+        print(f"   {e}", file=sys.stderr)
+        print(f"\n[HINT] Make sure {args.report} is a valid JSON file", file=sys.stderr)
+        sys.exit(1)  # Explicit exit code
     except KeyboardInterrupt:
-        print(f"\n\n✗ Interrupted by user")
-        return 1
+        print(f"\n\n✗ Interrupted by user", file=sys.stderr)
+        sys.exit(1)  # Explicit exit code
     except Exception as e:
-        print(f"\n✗ Error: {e}")
+        print(f"\n✗ Error: {e}", file=sys.stderr)
         if args.verbose:
             import traceback
             traceback.print_exc()
-        return 1
+        sys.exit(1)  # Explicit exit code
 
 
 if __name__ == '__main__':
-    sys.exit(main())
+    main()

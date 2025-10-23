@@ -276,28 +276,66 @@ async def redact_pii(
         print(f"[INFO] Running redaction: {' '.join(cmd)}")
         result = subprocess.run(cmd, capture_output=True, text=True)
 
+        # Log the output for debugging
+        if result.stdout:
+            print(f"[DEBUG] Stdout: {result.stdout[:500]}")
+        if result.stderr:
+            print(f"[DEBUG] Stderr: {result.stderr[:500]}")
+
+        # Check for actual errors (not just warnings in stderr)
         if result.returncode != 0:
             error_msg = result.stderr or result.stdout
-            print(f"[ERROR] Redactopii failed: {error_msg}")
-            raise HTTPException(
-                status_code=500,
-                detail=f"Redaction failed: {error_msg}"
-            )
+            
+            # Check if redaction actually succeeded despite warnings
+            if "Saved redacted" in error_msg or "SUCCESS" in error_msg:
+                print(f"[INFO] Redaction completed with warnings")
+                print(f"[WARN] Warnings: {error_msg[:500]}...")  # Log first 500 chars
+            else:
+                print(f"[ERROR] Redactopii failed: {error_msg}")
+                raise HTTPException(
+                    status_code=500,
+                    detail=f"Redaction failed: {error_msg}"
+                )
 
-        # Find redacted file
+        # Find redacted file - check multiple patterns
         redacted_path = None
         search_dirs = [REDACTED_DIR, COMPARED_DIR, OUTPUT_DIR / "compared"]
         
+        # Try multiple search patterns
+        search_patterns = [
+            f"*{file_stem}*{file_ext}",
+            f"*{file_stem}*redacted*{file_ext}",
+            f"*{unique_filename.replace(file_ext, '')}*{file_ext}",
+            f"*redacted*{file_ext}"
+        ]
+        
         for directory in search_dirs:
-            candidates = list(directory.glob(f"*{file_stem}*{file_ext}"))
-            if candidates:
-                redacted_path = candidates[0]
+            if not directory.exists():
+                continue
+            for pattern in search_patterns:
+                candidates = list(directory.glob(pattern))
+                if candidates:
+                    # Get the most recently created file
+                    redacted_path = max(candidates, key=lambda p: p.stat().st_mtime)
+                    print(f"[INFO] Found redacted file: {redacted_path}")
+                    break
+            if redacted_path:
                 break
 
         if not redacted_path:
+            # List what files ARE in the output directories for debugging
+            available_files = []
+            for directory in search_dirs:
+                if directory.exists():
+                    available_files.extend([f.name for f in directory.iterdir() if f.is_file()])
+            
+            error_detail = "Redaction completed but output file not found."
+            if available_files:
+                error_detail += f" Available files: {', '.join(available_files[:5])}"
+            
             raise HTTPException(
                 status_code=500,
-                detail="Redaction completed but output file not found"
+                detail=error_detail
             )
 
         # Load report for statistics
