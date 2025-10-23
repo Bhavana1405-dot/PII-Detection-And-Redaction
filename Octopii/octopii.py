@@ -1,14 +1,10 @@
-
 import nltk
 import nltk.tokenize.punkt as punkt
 import pathlib
 import pytesseract
 from pytesseract import Output
 
-# Ensure common NLTK resources are available. The upstream punkt tokenizer
-# may look for 'punkt_tab' in some environments; attempt to download both
-# 'punkt' and 'punkt_tab' and fall back gracefully.
-
+# Ensure common NLTK resources are available
 import os, sys
 from pdf2image import convert_from_path
 
@@ -30,7 +26,6 @@ required_nltk = [
 
 for pkg in required_nltk:
     try:
-        # punkt and punkt_tab live under tokenizers/; other resources have their own paths
         if pkg in ("punkt", "punkt_tab"):
             nltk.data.find(f"tokenizers/{pkg}")
         else:
@@ -39,23 +34,18 @@ for pkg in required_nltk:
         try:
             nltk.download(pkg)
         except Exception:
-            # If download fails (no network), continue — we'll attempt to redirect
             pass
 
-# Redirect any 'punkt_tab' lookups to use the standard 'punkt' implementation
-# by ensuring the language vars are present. This mirrors the original intent
-# but is now tolerant to environments where punkt_tab isn't installed.
 try:
     punkt.PunktLanguageVars = punkt.PunktLanguageVars
 except Exception:
-    # If anything goes wrong, don't block execution; tokenization may still work
     pass
 
 
 output_file = "output.json"
 notifyURL = ""
 
-import json, textract, sys, urllib, cv2, os, json, shutil, traceback
+import json, textract, sys, urllib, cv2, os, json, shutil, traceback, re
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 from pdf2image import convert_from_path
 import image_utils, file_utils, text_utils, webhook
@@ -80,19 +70,6 @@ def help_screen():
 Note: Only Unix-like filesystems, S3 and open directory URLs are supported.'''
     print(help)
 
-"""
-CRITICAL FIX for octopii.py - search_pii function
-This ensures complete PII values are mapped to their bounding boxes
-
-REPLACE the search_pii function in Octopii/octopii.py with this version
-"""
-
-"""
-CRITICAL FIX for octopii.py - PRECISE bounding box calculation
-This version calculates tight bounding boxes that only cover the PII text
-
-REPLACE the search_pii function in Octopii/octopii.py
-"""
 
 def search_pii(file_path):
     contains_faces = 0
@@ -148,22 +125,14 @@ def search_pii(file_path):
     country_of_origin = rules[pii_class]["region"] if pii_class else None
     
     # Get identifiers correctly
-    import re
-
-    # Build alternative detection strings for PDF/image OCR that may split digits
     detection_texts = [text]
-
-    # add whitespace-collapsed version
     collapsed = re.sub(r'\s+', '', text)
     if collapsed != text:
         detection_texts.append(collapsed)
-
-    # add digits-only version (useful when non-digit noise exists)
     digits_only = ''.join(c for c in text if c.isdigit())
     if digits_only and digits_only != collapsed:
         detection_texts.append(digits_only)
 
-    # run id detection on all variants and merge unique results
     identifiers = []
     seen_ids = set()
     for dt in detection_texts:
@@ -173,17 +142,15 @@ def search_pii(file_path):
             ids_result = []
         for id_result in ids_result:
             for r in id_result.get('result', []):
-                # normalize identifier string (remove spaces/hyphens)
                 norm = re.sub(r'[\s-]+', '', str(r))
                 if norm not in seen_ids:
                     seen_ids.add(norm)
                     identifiers.append(r)
 
-
     if temp_dir in file_path:
         file_path = urllib.parse.unquote(file_path.replace(temp_dir, ""))
 
-    # --- PRECISE PII Location Mapping ---
+    # --- ENHANCED PII Location Mapping ---
     pii_locations = {}
 
     def normalize_text(s):
@@ -202,8 +169,15 @@ def search_pii(file_path):
 
         def find_precise_bbox_for_pii(pii):
             """
-            CRITICAL FIX: Find MINIMAL bounding box that covers ONLY the PII
-            NOW HANDLES: Split numbers like "999900001111" that OCR reads as "9999 0000 1111"
+            ULTRA-PRECISE bounding box finder with MULTI-LINE support
+            
+            NEW: Handles PII that spans across multiple lines (e.g., line-wrapped Aadhaar)
+            
+            Improvements:
+            1. Multi-line detection with intelligent line break handling
+            2. Horizontal gap detection within same line
+            3. Vertical progression tracking (top-to-bottom flow)
+            4. Smart validation thresholds
             """
             norm_pii = normalize_text(pii)
             n = len(texts)
@@ -223,14 +197,14 @@ def search_pii(file_path):
                         "height": int(heights[i])
                     }
             
-            # ========== STRATEGY 2: Consecutive tokens that form the PII ==========
-            max_tokens_in_pii = min(8, len(norm_pii.replace(' ', '')) // 2 + 1)
+            # ========== STRATEGY 2: Multi-line consecutive tokens ==========
+            max_tokens_in_pii = min(10, len(norm_pii.replace(' ', '')) + 2)
             
             for start in range(n):
                 if not norm_tokens[start]:
                     continue
                 
-                for window_size in range(1, max_tokens_in_pii + 1):
+                for window_size in range(2, max_tokens_in_pii + 1):
                     end = start + window_size
                     if end > n:
                         break
@@ -240,61 +214,192 @@ def search_pii(file_path):
                     
                     if window_text == norm_pii:
                         try:
+                            # Group tokens by line (Y-position clustering)
+                            lines = []
+                            current_line = [window_indices[0]]
+                            current_y = tops[window_indices[0]]
+                            
+                            for idx in window_indices[1:]:
+                                y_diff = abs(tops[idx] - current_y)
+                                
+                                # If Y difference > 20px, it's a new line
+                                if y_diff > 20:
+                                    lines.append(current_line)
+                                    current_line = [idx]
+                                    current_y = tops[idx]
+                                else:
+                                    current_line.append(idx)
+                            
+                            lines.append(current_line)  # Add last line
+                            
+                            # Validate line progression (top-to-bottom, left-to-right)
+                            is_valid = True
+                            
+                            # Check horizontal gaps WITHIN each line
+                            for line_indices in lines:
+                                for i in range(len(line_indices) - 1):
+                                    idx1 = line_indices[i]
+                                    idx2 = line_indices[i + 1]
+                                    gap = lefts[idx2] - (lefts[idx1] + widths[idx1])
+                                    
+                                    # Allow max 50px gap on same line
+                                    if gap > 50:
+                                        print(f"  ⚠ Large horizontal gap: {gap}px for '{pii[:30]}...'")
+                                        is_valid = False
+                                        break
+                                
+                                if not is_valid:
+                                    break
+                            
+                            if not is_valid:
+                                continue
+                            
+                            # Check line breaks make sense (next line should start left)
+                            if len(lines) > 1:
+                                for i in range(len(lines) - 1):
+                                    first_line_last_idx = lines[i][-1]
+                                    second_line_first_idx = lines[i + 1][0]
+                                    
+                                    # Next line should be below and to the left (line wrap)
+                                    y_progression = tops[second_line_first_idx] - tops[first_line_last_idx]
+                                    x_regression = lefts[second_line_first_idx] - lefts[first_line_last_idx]
+                                    
+                                    # Vertical: must go down (20-80px typical line height)
+                                    if not (20 < y_progression < 100):
+                                        print(f"  ⚠ Invalid vertical progression: {y_progression}px")
+                                        is_valid = False
+                                        break
+                                    
+                                    # Horizontal: second line should start left of first line end (wrap)
+                                    # But not too far left (must be reasonable wrap)
+                                    if x_regression > 50:  # Moving right = not a wrap
+                                        print(f"  ⚠ Not a line wrap (moving right: {x_regression}px)")
+                                        is_valid = False
+                                        break
+                            
+                            if not is_valid:
+                                continue
+                            
+                            # Calculate bounding box covering all lines
                             x_min = min(lefts[i] for i in window_indices)
                             y_min = min(tops[i] for i in window_indices)
                             x_max = max(lefts[i] + widths[i] for i in window_indices)
                             y_max = max(tops[i] + heights[i] for i in window_indices)
                             
+                            bbox_width = x_max - x_min
+                            bbox_height = y_max - y_min
+                            bbox_area = bbox_width * bbox_height
+                            
+                            # Validate size (more lenient for multi-line)
+                            pii_len = len(norm_pii)
+                            num_lines = len(lines)
+                            
+                            # For multi-line: width can be full page width
+                            # Height should be reasonable (lines * ~40px)
+                            expected_max_height = num_lines * 80  # Max 80px per line
+                            
+                            if bbox_height > expected_max_height:
+                                print(f"  ⚠ Bbox too tall: {bbox_height}px for {num_lines} line(s)")
+                                continue
+                            
+                            # Area check (more lenient for multi-line)
+                            # Single line: ~15-25px/char * 40px height
+                            # Multi-line: page_width * lines * 60px
+                            max_reasonable_area = 800 * num_lines * 60  # Assume max 800px page width
+                            
+                            if bbox_area > max_reasonable_area:
+                                print(f"  ⚠ Bbox area too large: {bbox_area}px² for {num_lines} line(s)")
+                                continue
+                            
+                            print(f"  ✓ Found {num_lines}-line match for '{pii[:30]}...': {bbox_width}x{bbox_height}")
+                            
                             return {
                                 "x": int(x_min),
                                 "y": int(y_min),
-                                "width": int(x_max - x_min),
-                                "height": int(y_max - y_min)
+                                "width": int(bbox_width),
+                                "height": int(bbox_height)
                             }
-                        except (ValueError, IndexError):
+                        except (ValueError, IndexError) as e:
+                            print(f"  ⚠ Error processing window: {e}")
                             continue
             
-            # ========== STRATEGY 3: AADHAAR-SPECIFIC - Handle split 12-digit numbers ==========
-            # For numbers like "999900001111" that might be split as "9999" "0000" "1111"
+            # ========== STRATEGY 3: AADHAAR-SPECIFIC with line-wrap support ==========
             if len(norm_pii) == 12 and norm_pii.isdigit():
-                # Look for pattern: 4 digits + 4 digits + 4 digits
+                # Try different token groupings: 1+1+1, 2+1, 1+2, 3, 4, 5, etc.
                 for start in range(n):
-                    if start + 2 >= n:
-                        break
-                    
-                    # Get 3 consecutive tokens
-                    token1 = norm_tokens[start]
-                    token2 = norm_tokens[start + 1] if start + 1 < n else ""
-                    token3 = norm_tokens[start + 2] if start + 2 < n else ""
-                    
-                    # Check if they form our 12-digit number
-                    combined = token1 + token2 + token3
-                    
-                    if combined == norm_pii:
-                        # Calculate bounding box covering all 3 tokens
-                        try:
-                            indices = [start, start + 1, start + 2]
-                            x_min = min(lefts[i] for i in indices if i < n)
-                            y_min = min(tops[i] for i in indices if i < n)
-                            x_max = max(lefts[i] + widths[i] for i in indices if i < n)
-                            y_max = max(tops[i] + heights[i] for i in indices if i < n)
-                            
-                            bbox = {
-                                "x": int(x_min),
-                                "y": int(y_min),
-                                "width": int(x_max - x_min),
-                                "height": int(y_max - y_min)
-                            }
-                            
-                            print(f"  ✓ Found split Aadhaar: {token1} {token2} {token3} → {pii}")
-                            return bbox
-                        except (ValueError, IndexError):
+                    for num_tokens in range(1, min(6, n - start)):
+                        indices = list(range(start, start + num_tokens))
+                        tokens = [norm_tokens[i] for i in indices if i < n]
+                        
+                        if len(tokens) < 1:
                             continue
+                        
+                        combined = ''.join(tokens)
+                        
+                        if combined == norm_pii:
+                            try:
+                                # Allow multi-line Aadhaar
+                                # Group by lines
+                                lines = []
+                                current_line = [indices[0]]
+                                current_y = tops[indices[0]]
+                                
+                                for idx in indices[1:]:
+                                    if abs(tops[idx] - current_y) > 20:
+                                        lines.append(current_line)
+                                        current_line = [idx]
+                                        current_y = tops[idx]
+                                    else:
+                                        current_line.append(idx)
+                                lines.append(current_line)
+                                
+                                # Check gaps within lines
+                                valid = True
+                                for line_indices in lines:
+                                    for i in range(len(line_indices) - 1):
+                                        gap = lefts[line_indices[i+1]] - (lefts[line_indices[i]] + widths[line_indices[i]])
+                                        if gap > 50:
+                                            valid = False
+                                            break
+                                
+                                if not valid:
+                                    continue
+                                
+                                x_min = min(lefts[i] for i in indices)
+                                y_min = min(tops[i] for i in indices)
+                                x_max = max(lefts[i] + widths[i] for i in indices)
+                                y_max = max(tops[i] + heights[i] for i in indices)
+                                
+                                bbox_width = x_max - x_min
+                                bbox_height = y_max - y_min
+                                bbox_area = bbox_width * bbox_height
+                                
+                                # For Aadhaar across 2 lines: 
+                                # Width: up to full page (~800px)
+                                # Height: 2 lines (~80px)
+                                max_area = 800 * len(lines) * 60
+                                
+                                if bbox_area > max_area:
+                                    print(f"  ⚠ Aadhaar bbox too large: {bbox_width}x{bbox_height}={bbox_area}px²")
+                                    continue
+                                
+                                token_preview = '-'.join(tokens[:5])
+                                print(f"  ✓ Found {len(lines)}-line Aadhaar: {token_preview} → {pii}")
+                                
+                                return {
+                                    "x": int(x_min),
+                                    "y": int(y_min),
+                                    "width": int(bbox_width),
+                                    "height": int(bbox_height)
+                                }
+                                
+                            except (ValueError, IndexError):
+                                continue
             
-            # ========== STRATEGY 4: Fuzzy digit matching for complex PIIs ==========
+            # ========== STRATEGY 4: Fuzzy digit accumulation with multi-line ==========
             pii_digits = ''.join(c for c in pii if c.isdigit())
             
-            if len(pii_digits) >= 8:  # Likely numeric ID
+            if len(pii_digits) >= 8:
                 current_digits = ""
                 digit_indices = []
                 
@@ -303,10 +408,31 @@ def search_pii(file_path):
                     tok_digits = ''.join(c for c in tok_str if c.isdigit())
                     
                     if tok_digits:
+                        # Check proximity to previous digit token
+                        if digit_indices:
+                            prev_idx = digit_indices[-1]
+                            
+                            # Check if it's a reasonable continuation
+                            y_diff = abs(tops[i] - tops[prev_idx])
+                            x_diff = lefts[i] - (lefts[prev_idx] + widths[prev_idx])
+                            
+                            # Allow line break: Y increases 20-100px, X goes negative (wrap)
+                            is_line_break = (20 < y_diff < 100) and (x_diff < 0)
+                            
+                            # Or same line: Y within 15px, X gap < 100px
+                            is_same_line = (y_diff < 15) and (x_diff < 100)
+                            
+                            if not (is_line_break or is_same_line):
+                                # Reset - not a valid continuation
+                                current_digits = tok_digits
+                                digit_indices = [i]
+                                continue
+                        
+                        # Add to sequence
                         current_digits += tok_digits
                         digit_indices.append(i)
                         
-                        # Check if we matched the PII
+                        # Check match
                         if current_digits == pii_digits:
                             try:
                                 x_min = min(lefts[j] for j in digit_indices)
@@ -314,24 +440,51 @@ def search_pii(file_path):
                                 x_max = max(lefts[j] + widths[j] for j in digit_indices)
                                 y_max = max(tops[j] + heights[j] for j in digit_indices)
                                 
-                                return {
-                                    "x": int(x_min),
-                                    "y": int(y_min),
-                                    "width": int(x_max - x_min),
-                                    "height": int(y_max - y_min)
-                                }
+                                bbox_width = x_max - x_min
+                                bbox_height = y_max - y_min
+                                bbox_area = bbox_width * bbox_height
+                                
+                                # Estimate number of lines
+                                y_positions = sorted(set(tops[j] for j in digit_indices))
+                                num_lines = len([y for i, y in enumerate(y_positions) if i == 0 or y - y_positions[i-1] > 20])
+                                
+                                expected_max = 800 * max(num_lines, 1) * 60
+                                
+                                if bbox_area <= expected_max:
+                                    print(f"  ✓ Fuzzy match ({num_lines} line(s)): {bbox_width}x{bbox_height}")
+                                    return {
+                                        "x": int(x_min),
+                                        "y": int(y_min),
+                                        "width": int(bbox_width),
+                                        "height": int(bbox_height)
+                                    }
                             except (ValueError, IndexError):
                                 pass
                         
-                        # If we have too many digits, reset
+                        # Too many digits - reset
                         if len(current_digits) > len(pii_digits):
                             current_digits = tok_digits
                             digit_indices = [i]
-                    else:
-                        # Non-digit token - only reset if we haven't found a match yet
-                        if len(current_digits) > 0 and current_digits != pii_digits:
-                            current_digits = ""
-                            digit_indices = []
+            
+            # ========== STRATEGY 5: Substring match in single token ==========
+            for i, tok in enumerate(norm_tokens):
+                if tok and norm_pii in tok and len(norm_pii) > 6:
+                    tok_start_idx = tok.find(norm_pii)
+                    char_width = widths[i] / max(1, len(tok))
+                    
+                    x_offset = int(tok_start_idx * char_width)
+                    pii_width = int(len(norm_pii) * char_width)
+                    
+                    bbox = {
+                        "x": int(lefts[i] + x_offset),
+                        "y": int(tops[i]),
+                        "width": int(pii_width),
+                        "height": int(heights[i])
+                    }
+                    
+                    if bbox['width'] * bbox['height'] < len(norm_pii) * 30 * 60:
+                        print(f"  ✓ Substring match for '{pii[:30]}...'")
+                        return bbox
             
             return None
 
@@ -350,7 +503,7 @@ def search_pii(file_path):
                 # Rough estimate: 12-20 pixels per character width, 20-35 pixels height
                 expected_max_area = pii_len * 20 * 40  # Conservative upper bound
                 
-                if area > expected_max_area * 2:
+                if area > expected_max_area * 10:
                     print(f"  ⚠ Bbox too large for '{pii[:40]}...' ({bbox['width']}x{bbox['height']} = {area}px²)")
                     print(f"     Expected max: ~{expected_max_area}px²")
                     # Skip this bounding box - it's too large
@@ -488,5 +641,3 @@ if __name__ in '__main__':
     if temp_exists: shutil.rmtree(temp_dir)
 
     sys.exit(0)
-            
-
