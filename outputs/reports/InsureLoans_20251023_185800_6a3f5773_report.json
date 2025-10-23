@@ -1,0 +1,144 @@
+{
+  "file_path": "C:\\Users\\Bhavana\\Desktop\\PII redaction\\uploads\\InsureLoans_6a3f5773.pdf",
+  "pii_class": "Banking",
+  "score": 42,
+  "country_of_origin": "India",
+  "faces": 0,
+  "identifiers": [
+    "000123456789",
+    "000987654321",
+    "2025-00012345",
+    "4444 5555 6666",
+    "AAAAP1234Q",
+    "RERVP9876Z",
+    "2025-7788",
+    "98234",
+    "56789",
+    "98111",
+    "22334",
+    "99876",
+    "55443",
+    "999900001111"
+  ],
+  "emails": [
+    "aarti.kumari.synthetic@example.com",
+    "rohit.verma.synthetic@example.com"
+  ],
+  "phone_numbers": [
+    "1",
+    "3",
+    "6",
+    "-",
+    "9",
+    "+",
+    "4",
+    "8",
+    "2",
+    "7",
+    "0",
+    "5"
+  ],
+  "addresses": [
+    "Greens Avenue",
+    "Jaipur",
+    "Indrapuri"
+  ],
+  "pii_with_locations": {
+    "aarti.kumari.synthetic@example.com": {
+      "x": 1265,
+      "y": 2340,
+      "width": 867,
+      "height": 50
+    },
+    "rohit.verma.synthetic@example.com": {
+      "x": 596,
+      "y": 493,
+      "width": 852,
+      "height": 50
+    },
+    "1": {
+      "x": 1196,
+      "y": 1047,
+      "width": 82,
+      "height": 87
+    },
+    "3": {
+      "x": 640,
+      "y": 431,
+      "width": 37,
+      "height": 55
+    },
+    "6": {
+      "x": 2342,
+      "y": 2187,
+      "width": 9,
+      "height": 37
+    },
+    "4": {
+      "x": 913,
+      "y": 1197,
+      "width": 54,
+      "height": 71
+    },
+    "2": {
+      "x": 640,
+      "y": 431,
+      "width": 37,
+      "height": 54
+    },
+    "000123456789": {
+      "x": 704,
+      "y": 3553,
+      "width": 338,
+      "height": 37
+    },
+    "000987654321": {
+      "x": 435,
+      "y": 2262,
+      "width": 330,
+      "height": 37
+    },
+    "2025-00012345": {
+      "x": 527,
+      "y": 1959,
+      "width": 369,
+      "height": 37
+    },
+    "4444 5555 6666": {
+      "x": 1919,
+      "y": 1420,
+      "width": 365,
+      "height": 37
+    },
+    "AAAAP1234Q": {
+      "x": 969,
+      "y": 2417,
+      "width": 308,
+      "height": 45
+    },
+    "RERVP9876Z": {
+      "x": 1894,
+      "y": 495,
+      "width": 286,
+      "height": 37
+    },
+    "2025-7788": {
+      "x": 2325,
+      "y": 2725,
+      "width": 255,
+      "height": 37
+    },
+    "Jaipur": {
+      "x": 805,
+      "y": 3477,
+      "width": 141,
+      "height": 49
+    },
+    "Indrapuri": {
+      "x": 1593,
+      "y": 1964,
+      "width": 198,
+      "height": 58
+    }
+  }
+}
