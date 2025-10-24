@@ -1,11 +1,11 @@
 import axios from 'axios';
 
-const API_BASE_URL = 'http://127.0.0.1:8000';
-
+// Use environment variable for API base URL
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:8000';
 
 const api = axios.create({
   baseURL: API_BASE_URL,
-  timeout: 90000, // 30 seconds timeout for file processing
+  timeout: 90000,
 });
 
 // Request interceptor for logging
