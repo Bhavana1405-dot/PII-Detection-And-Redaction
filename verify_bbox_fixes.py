@@ -132,10 +132,10 @@ def check_bbox_quality(report_path):
     acceptable_pct = (len(acceptable_boxes) / total * 100) if total > 0 else 0
     
     print(f"\nTotal PII with locations: {total}")
-    print(f"  ✓ Precise (0.5-2x):     {len(precise_boxes)} ({precise_pct:.1f}%)")
-    print(f"  ~ Acceptable (2-4x):    {len(acceptable_boxes)} ({acceptable_pct:.1f}%)")
-    print(f"  ✗ Oversized (>4x):      {len(oversized_boxes)}")
-    print(f"  ✗ Undersized (<0.5x):   {len(undersized_boxes)}")
+    print(f"   Precise (0.5-2x):     {len(precise_boxes)} ({precise_pct:.1f}%)")
+    print(f"   Acceptable (2-4x):    {len(acceptable_boxes)} ({acceptable_pct:.1f}%)")
+    print(f"   Oversized (>4x):      {len(oversized_boxes)}")
+    print(f"   Undersized (<0.5x):   {len(undersized_boxes)}")
     
     # Quality assessment
     print("\n" + "=" * 80)
@@ -143,7 +143,7 @@ def check_bbox_quality(report_path):
     print("=" * 80)
     
     if len(oversized_boxes) == 0 and len(undersized_boxes) == 0:
-        print("\n✓✓✓ EXCELLENT! All bounding boxes are precise or acceptable.")
+        print("\nEXCELLENT! All bounding boxes are precise or acceptable.")
         print("\n   Your fixes are working correctly!")
         print("\n   Next steps:")
         print("   1. Run redaction: python Redactopii/redactopii.py --input <file> --report output.json")

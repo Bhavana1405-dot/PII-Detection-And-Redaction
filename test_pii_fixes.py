@@ -82,10 +82,10 @@ def print_subheader(title):
     print("-" * 70)
 
 def print_pass(msg):
-    print(f"   ✓ {msg}")
+    print(f"    {msg}")
 
 def print_fail(msg):
-    print(f"   ✗ {msg}")
+    print(f"    {msg}")
 
 def print_info(msg):
     if VERBOSE:
@@ -451,7 +451,7 @@ def run_all_tests(verbose=False):
     print(f"   Success Rate: {results.success_rate:.1f}%")
     
     if results.failed == 0:
-        print("\n   ✓✓✓ ALL TESTS PASSED! ✓✓✓")
+        print("\n    ALL TESTS PASSED!")
         print("   Your PII detection system is working correctly.")
         print("\n   Next steps:")
         print("   1. Run: python Octopii/octopii.py InsureLoans.pdf")

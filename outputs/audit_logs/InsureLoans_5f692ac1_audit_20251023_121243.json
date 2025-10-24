@@ -1,0 +1,1168 @@
+{
+  "audit": {
+    "source_file": "C:\\Users\\Bhavana\\Desktop\\PII redaction\\uploads\\InsureLoans_5f692ac1.pdf",
+    "redacted_file": "C:\\Users\\Bhavana\\Desktop\\PII redaction\\outputs\\redacted\\InsureLoans_5f692ac1_redacted_20251023_121243.pdf",
+    "file_type": "pdf",
+    "timestamp": "2025-10-23T12:12:53.407296",
+    "detection_report": {
+      "file_path": "C:\\Users\\Bhavana\\Desktop\\PII redaction\\uploads\\InsureLoans_b1db8984.pdf",
+      "pii_class": "Banking",
+      "score": 42,
+      "country_of_origin": "India",
+      "faces": 0,
+      "identifiers": [
+        "000123456789",
+        "000987654321",
+        "2025-00012345",
+        "4444 5555 6666",
+        "AAAAP1234Q",
+        "RERVP9876Z",
+        "2025-7788",
+        "98234",
+        "56789",
+        "98111",
+        "22334",
+        "99876",
+        "55443",
+        "999900001111"
+      ],
+      "emails": [
+        "aarti.kumari.synthetic@example.com",
+        "rohit.verma.synthetic@example.com"
+      ],
+      "phone_numbers": [
+        "0",
+        "2",
+        "8",
+        "3",
+        "+",
+        "7",
+        "1",
+        "4",
+        "-",
+        "6",
+        "5",
+        "9"
+      ],
+      "addresses": [
+        "Indrapuri",
+        "Greens Avenue",
+        "Jaipur"
+      ],
+      "pii_with_locations": {
+        "aarti.kumari.synthetic@example.com": {
+          "x": 1265,
+          "y": 2340,
+          "width": 867,
+          "height": 50
+        },
+        "rohit.verma.synthetic@example.com": {
+          "x": 596,
+          "y": 493,
+          "width": 852,
+          "height": 50
+        },
+        "2": {
+          "x": 640,
+          "y": 431,
+          "width": 37,
+          "height": 54
+        },
+        "3": {
+          "x": 640,
+          "y": 431,
+          "width": 37,
+          "height": 55
+        },
+        "1": {
+          "x": 1196,
+          "y": 1047,
+          "width": 82,
+          "height": 87
+        },
+        "4": {
+          "x": 913,
+          "y": 1197,
+          "width": 54,
+          "height": 71
+        },
+        "6": {
+          "x": 2342,
+          "y": 2187,
+          "width": 9,
+          "height": 37
+        },
+        "000123456789": {
+          "x": 704,
+          "y": 3553,
+          "width": 338,
+          "height": 37
+        },
+        "000987654321": {
+          "x": 435,
+          "y": 2262,
+          "width": 330,
+          "height": 37
+        },
+        "2025-00012345": {
+          "x": 527,
+          "y": 1959,
+          "width": 369,
+          "height": 37
+        },
+        "4444 5555 6666": {
+          "x": 1919,
+          "y": 1420,
+          "width": 365,
+          "height": 37
+        },
+        "AAAAP1234Q": {
+          "x": 969,
+          "y": 2417,
+          "width": 308,
+          "height": 45
+        },
+        "RERVP9876Z": {
+          "x": 1894,
+          "y": 495,
+          "width": 286,
+          "height": 37
+        },
+        "2025-7788": {
+          "x": 2325,
+          "y": 2725,
+          "width": 255,
+          "height": 37
+        },
+        "Indrapuri": {
+          "x": 1593,
+          "y": 1964,
+          "width": 198,
+          "height": 58
+        },
+        "Jaipur": {
+          "x": 805,
+          "y": 3477,
+          "width": 141,
+          "height": 49
+        }
+      }
+    },
+    "redaction_results": [
+      {
+        "entity": {
+          "value": "aarti.kumari.synthetic@example.com",
+          "page": 0,
+          "location": {
+            "x": 1262,
+            "y": 2337,
+            "width": 873,
+            "height": 56
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "rohit.verma.synthetic@example.com",
+          "page": 0,
+          "location": {
+            "x": 593,
+            "y": 490,
+            "width": 858,
+            "height": 56
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "6",
+          "page": 0,
+          "location": {
+            "x": 2339,
+            "y": 2184,
+            "width": 15,
+            "height": 43
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "000123456789",
+          "page": 0,
+          "location": {
+            "x": 701,
+            "y": 3550,
+            "width": 344,
+            "height": 43
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "000987654321",
+          "page": 0,
+          "location": {
+            "x": 432,
+            "y": 2259,
+            "width": 336,
+            "height": 43
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "2025-00012345",
+          "page": 0,
+          "location": {
+            "x": 524,
+            "y": 1956,
+            "width": 375,
+            "height": 43
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "4444 5555 6666",
+          "page": 0,
+          "location": {
+            "x": 1916,
+            "y": 1417,
+            "width": 371,
+            "height": 43
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "AAAAP1234Q",
+          "page": 0,
+          "location": {
+            "x": 966,
+            "y": 2414,
+            "width": 314,
+            "height": 51
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "RERVP9876Z",
+          "page": 0,
+          "location": {
+            "x": 1891,
+            "y": 492,
+            "width": 292,
+            "height": 43
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "2025-7788",
+          "page": 0,
+          "location": {
+            "x": 2322,
+            "y": 2722,
+            "width": 261,
+            "height": 43
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "Indrapuri",
+          "page": 0,
+          "location": {
+            "x": 1590,
+            "y": 1961,
+            "width": 204,
+            "height": 64
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "Jaipur",
+          "page": 0,
+          "location": {
+            "x": 802,
+            "y": 3474,
+            "width": 147,
+            "height": 55
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "aarti.kumari.synthetic@example.com",
+          "page": 1,
+          "location": {
+            "x": 1262,
+            "y": 2337,
+            "width": 873,
+            "height": 56
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "rohit.verma.synthetic@example.com",
+          "page": 1,
+          "location": {
+            "x": 593,
+            "y": 490,
+            "width": 858,
+            "height": 56
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "6",
+          "page": 1,
+          "location": {
+            "x": 2339,
+            "y": 2184,
+            "width": 15,
+            "height": 43
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "000123456789",
+          "page": 1,
+          "location": {
+            "x": 701,
+            "y": 3550,
+            "width": 344,
+            "height": 43
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "000987654321",
+          "page": 1,
+          "location": {
+            "x": 432,
+            "y": 2259,
+            "width": 336,
+            "height": 43
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "2025-00012345",
+          "page": 1,
+          "location": {
+            "x": 524,
+            "y": 1956,
+            "width": 375,
+            "height": 43
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "4444 5555 6666",
+          "page": 1,
+          "location": {
+            "x": 1916,
+            "y": 1417,
+            "width": 371,
+            "height": 43
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "AAAAP1234Q",
+          "page": 1,
+          "location": {
+            "x": 966,
+            "y": 2414,
+            "width": 314,
+            "height": 51
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "RERVP9876Z",
+          "page": 1,
+          "location": {
+            "x": 1891,
+            "y": 492,
+            "width": 292,
+            "height": 43
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "2025-7788",
+          "page": 1,
+          "location": {
+            "x": 2322,
+            "y": 2722,
+            "width": 261,
+            "height": 43
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "Indrapuri",
+          "page": 1,
+          "location": {
+            "x": 1590,
+            "y": 1961,
+            "width": 204,
+            "height": 64
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "Jaipur",
+          "page": 1,
+          "location": {
+            "x": 802,
+            "y": 3474,
+            "width": 147,
+            "height": 55
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "aarti.kumari.synthetic@example.com",
+          "page": 2,
+          "location": {
+            "x": 1262,
+            "y": 2337,
+            "width": 873,
+            "height": 56
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "rohit.verma.synthetic@example.com",
+          "page": 2,
+          "location": {
+            "x": 593,
+            "y": 490,
+            "width": 858,
+            "height": 56
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "6",
+          "page": 2,
+          "location": {
+            "x": 2339,
+            "y": 2184,
+            "width": 15,
+            "height": 43
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "000123456789",
+          "page": 2,
+          "location": {
+            "x": 701,
+            "y": 3550,
+            "width": 344,
+            "height": 43
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "000987654321",
+          "page": 2,
+          "location": {
+            "x": 432,
+            "y": 2259,
+            "width": 336,
+            "height": 43
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "2025-00012345",
+          "page": 2,
+          "location": {
+            "x": 524,
+            "y": 1956,
+            "width": 375,
+            "height": 43
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "4444 5555 6666",
+          "page": 2,
+          "location": {
+            "x": 1916,
+            "y": 1417,
+            "width": 371,
+            "height": 43
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "AAAAP1234Q",
+          "page": 2,
+          "location": {
+            "x": 966,
+            "y": 2414,
+            "width": 314,
+            "height": 51
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "RERVP9876Z",
+          "page": 2,
+          "location": {
+            "x": 1891,
+            "y": 492,
+            "width": 292,
+            "height": 43
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "2025-7788",
+          "page": 2,
+          "location": {
+            "x": 2322,
+            "y": 2722,
+            "width": 261,
+            "height": 43
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "Indrapuri",
+          "page": 2,
+          "location": {
+            "x": 1590,
+            "y": 1961,
+            "width": 204,
+            "height": 64
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "Jaipur",
+          "page": 2,
+          "location": {
+            "x": 802,
+            "y": 3474,
+            "width": 147,
+            "height": 55
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "aarti.kumari.synthetic@example.com",
+          "page": 3,
+          "location": {
+            "x": 1262,
+            "y": 2337,
+            "width": 873,
+            "height": 56
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "rohit.verma.synthetic@example.com",
+          "page": 3,
+          "location": {
+            "x": 593,
+            "y": 490,
+            "width": 858,
+            "height": 56
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "6",
+          "page": 3,
+          "location": {
+            "x": 2339,
+            "y": 2184,
+            "width": 15,
+            "height": 43
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "000123456789",
+          "page": 3,
+          "location": {
+            "x": 701,
+            "y": 3550,
+            "width": 344,
+            "height": 43
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "000987654321",
+          "page": 3,
+          "location": {
+            "x": 432,
+            "y": 2259,
+            "width": 336,
+            "height": 43
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "2025-00012345",
+          "page": 3,
+          "location": {
+            "x": 524,
+            "y": 1956,
+            "width": 375,
+            "height": 43
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "4444 5555 6666",
+          "page": 3,
+          "location": {
+            "x": 1916,
+            "y": 1417,
+            "width": 371,
+            "height": 43
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "AAAAP1234Q",
+          "page": 3,
+          "location": {
+            "x": 966,
+            "y": 2414,
+            "width": 314,
+            "height": 51
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "RERVP9876Z",
+          "page": 3,
+          "location": {
+            "x": 1891,
+            "y": 492,
+            "width": 292,
+            "height": 43
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "2025-7788",
+          "page": 3,
+          "location": {
+            "x": 2322,
+            "y": 2722,
+            "width": 261,
+            "height": 43
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "Indrapuri",
+          "page": 3,
+          "location": {
+            "x": 1590,
+            "y": 1961,
+            "width": 204,
+            "height": 64
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "Jaipur",
+          "page": 3,
+          "location": {
+            "x": 802,
+            "y": 3474,
+            "width": 147,
+            "height": 55
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "aarti.kumari.synthetic@example.com",
+          "page": 4,
+          "location": {
+            "x": 1262,
+            "y": 2337,
+            "width": 873,
+            "height": 56
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "rohit.verma.synthetic@example.com",
+          "page": 4,
+          "location": {
+            "x": 593,
+            "y": 490,
+            "width": 858,
+            "height": 56
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "6",
+          "page": 4,
+          "location": {
+            "x": 2339,
+            "y": 2184,
+            "width": 15,
+            "height": 43
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "000123456789",
+          "page": 4,
+          "location": {
+            "x": 701,
+            "y": 3550,
+            "width": 344,
+            "height": 43
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "000987654321",
+          "page": 4,
+          "location": {
+            "x": 432,
+            "y": 2259,
+            "width": 336,
+            "height": 43
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "2025-00012345",
+          "page": 4,
+          "location": {
+            "x": 524,
+            "y": 1956,
+            "width": 375,
+            "height": 43
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "4444 5555 6666",
+          "page": 4,
+          "location": {
+            "x": 1916,
+            "y": 1417,
+            "width": 371,
+            "height": 43
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "AAAAP1234Q",
+          "page": 4,
+          "location": {
+            "x": 966,
+            "y": 2414,
+            "width": 314,
+            "height": 51
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "RERVP9876Z",
+          "page": 4,
+          "location": {
+            "x": 1891,
+            "y": 492,
+            "width": 292,
+            "height": 43
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "2025-7788",
+          "page": 4,
+          "location": {
+            "x": 2322,
+            "y": 2722,
+            "width": 261,
+            "height": 43
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "Indrapuri",
+          "page": 4,
+          "location": {
+            "x": 1590,
+            "y": 1961,
+            "width": 204,
+            "height": 64
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "Jaipur",
+          "page": 4,
+          "location": {
+            "x": 802,
+            "y": 3474,
+            "width": 147,
+            "height": 55
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "aarti.kumari.synthetic@example.com",
+          "page": 5,
+          "location": {
+            "x": 1262,
+            "y": 2337,
+            "width": 873,
+            "height": 56
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "rohit.verma.synthetic@example.com",
+          "page": 5,
+          "location": {
+            "x": 593,
+            "y": 490,
+            "width": 858,
+            "height": 56
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "6",
+          "page": 5,
+          "location": {
+            "x": 2339,
+            "y": 2184,
+            "width": 15,
+            "height": 43
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "000123456789",
+          "page": 5,
+          "location": {
+            "x": 701,
+            "y": 3550,
+            "width": 344,
+            "height": 43
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "000987654321",
+          "page": 5,
+          "location": {
+            "x": 432,
+            "y": 2259,
+            "width": 336,
+            "height": 43
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "2025-00012345",
+          "page": 5,
+          "location": {
+            "x": 524,
+            "y": 1956,
+            "width": 375,
+            "height": 43
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "4444 5555 6666",
+          "page": 5,
+          "location": {
+            "x": 1916,
+            "y": 1417,
+            "width": 371,
+            "height": 43
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "AAAAP1234Q",
+          "page": 5,
+          "location": {
+            "x": 966,
+            "y": 2414,
+            "width": 314,
+            "height": 51
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "RERVP9876Z",
+          "page": 5,
+          "location": {
+            "x": 1891,
+            "y": 492,
+            "width": 292,
+            "height": 43
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "2025-7788",
+          "page": 5,
+          "location": {
+            "x": 2322,
+            "y": 2722,
+            "width": 261,
+            "height": 43
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "Indrapuri",
+          "page": 5,
+          "location": {
+            "x": 1590,
+            "y": 1961,
+            "width": 204,
+            "height": 64
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      },
+      {
+        "entity": {
+          "value": "Jaipur",
+          "page": 5,
+          "location": {
+            "x": 802,
+            "y": 3474,
+            "width": 147,
+            "height": 55
+          }
+        },
+        "method": "blackbox",
+        "success": true
+      }
+    ],
+    "summary": {
+      "total_entities_detected": 72,
+      "entities_redacted": 72,
+      "redaction_failures": 0,
+      "confidence_threshold": 0.7
+    }
+  }
+}

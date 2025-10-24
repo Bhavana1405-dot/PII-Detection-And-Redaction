@@ -35,7 +35,7 @@ def test_adapter():
     adapter = OctopiiAdapter()
     entities = adapter.parse_report(sample_report)
     
-    print(f"  ✓ Found {len(entities)} PII entities")
+    print(f"   Found {len(entities)} PII entities")
     for entity in entities:
         print(f"    - {entity.entity_type.value}: {entity.value}")
     
@@ -48,8 +48,8 @@ def test_engine():
     config = RedactionConfig()
     engine = RedactionEngine(config)
     
-    print(f"  ✓ Engine initialized")
-    print(f"  ✓ Output directories:")
+    print(f"   Engine initialized")
+    print(f"   Output directories:")
     for name, path in engine.output_dirs.items():
         print(f"    - {name}: {path}")
     
@@ -66,17 +66,17 @@ if __name__ == "__main__":
         
         if test1 and test2:
             print("\n" + "=" * 60)
-            print("✓ All tests passed!")
+            print(" All tests passed!")
             print("=" * 60)
             print("\nReady to use! Try:")
             print("  python Redactopii/redactopii.py --help")
             sys.exit(0)
         else:
-            print("\n✗ Some tests failed")
+            print("\n Some tests failed")
             sys.exit(1)
             
     except Exception as e:
-        print(f"\n✗ Test failed: {e}")
+        print(f"\nTest failed: {e}")
         import traceback
         traceback.print_exc()
         sys.exit(1)

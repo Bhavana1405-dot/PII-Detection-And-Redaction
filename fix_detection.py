@@ -29,9 +29,9 @@ matches = [m.group(0) for m in re.finditer(aadhaar_regex, test_text)]
 print(f"   Found: {matches}")
 
 if "9999 0000 1111" in matches:
-    print("   ✓ PASS: Aadhaar detected correctly")
+    print("    PASS: Aadhaar detected correctly")
 else:
-    print("   ✗ FAIL: Aadhaar NOT detected!")
+    print("    FAIL: Aadhaar NOT detected!")
     print("   → Update definitions.json with: \\b\\d{4}[\\s-]?\\d{4}[\\s-]?\\d{4}\\b")
 
 # Test PAN
@@ -42,9 +42,9 @@ matches = [m.group(0) for m in re.finditer(pan_regex, test_text)]
 print(f"   Found: {matches}")
 
 if "AAAAP1234Q" in matches:
-    print("   ✓ PASS: PAN detected correctly")
+    print("    PASS: PAN detected correctly")
 else:
-    print("   ✗ FAIL: PAN NOT detected!")
+    print("    FAIL: PAN NOT detected!")
     print("   → Update definitions.json with: \\b[A-Z]{5}\\d{4}[A-Z]\\b")
 
 # Test with text_utils function
