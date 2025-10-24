@@ -1,0 +1,46 @@
+fastapi==0.104.1
+uvicorn[standard]==0.24.0
+python-multipart==0.0.6
+aiofiles==23.2.1
+
+# Image / computer vision
+numpy>=1.21.0
+pillow>=9.0.0
+opencv-python>=4.5.0
+scikit-image
+imutils
+
+# ML / Deep learning
+tensorflow
+keras
+
+# OCR / text extraction
+pytesseract    # requires system tesseract binary
+pdf2image      # requires poppler (poppler-utils / poppler) on the host
+textract
+
+# Redaction / PDF support
+PyMuPDF>=1.20.0   # optional but useful for PDF redaction/inspection
+
+# General utilities / parsing
+requests
+xmltodict
+bs4               # BeautifulSoup (bs4)
+matplotlib
+
+# NLP / geotext
+nltk
+spacy
+geotext
+
+# Image deskewing / helpers
+deskew
+
+# Security (from Redactopii)
+cryptography>=38.0.0
+
+# Testing / dev (optional, keep in dev requirements)
+pytest>=7.0.0
+pytest-cov>=3.0.0
+black>=22.0.0
+flake8>=4.0.0

@@ -14,9 +14,12 @@ app = FastAPI(title="PII Detection & Redaction API", version="2.0.0")
 # ============================
 # 🔧 CORS Setup
 # ============================
+# Get allowed origins from environment variable
+ALLOWED_ORIGINS = os.getenv("ALLOWED_ORIGINS", "*").split(",")
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Replace with your frontend origin later
+    allow_origins=ALLOWED_ORIGINS,  # Will be set via environment variable
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
