@@ -1,15 +1,19 @@
-import React, { useState } from 'react';
-import { RedactionControlsProps, RedactionMethod, RedactionResult } from '../types';
-import { 
-  Shield, 
-  Download, 
-  Settings, 
-  FileText, 
-  Image, 
+import React, { useState } from "react";
+import {
+  RedactionControlsProps,
+  RedactionMethod,
+  RedactionResult,
+} from "../types";
+import {
+  Shield,
+  Download,
+  Settings,
+  FileText,
+  Image,
   Palette,
-  Loader2
-} from 'lucide-react';
-import { piiApi } from '../services/api';
+  Loader2,
+} from "lucide-react";
+import { piiApi } from "../services/api";
 
 const RedactionControls: React.FC<RedactionControlsProps> = ({
   detectionResult,
@@ -17,30 +21,35 @@ const RedactionControls: React.FC<RedactionControlsProps> = ({
   redactionMethod,
   onMethodChange,
   onRedactionComplete,
-  onLoading
+  onLoading,
 }) => {
   const [isRedacting, setIsRedacting] = useState(false);
   const [redactionResult, setRedactionResult] = useState<any>(null);
 
-  const redactionMethods: { value: RedactionMethod; label: string; description: string; icon: React.ReactNode }[] = [
+  const redactionMethods: {
+    value: RedactionMethod;
+    label: string;
+    description: string;
+    icon: React.ReactNode;
+  }[] = [
     {
-      value: 'blur',
-      label: 'Blur',
-      description: 'Apply Gaussian blur to sensitive areas',
-      icon: <Image className="w-5 h-5" />
+      value: "blur",
+      label: "Blur",
+      description: "Apply Gaussian blur to sensitive areas",
+      icon: <Image className="w-5 h-5" />,
     },
     {
-      value: 'blackbox',
-      label: 'Black Box',
-      description: 'Cover with solid black rectangles',
-      icon: <Shield className="w-5 h-5" />
+      value: "blackbox",
+      label: "Black Box",
+      description: "Cover with solid black rectangles",
+      icon: <Shield className="w-5 h-5" />,
     },
     {
-      value: 'pixelate',
-      label: 'Pixelate',
-      description: 'Apply pixelation effect to sensitive areas',
-      icon: <Palette className="w-5 h-5" />
-    }
+      value: "pixelate",
+      label: "Pixelate",
+      description: "Apply pixelation effect to sensitive areas",
+      icon: <Palette className="w-5 h-5" />,
+    },
   ];
 
   const handleRedaction = async () => {
@@ -54,7 +63,9 @@ const RedactionControls: React.FC<RedactionControlsProps> = ({
       // valid PDF/image file; creating an empty placeholder previously caused
       // the "File does not appear to be a valid PDF" error.
       if (!selectedFile) {
-        throw new Error('Original uploaded file is not available. Please re-upload the file before redaction.');
+        throw new Error(
+          "Original uploaded file is not available. Please re-upload the file before redaction."
+        );
       }
 
       const result = await piiApi.redactPII(
@@ -62,12 +73,16 @@ const RedactionControls: React.FC<RedactionControlsProps> = ({
         detectionResult.report_file,
         redactionMethod
       );
-      
+
       setRedactionResult(result);
       onRedactionComplete(result as RedactionResult);
     } catch (error) {
-      console.error('Redaction error:', error);
-      alert(error instanceof Error ? error.message : 'An error occurred during redaction');
+      console.error("Redaction error:", error);
+      alert(
+        error instanceof Error
+          ? error.message
+          : "An error occurred during redaction"
+      );
     } finally {
       setIsRedacting(false);
       onLoading(false);
@@ -76,7 +91,7 @@ const RedactionControls: React.FC<RedactionControlsProps> = ({
 
   const downloadRedactedFile = () => {
     if (redactionResult?.redacted_file) {
-      const link = document.createElement('a');
+      const link = document.createElement("a");
       link.href = piiApi.downloadRedactedFile(redactionResult.redacted_file);
       link.download = `redacted_${detectionResult.input_file}`;
       document.body.appendChild(link);
@@ -87,7 +102,7 @@ const RedactionControls: React.FC<RedactionControlsProps> = ({
 
   const downloadReport = () => {
     if (detectionResult?.report_file) {
-      const link = document.createElement('a');
+      const link = document.createElement("a");
       link.href = piiApi.downloadReport(detectionResult.report_file);
       link.download = detectionResult.report_file;
       document.body.appendChild(link);
@@ -102,7 +117,9 @@ const RedactionControls: React.FC<RedactionControlsProps> = ({
       <div className="card">
         <div className="flex items-center space-x-2 mb-4">
           <Settings className="w-5 h-5 text-gray-600" />
-          <h3 className="text-lg font-semibold text-gray-900">Redaction Settings</h3>
+          <h3 className="text-lg font-semibold text-gray-900">
+            Redaction Settings
+          </h3>
         </div>
 
         <div className="space-y-3">
@@ -115,8 +132,8 @@ const RedactionControls: React.FC<RedactionControlsProps> = ({
                 key={method.value}
                 className={`flex items-center p-3 border rounded-lg cursor-pointer transition-colors ${
                   redactionMethod === method.value
-                    ? 'border-primary-500 bg-primary-50'
-                    : 'border-gray-200 hover:border-gray-300'
+                    ? "border-primary-500 bg-primary-50"
+                    : "border-gray-200 hover:border-gray-300"
                 }`}
               >
                 <input
@@ -124,20 +141,28 @@ const RedactionControls: React.FC<RedactionControlsProps> = ({
                   name="redactionMethod"
                   value={method.value}
                   checked={redactionMethod === method.value}
-                  onChange={(e) => onMethodChange(e.target.value as RedactionMethod)}
+                  onChange={(e) =>
+                    onMethodChange(e.target.value as RedactionMethod)
+                  }
                   className="sr-only"
                 />
                 <div className="flex items-center space-x-3 flex-1">
-                  <div className={`p-2 rounded-lg ${
-                    redactionMethod === method.value
-                      ? 'text-primary-600 bg-primary-100'
-                      : 'text-gray-400 bg-gray-100'
-                  }`}>
+                  <div
+                    className={`p-2 rounded-lg ${
+                      redactionMethod === method.value
+                        ? "text-primary-600 bg-primary-100"
+                        : "text-gray-400 bg-gray-100"
+                    }`}
+                  >
                     {method.icon}
                   </div>
                   <div>
-                    <div className="font-medium text-gray-900">{method.label}</div>
-                    <div className="text-sm text-gray-500">{method.description}</div>
+                    <div className="font-medium text-gray-900">
+                      {method.label}
+                    </div>
+                    <div className="text-sm text-gray-500">
+                      {method.description}
+                    </div>
                   </div>
                 </div>
                 {redactionMethod === method.value && (
@@ -155,13 +180,18 @@ const RedactionControls: React.FC<RedactionControlsProps> = ({
       <div className="card">
         <div className="flex items-center space-x-2 mb-4">
           <Shield className="w-5 h-5 text-gray-600" />
-          <h3 className="text-lg font-semibold text-gray-900">Redaction Actions</h3>
+          <h3 className="text-lg font-semibold text-gray-900">
+            Redaction Actions
+          </h3>
         </div>
 
         <div className="space-y-4">
           <button
             onClick={handleRedaction}
-            disabled={isRedacting || detectionResult.detection_summary.total_pii_found === 0}
+            disabled={
+              isRedacting ||
+              detectionResult.detection_summary.total_pii_found === 0
+            }
             className="w-full btn-primary flex items-center justify-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {isRedacting ? (
@@ -193,7 +223,7 @@ const RedactionControls: React.FC<RedactionControlsProps> = ({
               <FileText className="w-4 h-4" />
               <span>Download Report</span>
             </button>
-            
+
             {redactionResult && (
               <button
                 onClick={downloadRedactedFile}
@@ -217,9 +247,13 @@ const RedactionControls: React.FC<RedactionControlsProps> = ({
               </div>
             </div>
             <div className="flex-1">
-              <h4 className="font-medium text-success-800">Redaction Complete</h4>
+              <h4 className="font-medium text-success-800">
+                Redaction Complete
+              </h4>
               <p className="text-sm text-success-700 mt-1">
-                Successfully redacted {redactionResult.redaction_summary.total_entities_redacted} PII entities using {redactionResult.redaction_method} method.
+                Successfully redacted{" "}
+                {redactionResult.redaction_summary.total_entities_redacted} PII
+                entities using {redactionResult.redaction_method} method.
               </p>
               <div className="mt-2 text-xs text-success-600">
                 File: {redactionResult.redacted_file}
@@ -231,7 +265,9 @@ const RedactionControls: React.FC<RedactionControlsProps> = ({
 
       {/* Statistics */}
       <div className="card">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">Redaction Statistics</h3>
+        <h3 className="text-lg font-semibold text-gray-900 mb-4">
+          Redaction Statistics
+        </h3>
         <div className="grid grid-cols-2 gap-4">
           <div className="text-center p-3 bg-gray-50 rounded-lg">
             <div className="text-2xl font-bold text-gray-900">

@@ -39,7 +39,7 @@ export interface PIIEntity {
   type?: string;
 }
 
-export type RedactionMethod = 'blur' | 'blackbox' | 'pixelate';
+export type RedactionMethod = "blur" | "blackbox" | "pixelate";
 
 export interface RedactionResult {
   status: string;
